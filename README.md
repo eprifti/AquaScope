@@ -148,6 +148,29 @@ npm run dev
 
 The frontend will be available at http://localhost:3000 with hot-reload enabled.
 
+### Testing
+
+ReefLab includes comprehensive unit and integration tests for both backend and frontend.
+
+**Backend Tests (Pytest)**:
+```bash
+cd backend
+pytest                    # Run all tests
+pytest -m unit           # Run only unit tests
+pytest -m integration    # Run only integration tests
+pytest --cov=app         # Run with coverage report
+```
+
+**Frontend Tests (Vitest)**:
+```bash
+cd frontend
+npm test                 # Run all tests
+npm run test:ui         # Run with interactive UI
+npm run test:coverage   # Run with coverage report
+```
+
+For detailed testing documentation, see [TESTING.md](TESTING.md).
+
 ### Database Migrations
 
 Create a new migration:
