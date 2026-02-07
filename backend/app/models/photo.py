@@ -20,7 +20,7 @@ Why not store images in database?
 - Easier to serve with nginx/CDN
 - Simpler backup and migration strategies
 """
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -40,6 +40,7 @@ class Photo(Base):
     thumbnail_path = Column(String, nullable=True)
     description = Column(Text, nullable=True)
     taken_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)  # Index for chronological sorting
+    is_tank_display = Column(Boolean, default=False, nullable=False)  # Pinned as tank display photo
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     # Relationships

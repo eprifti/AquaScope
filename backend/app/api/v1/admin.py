@@ -69,6 +69,8 @@ def update_user(
 
     Can update:
     - username
+    - email
+    - password (will be hashed)
     - is_admin status
     """
     user = db.query(User).filter(User.id == user_id).first()
@@ -79,6 +81,23 @@ def update_user(
         )
 
     update_data = user_update.model_dump(exclude_unset=True)
+
+    # Handle password separately - it needs to be hashed
+    if "password" in update_data:
+        from app.core.security import get_password_hash
+        password = update_data.pop("password")
+        user.hashed_password = get_password_hash(password)
+
+    # Check if email is being changed and if it's already taken
+    if "email" in update_data and update_data["email"] != user.email:
+        existing_user = db.query(User).filter(User.email == update_data["email"]).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+
+    # Update other fields
     for field, value in update_data.items():
         setattr(user, field, value)
 
@@ -376,4 +395,223 @@ async def import_user_data(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Import failed: {str(e)}"
+        )
+
+
+@router.get("/database/export")
+def export_full_database(
+    admin: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Export the entire database as JSON (admin only).
+
+    Returns a complete database export including:
+    - All users (without passwords)
+    - All tanks
+    - All notes
+    - All livestock
+    - All maintenance reminders
+    - All photos metadata
+
+    WARNING: This exports ALL data from ALL users.
+    Use for backup or migration purposes.
+    """
+    # Get all data from database
+    all_users = db.query(User).all()
+    all_tanks = db.query(Tank).all()
+    all_notes = db.query(Note).all()
+    all_photos = db.query(Photo).all()
+    all_livestock = db.query(Livestock).all()
+    all_reminders = db.query(MaintenanceReminder).all()
+
+    # Convert to dict
+    from app.schemas.tank import TankResponse
+    from app.schemas.note import NoteResponse
+    from app.schemas.photo import PhotoResponse
+    from app.schemas.livestock import LivestockResponse
+    from app.schemas.maintenance import MaintenanceReminderResponse
+
+    export_data = {
+        "users": [
+            {
+                "id": str(u.id),
+                "email": u.email,
+                "username": u.username,
+                "is_admin": u.is_admin,
+                "created_at": u.created_at.isoformat(),
+                "updated_at": u.updated_at.isoformat()
+            }
+            for u in all_users
+        ],
+        "tanks": [TankResponse.model_validate(t).model_dump(mode='json') for t in all_tanks],
+        "notes": [NoteResponse.model_validate(n).model_dump(mode='json') for n in all_notes],
+        "photos": [PhotoResponse.model_validate(p).model_dump(mode='json') for p in all_photos],
+        "livestock": [LivestockResponse.model_validate(l).model_dump(mode='json') for l in all_livestock],
+        "reminders": [MaintenanceReminderResponse.model_validate(r).model_dump(mode='json') for r in all_reminders],
+        "exported_at": datetime.utcnow().isoformat(),
+        "version": "1.0",
+        "total_records": {
+            "users": len(all_users),
+            "tanks": len(all_tanks),
+            "notes": len(all_notes),
+            "photos": len(all_photos),
+            "livestock": len(all_livestock),
+            "reminders": len(all_reminders)
+        }
+    }
+
+    return export_data
+
+
+@router.post("/database/import")
+async def import_full_database(
+    import_data: dict,
+    replace: bool = False,
+    admin: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Import full database from JSON export (admin only).
+
+    Parameters:
+    - replace: If True, will clear existing data before import (DANGEROUS!)
+               If False (default), will ADD data to existing database
+
+    WARNING: This is a destructive operation if replace=True.
+    All existing data will be deleted before import.
+
+    The import data should match the full database export format.
+    """
+    imported_counts = {
+        "users": 0,
+        "tanks": 0,
+        "notes": 0,
+        "photos": 0,
+        "livestock": 0,
+        "reminders": 0
+    }
+
+    try:
+        # If replace mode, delete all existing data (DANGEROUS!)
+        if replace:
+            # Delete in correct order to respect foreign keys
+            db.query(MaintenanceReminder).delete()
+            db.query(Livestock).delete()
+            db.query(Photo).delete()
+            db.query(Note).delete()
+            db.query(Tank).delete()
+            # Don't delete current admin user
+            db.query(User).filter(User.id != admin.id).delete()
+            db.commit()
+
+        # Import users (skip if already exists by email)
+        from app.core.security import get_password_hash
+        user_id_mapping = {}  # Old ID -> New ID mapping
+
+        for user_data in import_data.get("users", []):
+            old_user_id = user_data.get("id")
+            email = user_data.get("email")
+
+            # Check if user already exists
+            existing_user = db.query(User).filter(User.email == email).first()
+            if existing_user:
+                user_id_mapping[old_user_id] = str(existing_user.id)
+                continue
+
+            # Create new user with default password
+            new_user = User(
+                email=email,
+                username=user_data.get("username", "Imported User"),
+                hashed_password=get_password_hash("changeme123"),  # Default password
+                is_admin=user_data.get("is_admin", False)
+            )
+            db.add(new_user)
+            db.flush()  # Get the new ID
+            user_id_mapping[old_user_id] = str(new_user.id)
+            imported_counts["users"] += 1
+
+        # Import tanks
+        tank_id_mapping = {}  # Old ID -> New ID mapping
+        for tank_data in import_data.get("tanks", []):
+            old_tank_id = tank_data.get("id")
+            old_user_id = tank_data.get("user_id")
+            new_user_id = user_id_mapping.get(old_user_id)
+
+            if not new_user_id:
+                continue
+
+            tank_data_clean = {k: v for k, v in tank_data.items()
+                             if k not in ["id", "user_id", "created_at", "updated_at", "events"]}
+
+            new_tank = Tank(**tank_data_clean, user_id=new_user_id)
+            db.add(new_tank)
+            db.flush()
+            tank_id_mapping[old_tank_id] = str(new_tank.id)
+            imported_counts["tanks"] += 1
+
+        # Import notes
+        for note_data in import_data.get("notes", []):
+            old_user_id = note_data.get("user_id")
+            old_tank_id = note_data.get("tank_id")
+            new_user_id = user_id_mapping.get(old_user_id)
+            new_tank_id = tank_id_mapping.get(old_tank_id)
+
+            if not new_user_id or not new_tank_id:
+                continue
+
+            note_data_clean = {k: v for k, v in note_data.items()
+                             if k not in ["id", "user_id", "tank_id", "created_at", "updated_at"]}
+
+            new_note = Note(**note_data_clean, user_id=new_user_id, tank_id=new_tank_id)
+            db.add(new_note)
+            imported_counts["notes"] += 1
+
+        # Import livestock
+        for livestock_data in import_data.get("livestock", []):
+            old_user_id = livestock_data.get("user_id")
+            old_tank_id = livestock_data.get("tank_id")
+            new_user_id = user_id_mapping.get(old_user_id)
+            new_tank_id = tank_id_mapping.get(old_tank_id)
+
+            if not new_user_id or not new_tank_id:
+                continue
+
+            livestock_data_clean = {k: v for k, v in livestock_data.items()
+                                  if k not in ["id", "user_id", "tank_id", "created_at"]}
+
+            new_livestock = Livestock(**livestock_data_clean, user_id=new_user_id, tank_id=new_tank_id)
+            db.add(new_livestock)
+            imported_counts["livestock"] += 1
+
+        # Import reminders
+        for reminder_data in import_data.get("reminders", []):
+            old_user_id = reminder_data.get("user_id")
+            old_tank_id = reminder_data.get("tank_id")
+            new_user_id = user_id_mapping.get(old_user_id)
+            new_tank_id = tank_id_mapping.get(old_tank_id)
+
+            if not new_user_id or not new_tank_id:
+                continue
+
+            reminder_data_clean = {k: v for k, v in reminder_data.items()
+                                 if k not in ["id", "user_id", "tank_id", "created_at", "updated_at"]}
+
+            new_reminder = MaintenanceReminder(**reminder_data_clean, user_id=new_user_id, tank_id=new_tank_id)
+            db.add(new_reminder)
+            imported_counts["reminders"] += 1
+
+        db.commit()
+
+        return {
+            "message": "Database import successful",
+            "imported": imported_counts,
+            "note": "Imported users have default password 'changeme123' - please reset passwords"
+        }
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Database import failed: {str(e)}"
         )

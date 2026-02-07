@@ -291,6 +291,15 @@ export const photosApi = {
     return `${API_V1}/photos/${id}/file${params}`
   },
 
+  // Fetch photo as blob with auth and create object URL
+  getFileBlobUrl: async (id: string, thumbnail = false): Promise<string> => {
+    const params = thumbnail ? '?thumbnail=true' : ''
+    const response = await apiClient.get(`/photos/${id}/file${params}`, {
+      responseType: 'blob',
+    })
+    return URL.createObjectURL(response.data)
+  },
+
   update: async (id: string, data: PhotoUpdate): Promise<Photo> => {
     const response = await apiClient.put<Photo>(`/photos/${id}`, data)
     return response.data
@@ -298,6 +307,16 @@ export const photosApi = {
 
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/photos/${id}`)
+  },
+
+  pin: async (id: string): Promise<Photo> => {
+    const response = await apiClient.post<Photo>(`/photos/${id}/pin`)
+    return response.data
+  },
+
+  unpin: async (id: string): Promise<Photo> => {
+    const response = await apiClient.post<Photo>(`/photos/${id}/unpin`)
+    return response.data
   },
 }
 
@@ -452,6 +471,18 @@ export const adminApi = {
 
   importUserData: async (userId: string, data: any): Promise<any> => {
     const response = await apiClient.post(`/admin/import/${userId}`, data)
+    return response.data
+  },
+
+  exportDatabase: async (): Promise<any> => {
+    const response = await apiClient.get('/admin/database/export')
+    return response.data
+  },
+
+  importDatabase: async (data: any, replace = false): Promise<any> => {
+    const response = await apiClient.post('/admin/database/import', data, {
+      params: { replace },
+    })
     return response.data
   },
 }

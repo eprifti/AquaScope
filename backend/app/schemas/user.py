@@ -114,8 +114,11 @@ class UserUpdate(BaseModel):
     Schema for admin user updates.
 
     All fields optional for partial updates.
+    Password will be hashed before storing if provided.
     """
     username: Optional[str] = Field(None, min_length=3, max_length=50)
+    email: Optional[EmailStr] = None
+    password: Optional[str] = Field(None, min_length=8, max_length=100)
     is_admin: Optional[bool] = None
 
 

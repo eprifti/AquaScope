@@ -22,9 +22,13 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true)
   const [editingUser, setEditingUser] = useState<string | null>(null)
   const [editUsername, setEditUsername] = useState('')
+  const [editEmail, setEditEmail] = useState('')
+  const [editPassword, setEditPassword] = useState('')
   const [editIsAdmin, setEditIsAdmin] = useState(false)
   const [importData, setImportData] = useState('')
   const [showImport, setShowImport] = useState(false)
+  const [dbImportData, setDbImportData] = useState('')
+  const [showDbImport, setShowDbImport] = useState(false)
 
   // Redirect non-admin users
   if (!user?.is_admin) {
@@ -67,20 +71,31 @@ export default function Admin() {
   const handleStartEdit = (user: User) => {
     setEditingUser(user.id)
     setEditUsername(user.username)
+    setEditEmail(user.email)
+    setEditPassword('') // Don't pre-fill password
     setEditIsAdmin(user.is_admin)
   }
 
   const handleSaveEdit = async (userId: string) => {
     try {
-      await adminApi.updateUser(userId, {
+      const updateData: any = {
         username: editUsername,
+        email: editEmail,
         is_admin: editIsAdmin,
-      })
+      }
+
+      // Only include password if it's not empty
+      if (editPassword.trim() !== '') {
+        updateData.password = editPassword
+      }
+
+      await adminApi.updateUser(userId, updateData)
       setEditingUser(null)
+      setEditPassword('') // Clear password field
       loadData()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update user:', error)
-      alert('Failed to update user')
+      alert(error.response?.data?.detail || 'Failed to update user')
     }
   }
 
@@ -137,6 +152,52 @@ export default function Admin() {
     } catch (error: any) {
       console.error('Failed to import data:', error)
       alert(error.response?.data?.detail || 'Failed to import data. Check JSON format.')
+    }
+  }
+
+  const handleDatabaseExport = async () => {
+    try {
+      const data = await adminApi.exportDatabase()
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `reeflab-database-export-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Failed to export database:', error)
+      alert('Failed to export database')
+    }
+  }
+
+  const handleDatabaseImport = async (replace = false) => {
+    if (!dbImportData.trim()) {
+      alert('Please paste JSON data to import')
+      return
+    }
+
+    const action = replace ? 'REPLACE' : 'ADD TO'
+    const confirmed = window.confirm(
+      `Are you sure you want to ${action} the database?\n\n` +
+      (replace ? '⚠️ WARNING: This will DELETE all existing data first!\n\n' : '') +
+      'This action cannot be undone.'
+    )
+
+    if (!confirmed) return
+
+    try {
+      const data = JSON.parse(dbImportData)
+      const result = await adminApi.importDatabase(data, replace)
+      alert(`Database import successful!\n${JSON.stringify(result.imported, null, 2)}\n\n${result.note || ''}`)
+      setDbImportData('')
+      setShowDbImport(false)
+      loadData()
+    } catch (error: any) {
+      console.error('Failed to import database:', error)
+      alert(error.response?.data?.detail || 'Failed to import database. Check JSON format.')
     }
   }
 
@@ -276,6 +337,84 @@ export default function Admin() {
               </div>
             </div>
           </div>
+
+          {/* Database Export/Import */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Database Backup & Restore</h2>
+              <p className="text-sm text-gray-600 mt-1">Export or import the entire database</p>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* Export Button */}
+              <div>
+                <button
+                  onClick={handleDatabaseExport}
+                  className="w-full px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center justify-center space-x-2"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  <span>Export Full Database (JSON)</span>
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  Downloads all users, tanks, notes, livestock, reminders, and photos metadata
+                </p>
+              </div>
+
+              {/* Import Section */}
+              <div className="border-t pt-4">
+                {!showDbImport ? (
+                  <button
+                    onClick={() => setShowDbImport(true)}
+                    className="w-full px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center justify-center space-x-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <span>Import Database (JSON)</span>
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <textarea
+                      value={dbImportData}
+                      onChange={(e) => setDbImportData(e.target.value)}
+                      placeholder="Paste full database JSON export here..."
+                      rows={10}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono"
+                    />
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleDatabaseImport(false)}
+                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+                      >
+                        Add to Database
+                      </button>
+                      <button
+                        onClick={() => handleDatabaseImport(true)}
+                        className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+                      >
+                        ⚠️ Replace Database
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowDbImport(false)
+                          setDbImportData('')
+                        }}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    <div className="text-xs text-gray-600 space-y-1">
+                      <p><strong>Add to Database:</strong> Imports data alongside existing data (safe, no deletion)</p>
+                      <p><strong>Replace Database:</strong> Deletes ALL existing data first (⚠️ DESTRUCTIVE)</p>
+                      <p><strong>Note:</strong> Imported users get default password 'changeme123'</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -298,6 +437,27 @@ export default function Admin() {
                             type="text"
                             value={editUsername}
                             onChange={(e) => setEditUsername(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                          <input
+                            type="email"
+                            value={editEmail}
+                            onChange={(e) => setEditEmail(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            New Password (leave empty to keep current)
+                          </label>
+                          <input
+                            type="password"
+                            value={editPassword}
+                            onChange={(e) => setEditPassword(e.target.value)}
+                            placeholder="Enter new password..."
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                           />
                         </div>

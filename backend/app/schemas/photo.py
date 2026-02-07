@@ -15,6 +15,7 @@ class PhotoResponse(BaseModel):
     thumbnail_path: Optional[str]
     description: Optional[str]
     taken_at: datetime
+    is_tank_display: bool
     created_at: datetime
 
     class Config:

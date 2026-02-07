@@ -19,6 +19,8 @@ export interface User {
 
 export interface UserUpdate {
   username?: string
+  email?: string
+  password?: string
   is_admin?: boolean
 }
 
@@ -192,6 +194,7 @@ export interface Photo {
   thumbnail_path: string | null
   description: string | null
   taken_at: string
+  is_tank_display: boolean
   created_at: string
 }
 
