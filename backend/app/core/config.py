@@ -1,6 +1,6 @@
 """Application configuration"""
-from typing import List
-from pydantic_settings import BaseSettings
+from typing import List, Union
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 
 
@@ -24,14 +24,16 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[str] = []
+    BACKEND_CORS_ORIGINS: Union[str, List[str]] = []
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
-    def assemble_cors_origins(cls, v: str | List[str]) -> List[str]:
-        if isinstance(v, str):
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str) and v:
             return [i.strip() for i in v.split(",")]
-        return v
+        elif isinstance(v, list):
+            return v
+        return []
 
     # File Upload
     UPLOAD_DIR: str = "/app/uploads"
@@ -41,9 +43,7 @@ class Settings(BaseSettings):
     # External APIs
     FISHBASE_API_URL: str = "https://fishbase.ropensci.org"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(case_sensitive=True)
 
 
 settings = Settings()
