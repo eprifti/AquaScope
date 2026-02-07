@@ -36,6 +36,7 @@ class User(Base):
     photos = relationship("Photo", back_populates="owner", cascade="all, delete-orphan")
     maintenance_reminders = relationship("MaintenanceReminder", back_populates="owner", cascade="all, delete-orphan")
     livestock = relationship("Livestock", back_populates="owner", cascade="all, delete-orphan")
+    equipment = relationship("Equipment", back_populates="owner", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.email}>"

@@ -16,6 +16,7 @@ class MaintenanceReminderBase(BaseModel):
 class MaintenanceReminderCreate(MaintenanceReminderBase):
     """Schema for creating a maintenance reminder"""
     tank_id: UUID
+    equipment_id: Optional[UUID] = None
     next_due: date
 
 
@@ -25,6 +26,7 @@ class MaintenanceReminderUpdate(BaseModel):
     description: Optional[str] = Field(None, max_length=1000)
     reminder_type: Optional[str] = None
     frequency_days: Optional[int] = Field(None, gt=0)
+    equipment_id: Optional[UUID] = None
     is_active: Optional[bool] = None
 
 
@@ -33,6 +35,7 @@ class MaintenanceReminderResponse(MaintenanceReminderBase):
     id: UUID
     tank_id: UUID
     user_id: UUID
+    equipment_id: Optional[UUID]
     last_completed: Optional[date]
     next_due: date
     is_active: bool

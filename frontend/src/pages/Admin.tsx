@@ -95,7 +95,12 @@ export default function Admin() {
       loadData()
     } catch (error: any) {
       console.error('Failed to update user:', error)
-      alert(error.response?.data?.detail || 'Failed to update user')
+      const errorMessage = error.response?.data?.detail
+        ? (typeof error.response.data.detail === 'string'
+          ? error.response.data.detail
+          : JSON.stringify(error.response.data.detail))
+        : error.message || 'Failed to update user'
+      alert(errorMessage)
     }
   }
 

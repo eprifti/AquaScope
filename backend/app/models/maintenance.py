@@ -38,6 +38,7 @@ class MaintenanceReminder(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     tank_id = Column(UUID(as_uuid=True), ForeignKey("tanks.id", ondelete="CASCADE"), nullable=False, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    equipment_id = Column(UUID(as_uuid=True), ForeignKey("equipment.id", ondelete="SET NULL"), nullable=True, index=True)
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
 
@@ -61,6 +62,7 @@ class MaintenanceReminder(Base):
     # Relationships
     tank = relationship("Tank", back_populates="maintenance_reminders")
     owner = relationship("User", back_populates="maintenance_reminders")
+    equipment = relationship("Equipment", back_populates="maintenance_reminders")
 
     def __repr__(self):
         return f"<MaintenanceReminder {self.title} - Due: {self.next_due}>"

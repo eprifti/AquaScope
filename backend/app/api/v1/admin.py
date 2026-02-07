@@ -17,6 +17,7 @@ from app.models.note import Note
 from app.models.photo import Photo
 from app.models.livestock import Livestock
 from app.models.maintenance import MaintenanceReminder
+from app.models.equipment import Equipment
 from app.schemas.user import UserResponse, UserUpdate, SystemStats
 from app.api.deps import get_current_admin_user
 
@@ -162,6 +163,7 @@ def get_system_stats(
     total_notes = db.query(func.count(Note.id)).scalar()
     total_livestock = db.query(func.count(Livestock.id)).scalar()
     total_reminders = db.query(func.count(MaintenanceReminder.id)).scalar()
+    total_equipment = db.query(func.count(Equipment.id)).scalar()
 
     # For InfluxDB parameter count, we'll estimate as it's in a different database
     # In a real implementation, you'd query InfluxDB
@@ -192,6 +194,7 @@ def get_system_stats(
         total_notes=total_notes,
         total_livestock=total_livestock,
         total_reminders=total_reminders,
+        total_equipment=total_equipment,
         database_size_mb=database_size_mb,
         active_users_last_30_days=active_users
     )

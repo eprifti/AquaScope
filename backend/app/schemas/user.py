@@ -133,5 +133,6 @@ class SystemStats(BaseModel):
     total_notes: int
     total_livestock: int
     total_reminders: int
+    total_equipment: int
     database_size_mb: Optional[float] = None
     active_users_last_30_days: int
