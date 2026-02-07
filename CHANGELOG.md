@@ -8,17 +8,108 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Frontend React application with authentication
-- Dashboard with tank overview and quick stats
+- Tank management UI (CRUD operations)
 - Parameter entry form with validation
 - Photo gallery with upload
 - Maintenance calendar view
 - Livestock management UI
+- Notes editor
 - Grafana dashboard templates
 - Email notifications for maintenance reminders
-- Mobile responsive design
 - API rate limiting
 - Database migration automation
+
+## [0.4.0] - 2024-02-07
+
+### Added - Phase 4: Frontend Foundation
+
+#### Authentication System
+- Login page with email/password authentication
+- Registration page with validation
+  - Email format validation
+  - Password strength requirements (min 8 characters)
+  - Password confirmation matching
+- Protected route wrapper component
+- Authentication context with React hooks
+- Persistent authentication state (localStorage)
+- Automatic token management and injection
+- Token expiration handling (auto-logout on 401)
+
+#### Type Safety
+- Complete TypeScript type definitions matching backend schemas
+- User, Tank, Parameter, Note, Photo, Maintenance, Livestock types
+- API response and error types
+- UI state management types
+
+#### API Client
+- Axios instance with environment-aware base URL
+- Type-safe API methods for all 7 modules:
+  - Authentication (login, register, get current user)
+  - Tanks (full CRUD)
+  - Parameters (submit, query, get latest)
+  - Notes (full CRUD)
+  - Photos (upload, list, get file URLs)
+  - Maintenance (reminders with complete action)
+  - Livestock (CRUD with FishBase search)
+- Request interceptor for automatic token injection
+- Response interceptor for global error handling
+- Automatic redirect to login on authentication failure
+
+#### Dashboard
+- Welcome header with personalized greeting
+- Quick statistics cards:
+  - Total tanks count
+  - Overdue maintenance count
+  - Quick action links
+- Tank list with add functionality
+- Overdue maintenance alerts with due dates
+- Loading states for async data
+- Empty states with call-to-action
+
+#### Layout & Navigation
+- Responsive application layout
+- Sidebar navigation with 7 main sections:
+  - Dashboard
+  - Tanks
+  - Parameters
+  - Photos
+  - Notes
+  - Maintenance
+  - Livestock
+- Top navigation bar with:
+  - ReefLab branding
+  - User display name
+  - Logout button
+- Active route highlighting
+- Link to API documentation
+- Placeholder pages for upcoming features
+
+#### Routing
+- Public routes: `/login`, `/register`
+- Protected routes with authentication check
+- Nested routes under main layout
+- Automatic redirect to dashboard when authenticated
+- Loading state during auth verification
+- Catch-all redirect for unknown routes
+
+#### UI/UX
+- Ocean/coral themed color palette from Tailwind config
+- Responsive design (mobile, tablet, desktop)
+- Loading spinners for async operations
+- User-friendly error messages
+- Form validation with inline feedback
+- Hover states and smooth transitions
+- Clean, modern Material-inspired interface
+- Accessible form labels and inputs
+
+### Technical
+- React 18 with TypeScript
+- React Router v6 for navigation
+- Axios for HTTP requests
+- Context API for state management
+- LocalStorage for auth persistence
+- Tailwind CSS for styling
+- Vite for fast development
 
 ## [0.3.0] - 2024-02-07
 
