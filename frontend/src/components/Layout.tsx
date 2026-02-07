@@ -78,6 +78,27 @@ export default function Layout() {
                   </Link>
                 )
               })}
+
+              {/* Admin Link (only for admins) */}
+              {user?.is_admin && (
+                <>
+                  <div className="my-2 border-t border-gray-300" />
+                  <Link
+                    to="/admin"
+                    className={`
+                      flex items-center px-4 py-2 text-sm font-medium rounded-md
+                      ${
+                        isActive('/admin')
+                          ? 'bg-red-50 text-red-700'
+                          : 'text-red-600 hover:bg-red-50'
+                      }
+                    `}
+                  >
+                    <span className="mr-3">⚙️</span>
+                    Admin
+                  </Link>
+                </>
+              )}
             </nav>
 
             {/* API Documentation Link */}

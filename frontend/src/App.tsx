@@ -11,6 +11,7 @@ import Maintenance from './pages/Maintenance'
 import Livestock from './pages/Livestock'
 import Photos from './pages/Photos'
 import Notes from './pages/Notes'
+import Admin from './pages/Admin'
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             <Route path="livestock" element={<Livestock />} />
             <Route path="photos" element={<Photos />} />
             <Route path="notes" element={<Notes />} />
+            <Route path="admin" element={<Admin />} />
           </Route>
 
           {/* Catch all */}

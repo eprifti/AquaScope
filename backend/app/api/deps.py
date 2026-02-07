@@ -137,3 +137,43 @@ async def get_current_active_user(
     # if not current_user.is_active:
     #     raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+
+async def get_current_admin_user(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    """
+    Dependency to ensure user has admin privileges.
+
+    Process:
+    1. Get current authenticated user
+    2. Check if user has is_admin=True
+    3. Raise 403 if not admin
+
+    Args:
+        current_user: User from get_current_user dependency
+
+    Returns:
+        Admin user
+
+    Raises:
+        HTTPException 403: If user is not an administrator
+
+    Usage:
+    ======
+    ```python
+    @router.get("/admin/users")
+    async def list_all_users(
+        admin: User = Depends(get_current_admin_user),
+        db: Session = Depends(get_db)
+    ):
+        # Only admins can access this endpoint
+        return db.query(User).all()
+    ```
+    """
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required"
+        )
+    return current_user

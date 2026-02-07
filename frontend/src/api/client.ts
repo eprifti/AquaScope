@@ -14,6 +14,9 @@ import type {
   LoginCredentials,
   RegisterData,
   User,
+  UserUpdate,
+  SystemStats,
+  UserDataSummary,
   Tank,
   TankCreate,
   TankUpdate,
@@ -402,6 +405,43 @@ export const livestockApi = {
     const response = await apiClient.get<any>(
       `/livestock/fishbase/species/${species_id}`
     )
+    return response.data
+  },
+}
+
+// ============================================================================
+// Admin API
+// ============================================================================
+
+export const adminApi = {
+  listUsers: async (skip = 0, limit = 100): Promise<User[]> => {
+    const response = await apiClient.get<User[]>('/admin/users', {
+      params: { skip, limit },
+    })
+    return response.data
+  },
+
+  getUser: async (userId: string): Promise<User> => {
+    const response = await apiClient.get<User>(`/admin/users/${userId}`)
+    return response.data
+  },
+
+  updateUser: async (userId: string, data: UserUpdate): Promise<User> => {
+    const response = await apiClient.put<User>(`/admin/users/${userId}`, data)
+    return response.data
+  },
+
+  deleteUser: async (userId: string): Promise<void> => {
+    await apiClient.delete(`/admin/users/${userId}`)
+  },
+
+  getSystemStats: async (): Promise<SystemStats> => {
+    const response = await apiClient.get<SystemStats>('/admin/stats')
+    return response.data
+  },
+
+  getUserDataSummary: async (userId: string): Promise<UserDataSummary> => {
+    const response = await apiClient.get<UserDataSummary>(`/admin/users/${userId}/data-summary`)
     return response.data
   },
 }

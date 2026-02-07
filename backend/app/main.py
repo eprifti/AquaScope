@@ -36,7 +36,7 @@ async def health():
 
 
 # API routes
-from app.api.v1 import auth, tanks, parameters, notes, photos, maintenance, livestock
+from app.api.v1 import auth, tanks, parameters, notes, photos, maintenance, livestock, admin
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["authentication"])
 app.include_router(tanks.router, prefix=f"{settings.API_V1_STR}/tanks", tags=["tanks"])
@@ -45,3 +45,4 @@ app.include_router(notes.router, prefix=f"{settings.API_V1_STR}/notes", tags=["n
 app.include_router(photos.router, prefix=f"{settings.API_V1_STR}/photos", tags=["photos"])
 app.include_router(maintenance.router, prefix=f"{settings.API_V1_STR}/maintenance", tags=["maintenance"])
 app.include_router(livestock.router, prefix=f"{settings.API_V1_STR}/livestock", tags=["livestock"])
+app.include_router(admin.router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])

@@ -12,8 +12,38 @@ export interface User {
   id: string
   email: string
   username: string
+  is_admin: boolean
   created_at: string
   updated_at: string
+}
+
+export interface UserUpdate {
+  username?: string
+  is_admin?: boolean
+}
+
+export interface SystemStats {
+  total_users: number
+  total_tanks: number
+  total_parameters: number
+  total_photos: number
+  total_notes: number
+  total_livestock: number
+  total_reminders: number
+  database_size_mb: number | null
+  active_users_last_30_days: number
+}
+
+export interface UserDataSummary {
+  user_id: string
+  email: string
+  username: string
+  tanks: number
+  photos: number
+  notes: number
+  livestock: number
+  reminders: number
+  total_items: number
 }
 
 export interface LoginCredentials {

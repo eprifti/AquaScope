@@ -66,6 +66,7 @@ class UserResponse(UserBase):
     Never includes hashed_password or sensitive data.
     """
     id: UUID
+    is_admin: bool
     created_at: datetime
     updated_at: datetime
 
@@ -106,3 +107,28 @@ class TokenData(BaseModel):
     Contains user email for identifying the authenticated user.
     """
     email: Optional[str] = None
+
+
+class UserUpdate(BaseModel):
+    """
+    Schema for admin user updates.
+
+    All fields optional for partial updates.
+    """
+    username: Optional[str] = Field(None, min_length=3, max_length=50)
+    is_admin: Optional[bool] = None
+
+
+class SystemStats(BaseModel):
+    """
+    System statistics for admin dashboard.
+    """
+    total_users: int
+    total_tanks: int
+    total_parameters: int
+    total_photos: int
+    total_notes: int
+    total_livestock: int
+    total_reminders: int
+    database_size_mb: Optional[float] = None
+    active_users_last_30_days: int
