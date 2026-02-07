@@ -12,6 +12,13 @@ export interface ParameterRange {
   description: string
 }
 
+/**
+ * Round a number to specified decimal places to avoid floating point precision issues
+ */
+export function roundValue(value: number, decimals: number = 2): number {
+  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+}
+
 export const PARAMETER_RANGES: Record<string, ParameterRange> = {
   calcium: {
     name: 'Calcium',
