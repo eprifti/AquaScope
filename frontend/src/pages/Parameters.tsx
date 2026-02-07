@@ -20,6 +20,11 @@ export default function Parameters() {
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d')
   const [showForm, setShowForm] = useState(false)
   const [showTableView, setShowTableView] = useState(false)
+  const [editingReading, setEditingReading] = useState<{
+    paramType: string
+    reading: ParameterReading
+  } | null>(null)
+  const [editValue, setEditValue] = useState<string>('')
 
   useEffect(() => {
     loadTanks()
@@ -204,6 +209,52 @@ export default function Parameters() {
     }
   }
 
+  const handleStartEdit = (paramType: string, reading: ParameterReading) => {
+    setEditingReading({ paramType, reading })
+    setEditValue(reading.value.toString())
+  }
+
+  const handleCancelEdit = () => {
+    setEditingReading(null)
+    setEditValue('')
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingReading || !selectedTank) return
+
+    const newValue = parseFloat(editValue)
+    if (isNaN(newValue)) {
+      alert('Invalid value')
+      return
+    }
+
+    try {
+      // Delete old reading
+      await parametersApi.delete({
+        tank_id: selectedTank,
+        parameter_type: editingReading.paramType,
+        timestamp: new Date(editingReading.reading.timestamp).toISOString(),
+      })
+
+      // Submit new reading with updated value
+      const paramData: any = {
+        tank_id: selectedTank,
+        timestamp: editingReading.reading.timestamp,
+      }
+      paramData[editingReading.paramType] = newValue
+
+      await parametersApi.submit(paramData)
+
+      // Reload data
+      setEditingReading(null)
+      setEditValue('')
+      loadParameters()
+    } catch (error) {
+      console.error('Failed to edit parameter:', error)
+      alert('Failed to edit parameter reading')
+    }
+  }
+
   if (isLoading && tanks.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -346,6 +397,8 @@ export default function Parameters() {
                   )
                   .map(({ paramType, reading }) => {
                     const range = PARAMETER_RANGES[paramType]
+                    const isEditing = editingReading?.paramType === paramType &&
+                                     editingReading?.reading.timestamp === reading.timestamp
                     return (
                       <tr key={`${paramType}-${reading.timestamp}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -355,30 +408,58 @@ export default function Parameters() {
                           {range?.name || paramType}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {paramType === 'salinity' || paramType === 'phosphate'
-                            ? reading.value.toFixed(3)
-                            : reading.value.toFixed(2)}
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              step={paramType === 'salinity' || paramType === 'phosphate' ? '0.001' : '0.01'}
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              className="w-24 px-2 py-1 border border-ocean-300 rounded focus:outline-none focus:ring-2 focus:ring-ocean-500"
+                              autoFocus
+                            />
+                          ) : (
+                            paramType === 'salinity' || paramType === 'phosphate'
+                              ? reading.value.toFixed(3)
+                              : reading.value.toFixed(2)
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {range?.unit || ''}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() =>
-                              alert('Edit functionality coming soon')
-                            }
-                            className="text-ocean-600 hover:text-ocean-900 mr-3"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleDeleteParameter(paramType, reading.timestamp)
-                            }
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Delete
-                          </button>
+                          {isEditing ? (
+                            <>
+                              <button
+                                onClick={handleSaveEdit}
+                                className="text-green-600 hover:text-green-900 mr-3"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={handleCancelEdit}
+                                className="text-gray-600 hover:text-gray-900"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleStartEdit(paramType, reading)}
+                                className="text-ocean-600 hover:text-ocean-900 mr-3"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleDeleteParameter(paramType, reading.timestamp)
+                                }
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     )
