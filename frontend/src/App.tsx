@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 import Parameters from './pages/Parameters'
 import Tanks from './pages/Tanks'
 import Maintenance from './pages/Maintenance'
+import Livestock from './pages/Livestock'
 
 function App() {
   return (
@@ -35,10 +36,11 @@ function App() {
             <Route path="tanks" element={<Tanks />} />
             <Route path="maintenance" element={<Maintenance />} />
 
+            <Route path="livestock" element={<Livestock />} />
+
             {/* Placeholder routes - will be implemented in next phase */}
             <Route path="photos" element={<div className="text-center py-12 text-gray-600">Photos page coming soon...</div>} />
             <Route path="notes" element={<div className="text-center py-12 text-gray-600">Notes page coming soon...</div>} />
-            <Route path="livestock" element={<div className="text-center py-12 text-gray-600">Livestock page coming soon...</div>} />
           </Route>
 
           {/* Catch all */}
