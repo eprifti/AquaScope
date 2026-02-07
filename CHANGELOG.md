@@ -1,0 +1,307 @@
+# Changelog
+
+All notable changes to ReefLab will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Planned
+- Frontend React application with authentication
+- Dashboard with tank overview and quick stats
+- Parameter entry form with validation
+- Photo gallery with upload
+- Maintenance calendar view
+- Livestock management UI
+- Grafana dashboard templates
+- Email notifications for maintenance reminders
+- Mobile responsive design
+- API rate limiting
+- Database migration automation
+
+## [0.3.0] - 2024-02-07
+
+### Added - Phase 3: Complete Backend API
+
+#### Tank Management
+- POST `/api/v1/tanks` - Create new tank
+- GET `/api/v1/tanks` - List all user tanks
+- GET `/api/v1/tanks/{id}` - Get tank details
+- PUT `/api/v1/tanks/{id}` - Update tank information
+- DELETE `/api/v1/tanks/{id}` - Delete tank (cascade delete)
+
+#### Parameter Tracking
+- POST `/api/v1/parameters` - Submit water test results (batch or individual)
+- GET `/api/v1/parameters` - Query parameter history with filters
+- GET `/api/v1/parameters/latest` - Get latest readings for each parameter
+- Support for 8 standard ICP parameters:
+  - Calcium, Magnesium, Alkalinity (KH)
+  - Nitrate, Phosphate
+  - Salinity, Temperature, pH
+- InfluxDB integration with time-series queries
+- Multi-tenant data isolation with user_id tagging
+
+#### Notes System
+- POST `/api/v1/notes` - Create note
+- GET `/api/v1/notes` - List notes with tank filtering
+- GET `/api/v1/notes/{id}` - Get specific note
+- PUT `/api/v1/notes/{id}` - Update note content
+- DELETE `/api/v1/notes/{id}` - Delete note
+- Chronological sorting (newest first)
+- Rich text support (up to 10,000 characters)
+
+#### Photo Management
+- POST `/api/v1/photos` - Upload photo with metadata
+- GET `/api/v1/photos` - List photos with tank filtering
+- GET `/api/v1/photos/{id}` - Get photo metadata
+- GET `/api/v1/photos/{id}/file` - Serve image file
+- PUT `/api/v1/photos/{id}` - Update photo metadata
+- DELETE `/api/v1/photos/{id}` - Delete photo and files
+- Automatic thumbnail generation (300x300)
+- File validation (jpg, jpeg, png, gif)
+- 10MB size limit per photo
+- Organized storage: `uploads/{user_id}/{tank_id}/`
+
+#### Maintenance Reminders
+- POST `/api/v1/maintenance/reminders` - Create reminder
+- GET `/api/v1/maintenance/reminders` - List reminders with filters
+- GET `/api/v1/maintenance/reminders/{id}` - Get reminder details
+- PUT `/api/v1/maintenance/reminders/{id}` - Update reminder
+- POST `/api/v1/maintenance/reminders/{id}/complete` - Mark as complete
+- DELETE `/api/v1/maintenance/reminders/{id}` - Delete reminder
+- Automatic next_due calculation based on frequency
+- Filter by active status, overdue, or specific tank
+- Common reminder types: water_change, pump_cleaning, skimmer_cleaning, etc.
+
+#### Livestock Catalog
+- POST `/api/v1/livestock` - Add livestock to tank
+- GET `/api/v1/livestock` - List livestock with filters
+- GET `/api/v1/livestock/{id}` - Get livestock details
+- PUT `/api/v1/livestock/{id}` - Update livestock information
+- DELETE `/api/v1/livestock/{id}` - Remove livestock
+- GET `/api/v1/livestock/fishbase/search` - Search FishBase API
+- GET `/api/v1/livestock/fishbase/species/{id}` - Get species details
+- Support for fish, coral, and invertebrate types
+- FishBase integration for scientific species data
+
+### Technical
+- Pydantic schemas for all 7 API modules
+- Complete request/response validation
+- Multi-tenant security on all endpoints
+- Automatic OpenAPI documentation at `/docs`
+- File upload with PIL/Pillow image processing
+- SQLAlchemy ORM for database operations
+- Async support for external API calls
+- Proper HTTP status codes and error handling
+
+### Documentation
+- API endpoint documentation in all route files
+- Usage examples in docstrings
+- Error response documentation
+
+## [0.2.0] - 2024-02-07
+
+### Added - Phase 2: Backend Foundation
+
+#### Database Models
+- `User` model with UUID primary key
+  - Email authentication
+  - Bcrypt password hashing
+  - Timestamps for audit trail
+- `Tank` model for multi-tank support
+  - Volume tracking in liters
+  - Setup date for maturity tracking
+  - User relationship with cascade delete
+- `Note` model for observations
+  - Text content with timestamps
+  - Tank and user relationships
+- `Photo` model with file metadata
+  - File path and thumbnail path
+  - Separate taken_at and created_at
+  - Description field
+- `MaintenanceReminder` model
+  - Frequency-based scheduling
+  - Automatic next_due calculation
+  - Reminder type categorization
+- `Livestock` model
+  - Species tracking (scientific and common names)
+  - FishBase integration ready
+  - Type categorization (fish, coral, invertebrate)
+
+#### Authentication System
+- JWT token-based authentication
+  - 30-minute token expiration
+  - OAuth2 password bearer flow
+  - Token signature verification
+- User registration endpoint
+  - Email validation
+  - Password strength requirements (min 8 chars)
+  - Automatic password hashing
+- Login endpoint
+  - Email and password authentication
+  - JWT token generation on success
+- `/auth/me` endpoint for current user info
+- Dependency injection for protected routes
+- Multi-tenant data isolation
+
+#### External Services
+- **InfluxDB Service** (`services/influxdb.py`)
+  - Time-series data storage for parameters
+  - Batch write support for complete water tests
+  - Flexible querying with time ranges
+  - Tags: user_id, tank_id, parameter_type
+  - Grafana-ready data structure
+- **FishBase Service** (`services/fishbase.py`)
+  - Species search functionality
+  - Detailed species information
+  - Common name lookup
+  - Async HTTP client with error handling
+
+#### Database Migrations
+- Alembic configuration (`alembic/env.py`)
+- Automatic model change detection
+- Migration script template
+- Database initialization script
+
+#### Security
+- UUID primary keys (prevents enumeration)
+- Bcrypt password hashing with salt
+- JWT tokens with signature verification
+- CORS middleware configuration
+- SQL injection prevention via ORM
+- Multi-tenant query filtering
+
+### Documentation
+- `ARCHITECTURE.md` - Complete technical documentation
+  - Design decision rationale
+  - Technology choice explanations
+  - Security best practices
+  - Database model design
+  - API architecture patterns
+  - Future enhancement roadmap
+
+## [0.1.0] - 2024-02-07
+
+### Added - Phase 1: Project Infrastructure
+
+#### Project Setup
+- Git repository initialization
+- GitHub repository connection
+- `.gitignore` for Python and Node.js
+- `.env.example` with all configuration variables
+
+#### Docker Infrastructure
+- `docker-compose.yml` with 4 services:
+  - PostgreSQL 15 for relational data
+  - InfluxDB2 for time-series parameters
+  - FastAPI backend with hot-reload
+  - React frontend with Nginx
+- Health checks for all database services
+- Volume mounts for data persistence
+- Network configuration for inter-service communication
+
+#### Backend Skeleton
+- FastAPI application structure
+  - `app/main.py` - Application entry point
+  - `app/database.py` - SQLAlchemy configuration
+  - `app/core/config.py` - Environment settings
+  - `app/core/security.py` - JWT and password utilities
+- Directory structure:
+  - `models/` - Database models
+  - `schemas/` - Pydantic validation
+  - `api/v1/` - API endpoints
+  - `services/` - External integrations
+- CORS middleware configuration
+- Health check endpoints (`/` and `/health`)
+- Python dependencies in `requirements.txt`:
+  - FastAPI, uvicorn
+  - SQLAlchemy, alembic, psycopg2-binary
+  - influxdb-client
+  - python-jose, passlib, bcrypt
+  - Pillow for image processing
+
+#### Frontend Skeleton
+- React 18 with TypeScript
+- Vite for fast development and builds
+- Tailwind CSS with custom ocean/coral color themes
+- Project structure:
+  - `components/` - Reusable components
+  - `pages/` - Page components
+  - `api/` - API client
+  - `hooks/` - Custom React hooks
+  - `types/` - TypeScript definitions
+- Nginx configuration for production
+  - API proxy to backend
+  - Static file serving
+  - Gzip compression
+- Multi-stage Docker build
+  - Build stage with Node.js
+  - Production stage with Nginx
+
+#### Configuration
+- Environment variables for all services
+- PostgreSQL, InfluxDB, JWT configuration
+- File upload settings
+- CORS origins configuration
+- FishBase API URL
+
+#### Documentation
+- `README.md` with:
+  - Feature overview
+  - Technology stack explanation
+  - Quick start guide
+  - Docker setup instructions
+  - Grafana integration guide
+  - API documentation links
+  - Troubleshooting section
+  - Contributing guidelines
+  - Future roadmap
+
+### Technical Details
+- FastAPI 0.104.1
+- React 18.2.0
+- PostgreSQL 15
+- InfluxDB 2.7
+- Python 3.11+
+- Node.js 20+
+
+---
+
+## Release Tags
+
+All releases are tagged in Git and available on GitHub:
+- `v0.1.0` - Project Infrastructure
+- `v0.2.0` - Backend Foundation
+- `v0.3.0` - Complete Backend API
+
+## Versioning Strategy
+
+We follow [Semantic Versioning](https://semver.org/):
+- **MAJOR** version: Breaking API changes
+- **MINOR** version: New features (backward compatible)
+- **PATCH** version: Bug fixes (backward compatible)
+
+## Development Phases
+
+- ✅ **Phase 1** (v0.1.0): Infrastructure setup
+- ✅ **Phase 2** (v0.2.0): Backend foundation
+- ✅ **Phase 3** (v0.3.0): Complete API
+- 🚧 **Phase 4** (v0.4.0): Frontend application (in progress)
+- 📅 **Phase 5** (v0.5.0): Frontend features
+- 📅 **Phase 6** (v0.6.0): Grafana integration
+- 📅 **Phase 7** (v1.0.0): Production release
+
+## Contributing
+
+When contributing, please:
+1. Follow conventional commit format
+2. Update CHANGELOG.md under [Unreleased]
+3. Increment version numbers appropriately
+4. Create release tags for significant features
+
+## Links
+
+- [GitHub Repository](https://github.com/eprifti/reeflab)
+- [API Documentation](http://localhost:8000/docs) (when running)
+- [Architecture Documentation](backend/ARCHITECTURE.md)
