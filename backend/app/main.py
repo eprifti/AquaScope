@@ -35,7 +35,12 @@ async def health():
     return {"status": "healthy"}
 
 
-# API routes will be added here later
-# from app.api.v1 import auth, tanks, parameters, notes, photos, maintenance, livestock
-# app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+# API routes
+from app.api.v1 import auth
+
+app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["authentication"])
+
+# Additional routes will be added as they're implemented:
+# from app.api.v1 import tanks, parameters, notes, photos, maintenance, livestock
 # app.include_router(tanks.router, prefix=f"{settings.API_V1_STR}/tanks", tags=["tanks"])
+# app.include_router(parameters.router, prefix=f"{settings.API_V1_STR}/parameters", tags=["parameters"])
