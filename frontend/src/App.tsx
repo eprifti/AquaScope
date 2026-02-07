@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Parameters from './pages/Parameters'
+import Tanks from './pages/Tanks'
 
 function App() {
   return (
@@ -30,9 +31,9 @@ function App() {
 
             {/* Feature Routes */}
             <Route path="parameters" element={<Parameters />} />
+            <Route path="tanks" element={<Tanks />} />
 
             {/* Placeholder routes - will be implemented in next phase */}
-            <Route path="tanks" element={<div className="text-center py-12 text-gray-600">Tanks page coming soon...</div>} />
             <Route path="photos" element={<div className="text-center py-12 text-gray-600">Photos page coming soon...</div>} />
             <Route path="notes" element={<div className="text-center py-12 text-gray-600">Notes page coming soon...</div>} />
             <Route path="maintenance" element={<div className="text-center py-12 text-gray-600">Maintenance page coming soon...</div>} />
