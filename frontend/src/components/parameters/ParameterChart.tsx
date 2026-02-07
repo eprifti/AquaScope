@@ -94,7 +94,9 @@ export default function ParameterChart({
           <div className={`px-3 py-2 rounded-md border ${getStatusColor(status)}`}>
             <div className="text-xs font-medium">Current</div>
             <div className="text-2xl font-bold">
-              {latestReading.value.toFixed(2)}
+              {parameterType === 'salinity' || parameterType === 'phosphate'
+                ? latestReading.value.toFixed(3)
+                : latestReading.value.toFixed(2)}
               <span className="text-sm ml-1">{range.unit}</span>
             </div>
           </div>
@@ -160,7 +162,11 @@ export default function ParameterChart({
           )}
 
           <XAxis
-            dataKey="date"
+            dataKey="timestamp"
+            domain={['dataMin', 'dataMax']}
+            scale="time"
+            type="number"
+            tickFormatter={(timestamp) => format(new Date(timestamp), 'MMM dd')}
             tick={{ fontSize: 12 }}
             stroke="#9ca3af"
           />
@@ -177,10 +183,14 @@ export default function ParameterChart({
               border: '1px solid #e5e7eb',
               borderRadius: '0.375rem',
             }}
-            formatter={(value: number) => [
-              `${value.toFixed(2)} ${range.unit}`,
-              range.name,
-            ]}
+            labelFormatter={(timestamp: number) => format(new Date(timestamp), 'MMM dd, yyyy HH:mm')}
+            formatter={(value: number) => {
+              const decimals = parameterType === 'salinity' || parameterType === 'phosphate' ? 3 : 2
+              return [
+                `${value.toFixed(decimals)} ${range.unit}`,
+                range.name,
+              ]
+            }}
           />
 
           <Legend />

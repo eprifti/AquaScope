@@ -231,3 +231,69 @@ async def get_latest_parameters(
             }
 
     return latest
+
+
+@router.delete("/")
+async def delete_parameter(
+    tank_id: str,
+    parameter_type: str,
+    timestamp: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a specific parameter reading from InfluxDB.
+
+    Query Parameters:
+    - tank_id: Tank UUID
+    - parameter_type: Parameter type (calcium, magnesium, etc.)
+    - timestamp: ISO format timestamp of the reading to delete
+
+    Example:
+    ```
+    DELETE /parameters?tank_id=abc-123&parameter_type=calcium&timestamp=2025-03-06T10:30:00Z
+    ```
+
+    Returns confirmation of deletion.
+    """
+    # Verify tank ownership
+    tank = db.query(Tank).filter(
+        Tank.id == tank_id,
+        Tank.user_id == current_user.id
+    ).first()
+
+    if not tank:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tank not found or access denied"
+        )
+
+    # Parse timestamp
+    try:
+        ts = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid timestamp format. Use ISO format (e.g., 2025-03-06T10:30:00Z)"
+        )
+
+    # Delete from InfluxDB
+    try:
+        influxdb_service.delete_parameter(
+            user_id=str(current_user.id),
+            tank_id=str(tank_id),
+            parameter_type=parameter_type,
+            timestamp=ts
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete parameter: {str(e)}"
+        )
+
+    return {
+        "message": "Parameter deleted successfully",
+        "tank_id": tank_id,
+        "parameter_type": parameter_type,
+        "timestamp": timestamp
+    }

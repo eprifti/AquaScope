@@ -43,7 +43,7 @@ Users can create dashboards querying:
 - Set alerts for out-of-range values
 """
 from typing import List, Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -235,6 +235,56 @@ class InfluxDBService:
             return records
         except Exception as e:
             print(f"Error querying InfluxDB: {e}")
+            raise
+
+    def delete_parameter(
+        self,
+        user_id: str,
+        tank_id: str,
+        parameter_type: str,
+        timestamp: datetime
+    ) -> bool:
+        """
+        Delete a specific parameter reading from InfluxDB.
+
+        Args:
+            user_id: UUID of the user
+            tank_id: UUID of the tank
+            parameter_type: Type of parameter to delete
+            timestamp: Exact timestamp of the reading to delete
+
+        Returns:
+            True if delete successful
+
+        Example:
+            >>> service.delete_parameter(
+            ...     user_id="abc-123",
+            ...     tank_id="def-456",
+            ...     parameter_type="calcium",
+            ...     timestamp=datetime(2025, 3, 6, 10, 30)
+            ... )
+        """
+        delete_api = self.client.delete_api()
+
+        # Convert timestamp to RFC3339 format
+        start_time = timestamp.isoformat() + "Z"
+        # Add 1 second to create a narrow time range for deletion
+        stop_time = (timestamp.replace(microsecond=0) + timedelta(seconds=1)).isoformat() + "Z"
+
+        # Build predicate to target specific data point
+        predicate = f'_measurement="reef_parameters" AND user_id="{user_id}" AND tank_id="{tank_id}" AND parameter_type="{parameter_type}"'
+
+        try:
+            delete_api.delete(
+                start=start_time,
+                stop=stop_time,
+                predicate=predicate,
+                bucket=self.bucket,
+                org=settings.INFLUXDB_ORG
+            )
+            return True
+        except Exception as e:
+            print(f"Error deleting from InfluxDB: {e}")
             raise
 
     def close(self):

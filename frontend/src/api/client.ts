@@ -192,6 +192,14 @@ export const parametersApi = {
     )
     return response.data
   },
+
+  delete: async (params: {
+    tank_id: string
+    parameter_type: string
+    timestamp: string
+  }): Promise<void> => {
+    await apiClient.delete('/parameters', { params })
+  },
 }
 
 // ============================================================================

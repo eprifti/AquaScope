@@ -16,18 +16,18 @@ export const PARAMETER_RANGES: Record<string, ParameterRange> = {
   calcium: {
     name: 'Calcium',
     unit: 'ppm',
-    min: 380,
+    min: 400,
     max: 450,
-    ideal: 420,
+    ideal: 430,
     color: '#3b82f6', // blue
-    description: 'Essential for coral skeleton growth',
+    description: 'Essential for SPS coral skeleton growth',
   },
   magnesium: {
     name: 'Magnesium',
     unit: 'ppm',
     min: 1250,
-    max: 1350,
-    ideal: 1300,
+    max: 1450,
+    ideal: 1350,
     color: '#8b5cf6', // purple
     description: 'Maintains alkalinity and calcium levels',
   },
@@ -45,27 +45,27 @@ export const PARAMETER_RANGES: Record<string, ParameterRange> = {
     unit: 'ppm',
     min: 0,
     max: 10,
-    ideal: 5,
+    ideal: 3,
     color: '#f59e0b', // amber
-    description: 'Waste product, low levels preferred',
+    description: 'Keep low for SPS corals (< 5 ppm)',
   },
   phosphate: {
     name: 'Phosphate (PO₄)',
     unit: 'ppm',
-    min: 0.03,
-    max: 0.1,
-    ideal: 0.05,
+    min: 0.01,
+    max: 0.08,
+    ideal: 0.03,
     color: '#ef4444', // red
-    description: 'Nutrient for algae, keep low',
+    description: 'Keep very low for SPS corals (< 0.05 ppm)',
   },
   salinity: {
     name: 'Salinity',
-    unit: 'ppt',
-    min: 33,
-    max: 36,
-    ideal: 35,
+    unit: 'SG',
+    min: 1.024,
+    max: 1.027,
+    ideal: 1.026,
     color: '#06b6d4', // cyan
-    description: 'Salt concentration',
+    description: 'Specific gravity (density)',
   },
   temperature: {
     name: 'Temperature',
@@ -74,16 +74,34 @@ export const PARAMETER_RANGES: Record<string, ParameterRange> = {
     max: 27,
     ideal: 25.5,
     color: '#f97316', // orange
-    description: 'Optimal temperature range',
+    description: 'Stable temperature critical for SPS',
   },
   ph: {
     name: 'pH',
     unit: '',
-    min: 7.8,
+    min: 8.0,
     max: 8.4,
-    ideal: 8.1,
+    ideal: 8.2,
     color: '#ec4899', // pink
-    description: 'Acidity/alkalinity balance',
+    description: 'Stable pH critical for SPS growth',
+  },
+  no3_po4_ratio: {
+    name: 'NO₃/PO₄ Ratio',
+    unit: '',
+    min: 10,
+    max: 150,
+    ideal: 100,
+    color: '#6366f1', // indigo
+    description: 'Redfield ratio for nutrient balance',
+  },
+  mg_ca_ratio: {
+    name: 'Mg/Ca Ratio',
+    unit: '',
+    min: 3.0,
+    max: 3.5,
+    ideal: 3.2,
+    color: '#a855f7', // violet
+    description: 'Magnesium to calcium ratio',
   },
 }
 
@@ -96,6 +114,11 @@ export const PARAMETER_ORDER = [
   'magnesium',
   'nitrate',
   'phosphate',
+]
+
+export const RATIO_ORDER = [
+  'no3_po4_ratio',
+  'mg_ca_ratio',
 ]
 
 /**

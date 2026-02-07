@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react'
 import { tanksApi, parametersApi } from '../api/client'
-import { PARAMETER_ORDER } from '../config/parameterRanges'
+import { PARAMETER_ORDER, PARAMETER_RANGES, RATIO_ORDER } from '../config/parameterRanges'
 import ParameterChart from '../components/parameters/ParameterChart'
 import ParameterForm from '../components/parameters/ParameterForm'
 import type { Tank, ParameterReading } from '../types'
@@ -15,9 +15,11 @@ export default function Parameters() {
   const [tanks, setTanks] = useState<Tank[]>([])
   const [selectedTank, setSelectedTank] = useState<string | null>(null)
   const [parameters, setParameters] = useState<Record<string, ParameterReading[]>>({})
+  const [ratios, setRatios] = useState<Record<string, ParameterReading[]>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d')
   const [showForm, setShowForm] = useState(false)
+  const [showTableView, setShowTableView] = useState(false)
 
   useEffect(() => {
     loadTanks()
@@ -51,12 +53,22 @@ export default function Parameters() {
       // Calculate date range
       let startDate: string | undefined
       const now = new Date()
-      if (dateRange !== 'all') {
+      if (dateRange === 'all') {
+        // Query from very far back to get all historical data
+        startDate = '2020-01-01T00:00:00Z'
+      } else {
         const days = parseInt(dateRange)
         const start = new Date(now)
         start.setDate(start.getDate() - days)
         startDate = start.toISOString()
       }
+
+      console.log('[Parameters] Loading data with:', {
+        tankId: selectedTank,
+        dateRange,
+        startDate,
+        currentTime: now.toISOString()
+      })
 
       // Load parameters for each type
       const parameterData: Record<string, ParameterReading[]> = {}
@@ -70,6 +82,7 @@ export default function Parameters() {
               start: startDate,
             })
             parameterData[paramType] = data
+            console.log(`[Parameters] Loaded ${paramType}:`, data.length, 'readings')
           } catch (error) {
             console.error(`Failed to load ${paramType}:`, error)
             parameterData[paramType] = []
@@ -77,12 +90,75 @@ export default function Parameters() {
         })
       )
 
+      const totalReadings = Object.values(parameterData).flat().length
+      console.log('[Parameters] Total readings loaded:', totalReadings)
       setParameters(parameterData)
+
+      // Calculate ratios
+      calculateRatios(parameterData)
     } catch (error) {
       console.error('Failed to load parameters:', error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const calculateRatios = (paramData: Record<string, ParameterReading[]>) => {
+    const ratioData: Record<string, ParameterReading[]> = {}
+
+    // Calculate NO3/PO4 ratio
+    const nitrateData = paramData['nitrate'] || []
+    const phosphateData = paramData['phosphate'] || []
+
+    if (nitrateData.length > 0 && phosphateData.length > 0) {
+      const no3po4Ratios: ParameterReading[] = []
+
+      nitrateData.forEach(no3Reading => {
+        const matchingPo4 = phosphateData.find(po4 =>
+          Math.abs(new Date(po4.timestamp).getTime() - new Date(no3Reading.timestamp).getTime()) < 3600000 // Within 1 hour
+        )
+
+        if (matchingPo4 && matchingPo4.value > 0) {
+          no3po4Ratios.push({
+            time: no3Reading.time,
+            timestamp: no3Reading.timestamp,
+            tank_id: no3Reading.tank_id,
+            parameter_type: 'no3_po4_ratio',
+            value: no3Reading.value / matchingPo4.value,
+          })
+        }
+      })
+
+      ratioData['no3_po4_ratio'] = no3po4Ratios
+    }
+
+    // Calculate Mg/Ca ratio
+    const magnesiumData = paramData['magnesium'] || []
+    const calciumData = paramData['calcium'] || []
+
+    if (magnesiumData.length > 0 && calciumData.length > 0) {
+      const mgCaRatios: ParameterReading[] = []
+
+      magnesiumData.forEach(mgReading => {
+        const matchingCa = calciumData.find(ca =>
+          Math.abs(new Date(ca.timestamp).getTime() - new Date(mgReading.timestamp).getTime()) < 3600000 // Within 1 hour
+        )
+
+        if (matchingCa && matchingCa.value > 0) {
+          mgCaRatios.push({
+            time: mgReading.time,
+            timestamp: mgReading.timestamp,
+            tank_id: mgReading.tank_id,
+            parameter_type: 'mg_ca_ratio',
+            value: mgReading.value / matchingCa.value,
+          })
+        }
+      })
+
+      ratioData['mg_ca_ratio'] = mgCaRatios
+    }
+
+    setRatios(ratioData)
   }
 
   const handleSubmitParameters = async (data: any) => {
@@ -101,6 +177,31 @@ export default function Parameters() {
   const handleFormSuccess = () => {
     setShowForm(false)
     loadParameters()
+  }
+
+  const handleDeleteParameter = async (
+    paramType: string,
+    timestamp: string
+  ) => {
+    if (!selectedTank) return
+
+    if (!confirm('Are you sure you want to delete this reading?')) {
+      return
+    }
+
+    try {
+      await parametersApi.delete({
+        tank_id: selectedTank,
+        parameter_type: paramType,
+        timestamp: new Date(timestamp).toISOString(),
+      })
+
+      // Reload data after successful deletion
+      loadParameters()
+    } catch (error) {
+      console.error('Failed to delete parameter:', error)
+      alert('Failed to delete parameter reading')
+    }
   }
 
   if (isLoading && tanks.length === 0) {
@@ -141,12 +242,20 @@ export default function Parameters() {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700"
-        >
-          {showForm ? 'Hide Form' : 'Log Parameters'}
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowTableView(!showTableView)}
+            className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+          >
+            {showTableView ? 'Hide Table' : 'Show Table'}
+          </button>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700"
+          >
+            {showForm ? 'Hide Form' : 'Log Parameters'}
+          </button>
+        </div>
       </div>
 
       {/* Tank Selector */}
@@ -189,6 +298,102 @@ export default function Parameters() {
           onSubmit={handleSubmitParameters}
           onSuccess={handleFormSuccess}
         />
+      )}
+
+      {/* Data Table View (Debug) */}
+      {showTableView && selectedTank && !isLoading && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Raw Data Table (Debug View)
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Total entries: {Object.values(parameters).flat().length}
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Timestamp
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Parameter
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Value
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Unit
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {Object.entries(parameters)
+                  .flatMap(([paramType, readings]) =>
+                    readings.map((reading) => ({
+                      paramType,
+                      reading,
+                    }))
+                  )
+                  .sort((a, b) =>
+                    new Date(b.reading.timestamp).getTime() -
+                    new Date(a.reading.timestamp).getTime()
+                  )
+                  .map(({ paramType, reading }) => {
+                    const range = PARAMETER_RANGES[paramType]
+                    return (
+                      <tr key={`${paramType}-${reading.timestamp}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {new Date(reading.timestamp).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {range?.name || paramType}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {paramType === 'salinity' || paramType === 'phosphate'
+                            ? reading.value.toFixed(3)
+                            : reading.value.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {range?.unit || ''}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() =>
+                              alert('Edit functionality coming soon')
+                            }
+                            className="text-ocean-600 hover:text-ocean-900 mr-3"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDeleteParameter(paramType, reading.timestamp)
+                            }
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                {Object.values(parameters).flat().length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                      No data available in the selected time range
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       {/* Date Range Selector */}
@@ -236,6 +441,22 @@ export default function Parameters() {
               height={300}
             />
           ))}
+
+          {/* Ratio Charts */}
+          {RATIO_ORDER.map((ratioType) => {
+            const ratioData = ratios[ratioType] || []
+            if (ratioData.length > 0) {
+              return (
+                <ParameterChart
+                  key={ratioType}
+                  parameterType={ratioType}
+                  data={ratioData}
+                  height={300}
+                />
+              )
+            }
+            return null
+          })}
         </div>
       )}
 

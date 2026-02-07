@@ -139,7 +139,7 @@ export default function ParameterForm({
                   <input
                     id={paramType}
                     type="number"
-                    step="0.01"
+                    step={paramType === 'salinity' || paramType === 'phosphate' ? '0.001' : '0.01'}
                     placeholder={`${range.min} - ${range.max}`}
                     {...register(paramType as keyof ParameterFormData, {
                       valueAsNumber: true,

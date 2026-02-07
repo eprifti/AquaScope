@@ -115,17 +115,26 @@ def import_parameters(
         'timestamp': 'date',
         'calcium': 'calcium',
         'ca': 'calcium',
+        'cal': 'calcium',
         'magnesium': 'magnesium',
         'mg': 'magnesium',
+        'mag': 'magnesium',
         'alkalinity': 'alkalinity_kh',
         'alk': 'alkalinity_kh',
         'kh': 'alkalinity_kh',
         'nitrate': 'nitrate',
         'no3': 'nitrate',
+        'nitrates': 'nitrate',
+        'nitra': 'nitrate',
         'phosphate': 'phosphate',
         'po4': 'phosphate',
+        'phos': 'phosphate',
+        'phosf': 'phosphate',
         'salinity': 'salinity',
         'sal': 'salinity',
+        'density': 'salinity',
+        'sg': 'salinity',
+        'dens': 'salinity',
         'temperature': 'temperature',
         'temp': 'temperature',
         'ph': 'ph',
@@ -136,14 +145,20 @@ def import_parameters(
 
     # Find date column
     date_col = None
+    time_col = None
     for col in df.columns:
         if col in ['date', 'datetime', 'timestamp']:
             date_col = col
-            break
+        if col == 'time':
+            time_col = col
 
     if date_col is None:
         print("✗ No date column found. Expected column named 'date', 'datetime', or 'timestamp'")
         return
+
+    # Check if there's a separate time column
+    if time_col:
+        print(f"✓ Found separate Date and Time columns - will combine them")
 
     print(f"\nImporting parameters to InfluxDB...")
     imported_count = 0
@@ -158,9 +173,32 @@ def import_parameters(
                 error_count += 1
                 continue
 
+            # If there's a separate time column, combine it
+            if time_col and not pd.isna(row[time_col]):
+                time_value = row[time_col]
+                # Handle time as string or datetime
+                if isinstance(time_value, str):
+                    try:
+                        time_parts = time_value.split(':')
+                        if len(time_parts) >= 2:
+                            timestamp = timestamp.replace(
+                                hour=int(time_parts[0]),
+                                minute=int(time_parts[1]),
+                                second=int(time_parts[2]) if len(time_parts) > 2 else 0
+                            )
+                    except (ValueError, IndexError):
+                        pass  # Keep just the date if time parsing fails
+                elif hasattr(time_value, 'hour'):
+                    # It's already a time object
+                    timestamp = timestamp.replace(
+                        hour=time_value.hour,
+                        minute=time_value.minute,
+                        second=time_value.second if hasattr(time_value, 'second') else 0
+                    )
+
             # Import each parameter
             for col in df.columns:
-                if col == date_col:
+                if col == date_col or col == time_col:
                     continue
 
                 # Get parameter type
@@ -177,6 +215,12 @@ def import_parameters(
                     value = float(value)
                 except (ValueError, TypeError):
                     continue
+
+                # Convert salinity to specific gravity if needed
+                # If value is > 10, it's in wrong format (1024 instead of 1.024)
+                if param_type == 'salinity' and value > 10:
+                    # Values like 1024, 1025 should be divided by 1000
+                    value = value / 1000
 
                 # Write to InfluxDB
                 influxdb.write_parameter(
