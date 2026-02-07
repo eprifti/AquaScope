@@ -1,29 +1,45 @@
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './hooks/useAuth'
+import ProtectedRoute from './components/auth/ProtectedRoute'
+import Layout from './components/Layout'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-b from-ocean-50 to-ocean-100">
-        <div className="container mx-auto px-4 py-8">
-          <header className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-ocean-900 mb-2">
-              ReefLab
-            </h1>
-            <p className="text-ocean-700">
-              Reef Aquarium Management System
-            </p>
-          </header>
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-semibold text-ocean-800 mb-4">
-              Welcome to ReefLab
-            </h2>
-            <p className="text-gray-600">
-              Your comprehensive solution for tracking reef parameters, maintenance schedules, and livestock.
-            </p>
-          </div>
-        </div>
-      </div>
+          {/* Protected Routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+
+            {/* Placeholder routes - will be implemented in next phase */}
+            <Route path="tanks" element={<div className="text-center py-12 text-gray-600">Tanks page coming soon...</div>} />
+            <Route path="parameters" element={<div className="text-center py-12 text-gray-600">Parameters page coming soon...</div>} />
+            <Route path="photos" element={<div className="text-center py-12 text-gray-600">Photos page coming soon...</div>} />
+            <Route path="notes" element={<div className="text-center py-12 text-gray-600">Notes page coming soon...</div>} />
+            <Route path="maintenance" element={<div className="text-center py-12 text-gray-600">Maintenance page coming soon...</div>} />
+            <Route path="livestock" element={<div className="text-center py-12 text-gray-600">Livestock page coming soon...</div>} />
+          </Route>
+
+          {/* Catch all */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   )
 }
