@@ -1,0 +1,19 @@
+{
+  "title": "Maintenance",
+  "addReminder": "Add Reminder",
+  "reminders": "Reminders",
+  "overdue": "Overdue",
+  "dueSoon": "Due Soon",
+  "upcoming": "Upcoming",
+  "fields": {
+    "title": "Title",
+    "frequency": "Frequency",
+    "nextDue": "Next Due",
+    "lastCompleted": "Last Completed",
+    "isActive": "Active"
+  },
+  "frequency": {
+    "days_one": "Every {{count}} day",
+    "days_other": "Every {{count}} days"
+  }
+}

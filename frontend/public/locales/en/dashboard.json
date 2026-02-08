@@ -1,0 +1,16 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome back, {{name}}!",
+  "quickStats": "Quick Statistics",
+  "recentActivity": "Recent Activity",
+  "overdueMaintenance": "Overdue Maintenance",
+  "stats": {
+    "totalTanks": "Total Tanks",
+    "overdueTasks": "Overdue Tasks",
+    "recentPhotos": "Recent Photos",
+    "livestockCount": "Total Livestock"
+  },
+  "noMaintenance": "No overdue maintenance",
+  "noTanks": "No tanks yet",
+  "getStarted": "Get started by creating your first tank"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Tableau de bord",
+  "welcome": "Bon retour, {{name}}!",
+  "quickStats": "Statistiques rapides",
+  "recentActivity": "Activité récente",
+  "overdueMaintenance": "Maintenance en retard",
+  "stats": {
+    "totalTanks": "Total d'aquariums",
+    "overdueTasks": "Tâches en retard",
+    "recentPhotos": "Photos récentes",
+    "livestockCount": "Total d'animaux"
+  },
+  "noMaintenance": "Aucune maintenance en retard",
+  "noTanks": "Aucun aquarium",
+  "getStarted": "Commencez par créer votre premier aquarium"
+}

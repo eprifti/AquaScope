@@ -1,0 +1,19 @@
+{
+  "title": "Mantenimiento",
+  "addReminder": "Agregar recordatorio",
+  "reminders": "Recordatorios",
+  "overdue": "Vencido",
+  "dueSoon": "Próximo",
+  "upcoming": "Próximamente",
+  "fields": {
+    "title": "Título",
+    "frequency": "Frecuencia",
+    "nextDue": "Próximo vencimiento",
+    "lastCompleted": "Última realización",
+    "isActive": "Activo"
+  },
+  "frequency": {
+    "days_one": "Cada {{count}} día",
+    "days_other": "Cada {{count}} días"
+  }
+}

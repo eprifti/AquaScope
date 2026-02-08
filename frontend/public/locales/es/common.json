@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "ReefLab",
+    "tagline": "Sistema de Gestión de Acuario de Arrecife"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "tanks": "Acuarios",
+    "parameters": "Parámetros",
+    "photos": "Fotos",
+    "notes": "Notas",
+    "maintenance": "Mantenimiento",
+    "livestock": "Animales",
+    "equipment": "Equipo",
+    "icpTests": "Pruebas ICP"
+  },
+  "actions": {
+    "add": "Agregar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "upload": "Subir",
+    "download": "Descargar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "logout": "Cerrar sesión",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "refresh": "Actualizar"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!",
+    "noData": "No hay datos disponibles",
+    "confirm": "¿Estás seguro?",
+    "yes": "Sí",
+    "no": "No",
+    "total": "Total",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "date": "Fecha",
+    "description": "Descripción",
+    "name": "Nombre",
+    "status": "Estado",
+    "type": "Tipo"
+  },
+  "language": {
+    "select": "Seleccionar idioma",
+    "current": "Idioma actual"
+  },
+  "footer": {
+    "createdBy": "Creado por",
+    "withLove": "con",
+    "forCommunity": "para la comunidad de acuaristas de arrecife",
+    "builtWith": "Construido con",
+    "copyright": "Todos los derechos reservados"
+  }
+}

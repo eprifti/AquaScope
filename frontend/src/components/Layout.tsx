@@ -6,24 +6,27 @@
  */
 
 import { Link, useLocation, Outlet } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import Footer from './Footer'
 import VersionBanner from './VersionBanner'
+import LanguageSelector from './LanguageSelector'
 
 export default function Layout() {
   const location = useLocation()
   const { user, logout } = useAuth()
+  const { t } = useTranslation('common')
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
-    { name: 'Tanks', href: '/tanks', icon: '🐠' },
-    { name: 'Parameters', href: '/parameters', icon: '📊' },
-    { name: 'ICP Tests', href: '/icp-tests', icon: '🔬' },
-    { name: 'Photos', href: '/photos', icon: '📷' },
-    { name: 'Notes', href: '/notes', icon: '📝' },
-    { name: 'Maintenance', href: '/maintenance', icon: '🔧' },
-    { name: 'Livestock', href: '/livestock', icon: '🐟' },
-    { name: 'Equipment', href: '/equipment', icon: '⚙️' },
+    { name: t('navigation.dashboard'), href: '/dashboard', icon: '🏠' },
+    { name: t('navigation.tanks'), href: '/tanks', icon: '🐠' },
+    { name: t('navigation.parameters'), href: '/parameters', icon: '📊' },
+    { name: t('navigation.icpTests'), href: '/icp-tests', icon: '🔬' },
+    { name: t('navigation.photos'), href: '/photos', icon: '📷' },
+    { name: t('navigation.notes'), href: '/notes', icon: '📝' },
+    { name: t('navigation.maintenance'), href: '/maintenance', icon: '🔧' },
+    { name: t('navigation.livestock'), href: '/livestock', icon: '🐟' },
+    { name: t('navigation.equipment'), href: '/equipment', icon: '⚙️' },
   ]
 
   const isActive = (path: string) => location.pathname.startsWith(path)
@@ -43,6 +46,7 @@ export default function Layout() {
             </div>
 
             <div className="flex items-center space-x-4">
+              <LanguageSelector />
               <span className="text-sm text-gray-700">
                 {user?.username}
               </span>
@@ -50,7 +54,7 @@ export default function Layout() {
                 onClick={logout}
                 className="text-sm text-gray-600 hover:text-gray-900"
               >
-                Logout
+                {t('actions.logout')}
               </button>
             </div>
           </div>

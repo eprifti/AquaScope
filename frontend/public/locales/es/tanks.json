@@ -1,0 +1,66 @@
+{
+  "title": "Acuarios",
+  "addTank": "Agregar acuario",
+  "editTank": "Editar acuario",
+  "deleteTank": "Eliminar acuario",
+  "tankDetails": "Detalles del acuario",
+  "quickActions": "Acciones rápidas",
+  "statistics": "Estadísticas",
+  "fields": {
+    "name": "Nombre del acuario",
+    "description": "Descripción",
+    "displayVolume": "Volumen de visualización",
+    "sumpVolume": "Volumen de sumidero",
+    "totalVolume": "Volumen total",
+    "setupDate": "Fecha de instalación",
+    "image": "Imagen del acuario",
+    "liters": "L"
+  },
+  "stats": {
+    "daysRunning_one": "{{count}} día funcionando",
+    "daysRunning_other": "{{count}} días funcionando",
+    "equipmentCount": "Equipo",
+    "livestockCount": "Animales",
+    "photoCount": "Fotos",
+    "noteCount": "Notas",
+    "maintenanceCount": "Mantenimiento",
+    "icpTestCount": "Pruebas ICP",
+    "eventCount": "Eventos"
+  },
+  "tabs": {
+    "overview": "Resumen",
+    "events": "Eventos",
+    "equipment": "Equipo",
+    "livestock": "Animales",
+    "photos": "Fotos",
+    "notes": "Notas",
+    "icpTests": "Pruebas ICP",
+    "maintenance": "Mantenimiento"
+  },
+  "actions": {
+    "logParameters": "Registrar parámetros",
+    "uploadPhoto": "Subir foto",
+    "addEvent": "Agregar evento",
+    "manageEquipment": "Gestionar equipo",
+    "manageLivestock": "Gestionar animales",
+    "changeImage": "Cambiar imagen"
+  },
+  "emptyState": {
+    "noTanks": "Sin acuarios",
+    "noTanksDescription": "Crea tu primer acuario para comenzar",
+    "noEvents": "Sin eventos",
+    "noEquipment": "Sin equipo agregado",
+    "noLivestock": "Sin animales agregados",
+    "noPhotos": "Sin fotos",
+    "noNotes": "Sin notas",
+    "noIcpTests": "Sin pruebas ICP",
+    "noMaintenance": "Sin recordatorios de mantenimiento"
+  },
+  "imageUpload": {
+    "title": "Subir imagen del acuario",
+    "dragDrop": "Haz clic para subir o arrastra y suelta",
+    "fileTypes": "PNG, JPG, GIF hasta 10 MB",
+    "uploading": "Subiendo...",
+    "changeImage": "Cambiar imagen"
+  }
+}

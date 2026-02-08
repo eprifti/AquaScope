@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "ReefLab",
+    "tagline": "Système de Gestion d'Aquarium Récifal"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "tanks": "Aquariums",
+    "parameters": "Paramètres",
+    "photos": "Photos",
+    "notes": "Notes",
+    "maintenance": "Maintenance",
+    "livestock": "Animaux",
+    "equipment": "Équipement",
+    "icpTests": "Tests ICP"
+  },
+  "actions": {
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "upload": "Télécharger",
+    "download": "Télécharger",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "logout": "Déconnexion",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "refresh": "Actualiser"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès!",
+    "noData": "Aucune donnée disponible",
+    "confirm": "Êtes-vous sûr?",
+    "yes": "Oui",
+    "no": "Non",
+    "total": "Total",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "date": "Date",
+    "description": "Description",
+    "name": "Nom",
+    "status": "Statut",
+    "type": "Type"
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "current": "Langue actuelle"
+  },
+  "footer": {
+    "createdBy": "Créé par",
+    "withLove": "avec",
+    "forCommunity": "pour la communauté des récifalistes",
+    "builtWith": "Développé avec",
+    "copyright": "Tous droits réservés"
+  }
+}

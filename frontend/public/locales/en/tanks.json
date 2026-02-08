@@ -1,0 +1,66 @@
+{
+  "title": "Tanks",
+  "addTank": "Add Tank",
+  "editTank": "Edit Tank",
+  "deleteTank": "Delete Tank",
+  "tankDetails": "Tank Details",
+  "quickActions": "Quick Actions",
+  "statistics": "Statistics",
+  "fields": {
+    "name": "Tank Name",
+    "description": "Description",
+    "displayVolume": "Display Volume",
+    "sumpVolume": "Sump Volume",
+    "totalVolume": "Total Volume",
+    "setupDate": "Setup Date",
+    "image": "Tank Image",
+    "liters": "L"
+  },
+  "stats": {
+    "daysRunning_one": "{{count}} day running",
+    "daysRunning_other": "{{count}} days running",
+    "equipmentCount": "Equipment",
+    "livestockCount": "Livestock",
+    "photoCount": "Photos",
+    "noteCount": "Notes",
+    "maintenanceCount": "Maintenance",
+    "icpTestCount": "ICP Tests",
+    "eventCount": "Events"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "events": "Events",
+    "equipment": "Equipment",
+    "livestock": "Livestock",
+    "photos": "Photos",
+    "notes": "Notes",
+    "icpTests": "ICP Tests",
+    "maintenance": "Maintenance"
+  },
+  "actions": {
+    "logParameters": "Log Parameters",
+    "uploadPhoto": "Upload Photo",
+    "addEvent": "Add Event",
+    "manageEquipment": "Manage Equipment",
+    "manageLivestock": "Manage Livestock",
+    "changeImage": "Change Image"
+  },
+  "emptyState": {
+    "noTanks": "No tanks yet",
+    "noTanksDescription": "Create your first tank to get started",
+    "noEvents": "No events yet",
+    "noEquipment": "No equipment added yet",
+    "noLivestock": "No livestock added yet",
+    "noPhotos": "No photos yet",
+    "noNotes": "No notes yet",
+    "noIcpTests": "No ICP tests yet",
+    "noMaintenance": "No maintenance reminders yet"
+  },
+  "imageUpload": {
+    "title": "Upload Tank Image",
+    "dragDrop": "Click to upload or drag and drop",
+    "fileTypes": "PNG, JPG, GIF up to 10MB",
+    "uploading": "Uploading...",
+    "changeImage": "Change image"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Panel",
+  "welcome": "¡Bienvenido de nuevo, {{name}}!",
+  "quickStats": "Estadísticas rápidas",
+  "recentActivity": "Actividad reciente",
+  "overdueMaintenance": "Mantenimiento vencido",
+  "stats": {
+    "totalTanks": "Total de acuarios",
+    "overdueTasks": "Tareas vencidas",
+    "recentPhotos": "Fotos recientes",
+    "livestockCount": "Total de animales"
+  },
+  "noMaintenance": "Sin mantenimiento vencido",
+  "noTanks": "Sin acuarios",
+  "getStarted": "Comienza creando tu primer acuario"
+}

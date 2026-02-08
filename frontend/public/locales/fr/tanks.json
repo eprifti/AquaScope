@@ -1,0 +1,66 @@
+{
+  "title": "Aquariums",
+  "addTank": "Ajouter un aquarium",
+  "editTank": "Modifier l'aquarium",
+  "deleteTank": "Supprimer l'aquarium",
+  "tankDetails": "Détails de l'aquarium",
+  "quickActions": "Actions rapides",
+  "statistics": "Statistiques",
+  "fields": {
+    "name": "Nom de l'aquarium",
+    "description": "Description",
+    "displayVolume": "Volume d'affichage",
+    "sumpVolume": "Volume de décantation",
+    "totalVolume": "Volume total",
+    "setupDate": "Date d'installation",
+    "image": "Image de l'aquarium",
+    "liters": "L"
+  },
+  "stats": {
+    "daysRunning_one": "{{count}} jour de fonctionnement",
+    "daysRunning_other": "{{count}} jours de fonctionnement",
+    "equipmentCount": "Équipement",
+    "livestockCount": "Animaux",
+    "photoCount": "Photos",
+    "noteCount": "Notes",
+    "maintenanceCount": "Maintenance",
+    "icpTestCount": "Tests ICP",
+    "eventCount": "Événements"
+  },
+  "tabs": {
+    "overview": "Aperçu",
+    "events": "Événements",
+    "equipment": "Équipement",
+    "livestock": "Animaux",
+    "photos": "Photos",
+    "notes": "Notes",
+    "icpTests": "Tests ICP",
+    "maintenance": "Maintenance"
+  },
+  "actions": {
+    "logParameters": "Enregistrer les paramètres",
+    "uploadPhoto": "Télécharger une photo",
+    "addEvent": "Ajouter un événement",
+    "manageEquipment": "Gérer l'équipement",
+    "manageLivestock": "Gérer les animaux",
+    "changeImage": "Changer l'image"
+  },
+  "emptyState": {
+    "noTanks": "Aucun aquarium",
+    "noTanksDescription": "Créez votre premier aquarium pour commencer",
+    "noEvents": "Aucun événement",
+    "noEquipment": "Aucun équipement ajouté",
+    "noLivestock": "Aucun animal ajouté",
+    "noPhotos": "Aucune photo",
+    "noNotes": "Aucune note",
+    "noIcpTests": "Aucun test ICP",
+    "noMaintenance": "Aucun rappel de maintenance"
+  },
+  "imageUpload": {
+    "title": "Télécharger une image d'aquarium",
+    "dragDrop": "Cliquez pour télécharger ou glissez-déposez",
+    "fileTypes": "PNG, JPG, GIF jusqu'à 10 Mo",
+    "uploading": "Téléchargement en cours...",
+    "changeImage": "Changer l'image"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "ReefLab",
+    "tagline": "Reef Aquarium Management System"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tanks": "Tanks",
+    "parameters": "Parameters",
+    "photos": "Photos",
+    "notes": "Notes",
+    "maintenance": "Maintenance",
+    "livestock": "Livestock",
+    "equipment": "Equipment",
+    "icpTests": "ICP Tests"
+  },
+  "actions": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "upload": "Upload",
+    "download": "Download",
+    "search": "Search",
+    "filter": "Filter",
+    "logout": "Logout",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "refresh": "Refresh"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "noData": "No data available",
+    "confirm": "Are you sure?",
+    "yes": "Yes",
+    "no": "No",
+    "total": "Total",
+    "active": "Active",
+    "inactive": "Inactive",
+    "date": "Date",
+    "description": "Description",
+    "name": "Name",
+    "status": "Status",
+    "type": "Type"
+  },
+  "language": {
+    "select": "Select Language",
+    "current": "Current Language"
+  },
+  "footer": {
+    "createdBy": "Created by",
+    "withLove": "with",
+    "forCommunity": "for the reef keeping community",
+    "builtWith": "Built with",
+    "copyright": "All rights reserved"
+  }
+}

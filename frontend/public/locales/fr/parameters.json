@@ -1,0 +1,22 @@
+{
+  "title": "Paramètres",
+  "logParameters": "Enregistrer les paramètres",
+  "latestReadings": "Dernières mesures",
+  "history": "Historique",
+  "fields": {
+    "calcium": "Calcium (Ca)",
+    "magnesium": "Magnésium (Mg)",
+    "alkalinity": "Alcalinité (KH)",
+    "nitrate": "Nitrate (NO3)",
+    "phosphate": "Phosphate (PO4)",
+    "salinity": "Salinité",
+    "temperature": "Température",
+    "ph": "pH"
+  },
+  "units": {
+    "ppm": "ppm",
+    "dkh": "dKH",
+    "celsius": "°C",
+    "fahrenheit": "°F"
+  }
+}
