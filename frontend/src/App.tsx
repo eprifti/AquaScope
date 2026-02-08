@@ -10,6 +10,7 @@ import Tanks from './pages/Tanks'
 import Maintenance from './pages/Maintenance'
 import Livestock from './pages/Livestock'
 import Equipment from './pages/Equipment'
+import ICPTests from './pages/ICPTests'
 import Photos from './pages/Photos'
 import Notes from './pages/Notes'
 import Admin from './pages/Admin'
@@ -42,6 +43,7 @@ function App() {
 
             <Route path="livestock" element={<Livestock />} />
             <Route path="equipment" element={<Equipment />} />
+            <Route path="icp-tests" element={<ICPTests />} />
             <Route path="photos" element={<Photos />} />
             <Route path="notes" element={<Notes />} />
             <Route path="admin" element={<Admin />} />

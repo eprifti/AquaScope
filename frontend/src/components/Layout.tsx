@@ -16,6 +16,7 @@ export default function Layout() {
     { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
     { name: 'Tanks', href: '/tanks', icon: '🐠' },
     { name: 'Parameters', href: '/parameters', icon: '📊' },
+    { name: 'ICP Tests', href: '/icp-tests', icon: '🔬' },
     { name: 'Photos', href: '/photos', icon: '📷' },
     { name: 'Notes', href: '/notes', icon: '📝' },
     { name: 'Maintenance', href: '/maintenance', icon: '🔧' },
