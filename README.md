@@ -248,7 +248,7 @@ npm run test:ui         # Run with interactive UI
 npm run test:coverage   # Run with coverage report
 ```
 
-For detailed testing documentation, see [TESTING.md](TESTING.md).
+For detailed testing documentation, see [TESTING.md](docs/TESTING.md).
 
 ### Continuous Integration
 
@@ -313,6 +313,8 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 - `POST /api/v1/photos` - Upload photos
 - `POST /api/v1/maintenance/reminders` - Create maintenance reminder
 
+For complete API documentation, see [docs/API.md](docs/API.md) and [docs/API_GUIDE.md](docs/API_GUIDE.md).
+
 ## FishBase Integration
 
 The livestock feature integrates with the FishBase API to provide species information. When adding fish or corals, you can search the FishBase database for accurate species data.
@@ -373,6 +375,20 @@ For issues and questions:
 - Discussions: https://github.com/eprifti/reeflab/discussions
 
 ## Features Status
+
+## Documentation
+
+Comprehensive documentation is available in the [docs/](docs/) folder:
+
+- **[Quick Start Guide](docs/QUICK_START.md)** - Get up and running quickly
+- **[API Documentation](docs/API.md)** - Complete API reference
+- **[API Usage Guide](docs/API_GUIDE.md)** - API integration examples
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Deployment instructions
+- **[Testing Guide](docs/TESTING.md)** - Running tests and writing new ones
+- **[ICP Testing](docs/ICP_TESTING.md)** - ICP test management features
+- **[Photo Features](docs/PHOTO_FEATURES.md)** - Photo gallery features
+- **[Changelog](docs/CHANGELOG.md)** - Version history and changes
+- **[Release Notes](docs/RELEASE_NOTES_v1.0.0.md)** - Detailed release information
 
 ### ✅ Completed (v1.2.0)
 - ✅ Tank management hub with detail views and timeline
