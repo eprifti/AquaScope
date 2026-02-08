@@ -160,6 +160,7 @@ export default function TankDetail() {
             stats={stats}
             onEdit={() => alert('Edit tank functionality - to be implemented')}
             onAddEvent={() => alert('Add event - switch to Events tab')}
+            onRefresh={handleRefresh}
           />
         </div>
 

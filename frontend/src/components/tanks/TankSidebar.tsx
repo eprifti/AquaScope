@@ -4,10 +4,12 @@
  * Left sidebar for tank detail view showing image, info, stats, and quick actions
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import type { Tank } from '../../types'
 import TankStats from './TankStats'
+import TankImageUpload from './TankImageUpload'
+import { tanksApi } from '../../api/client'
 
 interface TankSidebarProps {
   tank: Tank
@@ -23,10 +25,13 @@ interface TankSidebarProps {
   }
   onEdit?: () => void
   onAddEvent?: () => void
+  onRefresh?: () => void
 }
 
-export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSidebarProps) {
+export default function TankSidebar({ tank, stats, onEdit, onAddEvent, onRefresh }: TankSidebarProps) {
   const [imageError, setImageError] = useState(false)
+  const [showImageUpload, setShowImageUpload] = useState(false)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
 
   const calculateDaysUp = (setupDate: string | null): number => {
     if (!setupDate) return 0
@@ -38,7 +43,34 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
   }
 
   const daysUp = stats?.tank_age_days || calculateDaysUp(tank.setup_date)
-  const hasImage = tank.image_url && !imageError
+  const hasImage = tank.image_url && !imageError && imageUrl
+
+  // Load tank image via API
+  useEffect(() => {
+    const loadTankImage = async () => {
+      if (tank.image_url) {
+        try {
+          const url = await tanksApi.getImageBlobUrl(tank.id)
+          setImageUrl(url)
+          setImageError(false)
+        } catch (error) {
+          console.error('Failed to load tank image:', error)
+          setImageError(true)
+        }
+      } else {
+        setImageUrl(null)
+      }
+    }
+
+    loadTankImage()
+
+    // Cleanup: revoke blob URL when component unmounts or tank changes
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl)
+      }
+    }
+  }, [tank.id, tank.image_url])
 
   return (
     <div className="space-y-6">
@@ -48,11 +80,13 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
         <div className="aspect-video bg-gradient-to-br from-ocean-100 to-ocean-200 rounded-lg flex items-center justify-center overflow-hidden relative group">
           {hasImage ? (
             <img
-              src={tank.image_url!}
+              src={imageUrl!}
               alt={tank.name}
               className="w-full h-full object-cover"
               onError={() => setImageError(true)}
             />
+          ) : tank.image_url && !imageUrl ? (
+            <div className="text-ocean-400">Loading...</div>
           ) : (
             <span className="text-6xl">🐠</span>
           )}
@@ -60,11 +94,27 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
             <button
               className="opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white text-ocean-600 rounded-md font-medium hover:bg-ocean-50"
-              onClick={() => alert('Image upload coming in Phase 5!')}
+              onClick={() => setShowImageUpload(true)}
             >
               📷 Change Image
             </button>
           </div>
+
+          {/* Image Upload Modal */}
+          {showImageUpload && (
+            <TankImageUpload
+              tankId={tank.id}
+              tankName={tank.name}
+              onSuccess={() => {
+                setShowImageUpload(false)
+                setImageError(false)
+                if (onRefresh) {
+                  onRefresh()
+                }
+              }}
+              onCancel={() => setShowImageUpload(false)}
+            />
+          )}
         </div>
 
         {/* Tank Name & Description */}

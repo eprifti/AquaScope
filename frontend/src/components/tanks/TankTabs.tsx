@@ -4,10 +4,11 @@
  * Tabbed interface for viewing tank-specific data (events, equipment, livestock, etc.)
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../../types'
 import TankOverview from './TankOverview'
 import TankTimeline from './TankTimeline'
+import { photosApi } from '../../api/client'
 
 interface TankTabsProps {
   events: TankEvent[]
@@ -46,6 +47,31 @@ export default function TankTabs({
   onRefresh,
 }: TankTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
+
+  // Load photo thumbnails when photos change
+  useEffect(() => {
+    const loadPhotoThumbnails = async () => {
+      const urls: Record<string, string> = {}
+      for (const photo of photos) {
+        try {
+          urls[photo.id] = await photosApi.getFileBlobUrl(photo.id, true)
+        } catch (error) {
+          console.error(`Failed to load thumbnail for photo ${photo.id}:`, error)
+        }
+      }
+      setPhotoUrls(urls)
+    }
+
+    if (photos.length > 0) {
+      loadPhotoThumbnails()
+    }
+
+    // Cleanup: revoke blob URLs when component unmounts or photos change
+    return () => {
+      Object.values(photoUrls).forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [photos])
 
   const tabs: Tab[] = [
     { id: 'overview', label: 'Overview', icon: '📊' },
@@ -191,19 +217,25 @@ export default function TankTabs({
                 {photos.map((photo) => (
                   <div
                     key={photo.id}
-                    className="aspect-square bg-ocean-100 rounded-lg overflow-hidden group relative"
+                    className="aspect-square bg-ocean-100 rounded-lg overflow-hidden group relative flex items-center justify-center"
                   >
-                    <img
-                      src={photo.thumbnail_path || photo.file_path}
-                      alt={photo.description || 'Tank photo'}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    {photo.description && (
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-end p-3">
-                        <p className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity line-clamp-2">
-                          {photo.description}
-                        </p>
-                      </div>
+                    {photoUrls[photo.id] ? (
+                      <>
+                        <img
+                          src={photoUrls[photo.id]}
+                          alt={photo.description || 'Tank photo'}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        {photo.description && (
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-end p-3">
+                            <p className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity line-clamp-2">
+                              {photo.description}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-ocean-400 text-sm">Loading...</div>
                     )}
                   </div>
                 ))}

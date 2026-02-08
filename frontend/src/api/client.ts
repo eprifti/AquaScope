@@ -185,6 +185,29 @@ export const tanksApi = {
   deleteEvent: async (tankId: string, eventId: string): Promise<void> => {
     await apiClient.delete(`/tanks/${tankId}/events/${eventId}`)
   },
+
+  uploadImage: async (tankId: string, file: File): Promise<Tank> => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await apiClient.post<Tank>(
+      `/tanks/${tankId}/upload-image`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+    return response.data
+  },
+
+  getImageBlobUrl: async (tankId: string): Promise<string> => {
+    const response = await apiClient.get(`/tanks/${tankId}/image`, {
+      responseType: 'blob',
+    })
+    return URL.createObjectURL(response.data)
+  },
 }
 
 // ============================================================================

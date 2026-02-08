@@ -5,10 +5,13 @@ CRUD operations for user tanks.
 
 Multi-tenancy: Users can only access their own tanks.
 """
+import os
 from typing import List
-from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, status
+from uuid import UUID, uuid4
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
+from pathlib import Path
 
 from app.database import get_db
 from app.models.user import User
@@ -269,3 +272,117 @@ def delete_tank_event(
     db.delete(event)
     db.commit()
     return None
+
+
+@router.post("/{tank_id}/upload-image", response_model=TankResponse)
+async def upload_tank_image(
+    tank_id: UUID,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Upload a tank image.
+
+    Process:
+    1. Validate file type (images only)
+    2. Verify tank ownership
+    3. Save file to disk with unique name
+    4. Update tank's image_url field
+    """
+    # Verify tank ownership
+    tank = db.query(Tank).filter(
+        Tank.id == tank_id,
+        Tank.user_id == current_user.id
+    ).first()
+
+    if not tank:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tank not found"
+        )
+
+    # Validate file type
+    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No filename provided"
+        )
+
+    file_ext = Path(file.filename).suffix.lower()
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File type not allowed. Allowed types: {', '.join(allowed_extensions)}"
+        )
+
+    # Read and validate file size (max 10MB)
+    content = await file.read()
+    max_size = 10 * 1024 * 1024  # 10MB
+    if len(content) > max_size:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File size exceeds 10MB limit"
+        )
+
+    # Create uploads directory if it doesn't exist
+    upload_dir = Path("/app/uploads/tank-images")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate unique filename
+    unique_filename = f"{uuid4()}{file_ext}"
+    file_path = upload_dir / unique_filename
+
+    # Save file to disk
+    with open(file_path, "wb") as f:
+        f.write(content)
+
+    # Update tank's image_url
+    # Store as relative path that can be served by the backend
+    tank.image_url = f"/uploads/tank-images/{unique_filename}"
+
+    db.commit()
+    db.refresh(tank)
+
+    return tank
+
+
+@router.get("/{tank_id}/image")
+def get_tank_image(
+    tank_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Serve the tank image file"""
+    tank = db.query(Tank).filter(
+        Tank.id == tank_id,
+        Tank.user_id == current_user.id
+    ).first()
+
+    if not tank:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tank not found"
+        )
+
+    if not tank.image_url:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tank has no image"
+        )
+
+    # Convert relative path to absolute path
+    file_path = Path(f"/app{tank.image_url}")
+
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image file not found"
+        )
+
+    return FileResponse(
+        path=str(file_path),
+        media_type="image/jpeg",  # Will be auto-detected by FastAPI
+        filename=file_path.name
+    )

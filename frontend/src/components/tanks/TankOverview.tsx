@@ -4,8 +4,10 @@
  * Shows a summary overview of the tank with recent events and quick stats
  */
 
+import { useState, useEffect } from 'react'
 import type { TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
 import { Link } from 'react-router-dom'
+import { photosApi } from '../../api/client'
 
 interface TankOverviewProps {
   events: TankEvent[]
@@ -24,6 +26,8 @@ export default function TankOverview({
   notes,
   icpTests,
 }: TankOverviewProps) {
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
+
   // Get recent items (last 3 of each)
   const recentEvents = [...events]
     .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime())
@@ -39,6 +43,30 @@ export default function TankOverview({
 
   const latestICPTest = icpTests
     .sort((a, b) => new Date(b.test_date).getTime() - new Date(a.test_date).getTime())[0]
+
+  // Load photo thumbnails
+  useEffect(() => {
+    const loadPhotoThumbnails = async () => {
+      const urls: Record<string, string> = {}
+      for (const photo of recentPhotos) {
+        try {
+          urls[photo.id] = await photosApi.getFileBlobUrl(photo.id, true)
+        } catch (error) {
+          console.error(`Failed to load thumbnail for photo ${photo.id}:`, error)
+        }
+      }
+      setPhotoUrls(urls)
+    }
+
+    if (recentPhotos.length > 0) {
+      loadPhotoThumbnails()
+    }
+
+    // Cleanup: revoke blob URLs when component unmounts or photos change
+    return () => {
+      Object.values(photoUrls).forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [photos])
 
   return (
     <div className="space-y-6">
@@ -138,12 +166,16 @@ export default function TankOverview({
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {recentPhotos.map((photo) => (
-              <div key={photo.id} className="aspect-square bg-ocean-100 rounded-lg overflow-hidden">
-                <img
-                  src={photo.thumbnail_path || photo.file_path}
-                  alt={photo.description || 'Tank photo'}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                />
+              <div key={photo.id} className="aspect-square bg-ocean-100 rounded-lg overflow-hidden flex items-center justify-center">
+                {photoUrls[photo.id] ? (
+                  <img
+                    src={photoUrls[photo.id]}
+                    alt={photo.description || 'Tank photo'}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="text-ocean-400">Loading...</div>
+                )}
               </div>
             ))}
           </div>
