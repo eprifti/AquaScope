@@ -4,6 +4,7 @@
  * Displays tank information in a card layout with image, volumes, description, and events
  */
 
+import { useState } from 'react'
 import { Tank } from '../../types'
 import { formatDistanceToNow } from 'date-fns'
 import { useNavigate } from 'react-router-dom'
@@ -16,6 +17,7 @@ interface TankCardProps {
 
 export default function TankCard({ tank, onEdit, onDelete }: TankCardProps) {
   const navigate = useNavigate()
+  const [imageError, setImageError] = useState(false)
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Not set'
@@ -46,7 +48,7 @@ export default function TankCard({ tank, onEdit, onDelete }: TankCardProps) {
   }
 
   const age = getAge(tank.setup_date)
-  const imageUrl = tank.image_url || '/default-tank.svg'
+  const hasImage = tank.image_url && !imageError
 
   // Sort events by date (most recent first)
   const recentEvents = [...(tank.events || [])].sort(
@@ -59,15 +61,17 @@ export default function TankCard({ tank, onEdit, onDelete }: TankCardProps) {
       onClick={handleCardClick}
     >
       {/* Tank Image */}
-      <div className="h-48 bg-gradient-to-b from-ocean-100 to-ocean-200 relative overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={tank.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/default-tank.svg'
-          }}
-        />
+      <div className="h-48 bg-gradient-to-b from-ocean-100 to-ocean-200 relative overflow-hidden flex items-center justify-center">
+        {hasImage ? (
+          <img
+            src={tank.image_url!}
+            alt={tank.name}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <span className="text-6xl">🐠</span>
+        )}
         <div className="absolute top-3 right-3 flex space-x-2">
           <button
             onClick={(e) => {
