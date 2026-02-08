@@ -21,7 +21,7 @@ class TestTanksAPI:
             }
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 201  # POST creates return 201
         data = response.json()
         assert data["name"] == "Main Display Tank"
         assert data["display_volume_liters"] == 200.0
@@ -103,7 +103,7 @@ class TestTanksAPI:
 
         response = authenticated_client.delete(f"/api/v1/tanks/{tank_id}")
 
-        assert response.status_code == 200
+        assert response.status_code == 204  # DELETE returns 204 No Content
 
         # Verify tank is deleted
         response = authenticated_client.get(f"/api/v1/tanks/{tank_id}")

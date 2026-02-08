@@ -25,7 +25,7 @@ class TestNotesAPI:
             }
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 201  # POST creates return 201
         data = response.json()
         assert data["content"] == "Added new coral today"
         assert data["tank_id"] == str(tank.id)
@@ -113,7 +113,7 @@ class TestNotesAPI:
 
         response = authenticated_client.delete(f"/api/v1/notes/{note_id}")
 
-        assert response.status_code == 200
+        assert response.status_code == 204  # DELETE returns 204 No Content
 
         # Verify deletion
         response = authenticated_client.get(f"/api/v1/notes")

@@ -12,7 +12,7 @@ def test_tank(db_session, test_user):
     """Create a test tank"""
     tank = Tank(
         name="Test Reef Tank",
-        display_display_volume_liters=200,
+        display_volume_liters=200,
         sump_display_volume_liters=50,
         user_id=test_user.id
     )
