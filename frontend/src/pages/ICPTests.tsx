@@ -164,7 +164,11 @@ export default function ICPTestsPage() {
   const renderElementGroup = (title: string, elements: Array<{ key: string; unit: string }>) => {
     if (!selectedTest) return null
 
-    const hasData = elements.some((el) => selectedTest[el.key as keyof ICPTest] != null)
+    // Check if any element has either a value or a status
+    const hasData = elements.some((el) =>
+      selectedTest[el.key as keyof ICPTest] != null ||
+      selectedTest[`${el.key}_status` as keyof ICPTest] != null
+    )
     if (!hasData) return null
 
     return (
@@ -290,7 +294,20 @@ export default function ICPTestsPage() {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <div className="font-semibold text-gray-800">{test.lab_name}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="font-semibold text-gray-800">{test.lab_name}</div>
+                          <span className={`text-xs px-2 py-0.5 rounded ${
+                            test.water_type === 'saltwater'
+                              ? 'bg-blue-100 text-blue-700'
+                              : test.water_type === 'ro_water'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {test.water_type === 'saltwater' ? '🌊 Saltwater' :
+                             test.water_type === 'ro_water' ? '💧 RO Water' :
+                             test.water_type}
+                          </span>
+                        </div>
                         <div className="text-sm text-gray-600">
                           {new Date(test.test_date).toLocaleDateString()}
                         </div>
@@ -360,9 +377,22 @@ export default function ICPTestsPage() {
           {selectedTest ? (
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  {selectedTest.lab_name} - {new Date(selectedTest.test_date).toLocaleDateString()}
-                </h2>
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {selectedTest.lab_name} - {new Date(selectedTest.test_date).toLocaleDateString()}
+                  </h2>
+                  <span className={`px-3 py-1 rounded text-sm font-medium ${
+                    selectedTest.water_type === 'saltwater'
+                      ? 'bg-blue-100 text-blue-700'
+                      : selectedTest.water_type === 'ro_water'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    {selectedTest.water_type === 'saltwater' ? '🌊 Saltwater' :
+                     selectedTest.water_type === 'ro_water' ? '💧 RO Water' :
+                     selectedTest.water_type}
+                  </span>
+                </div>
                 {selectedTest.test_id && (
                   <p className="text-sm text-gray-600">Test ID: {selectedTest.test_id}</p>
                 )}
