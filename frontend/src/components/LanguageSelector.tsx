@@ -23,9 +23,6 @@ export default function LanguageSelector() {
     localStorage.setItem('reeflab_language', lng)
   }
 
-  // Get current language, fallback to 'en' if not found
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0]
-
   return (
     <div className="relative">
       <select
