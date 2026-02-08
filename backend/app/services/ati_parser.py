@@ -124,12 +124,14 @@ def parse_ati_pdf(pdf_path: str) -> Dict[str, Any]:
         data['test_id'] = test_id_match.group(1)
 
     # Extract dates
-    # Look for common date labels
+    # Look for common date labels (ATI uses Created, Evaluated, etc.)
     date_patterns = [
         (r'Test Date[:\s]+([^\n]+)', 'test_date'),
+        (r'Created[:\s]+([^\n]+)', 'sample_date'),  # ATI: sample collection date
         (r'Sample Date[:\s]+([^\n]+)', 'sample_date'),
+        (r'Arrived in the laboratory[:\s]+([^\n]+)', 'received_date'),  # ATI specific
         (r'Received[:\s]+([^\n]+)', 'received_date'),
-        (r'Evaluated[:\s]+([^\n]+)', 'evaluated_date'),
+        (r'Evaluated[:\s]+([^\n]+)', 'evaluated_date'),  # ATI: final analysis date
     ]
 
     for pattern, field in date_patterns:
@@ -139,7 +141,11 @@ def parse_ati_pdf(pdf_path: str) -> Dict[str, Any]:
             if parsed_date:
                 data[field] = parsed_date
 
-    # If no test_date found, try to extract from filename (YYYY-MM-DD format)
+    # For ATI: use Evaluated date as test_date if available
+    if 'test_date' not in data and 'evaluated_date' in data:
+        data['test_date'] = data['evaluated_date']
+
+    # If still no test_date, try to extract from filename (YYYY-MM-DD format)
     if 'test_date' not in data:
         filename = Path(pdf_path).name
         date_match = re.search(r'(\d{4}-\d{2}-\d{2})', filename)
