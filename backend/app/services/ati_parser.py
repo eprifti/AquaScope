@@ -106,22 +106,39 @@ def extract_score(text: str, score_name: str) -> Optional[int]:
     return None
 
 
-def parse_ati_pdf(pdf_path: str) -> Dict[str, Any]:
+def parse_ati_pdf(pdf_path: str) -> List[Dict[str, Any]]:
     """
     Parse ATI ICP test PDF and return structured data.
 
-    Returns dict matching ICPTestCreate schema (without tank_id).
+    Returns list of dicts matching ICPTestCreate schema (without tank_id).
+    ATI PDFs can contain multiple water types (saltwater, RO water, etc.).
     """
     text = extract_text_from_pdf(pdf_path)
 
-    data: Dict[str, Any] = {
-        'lab_name': 'ATI Aquaristik',
-    }
+    # Detect water type sections
+    water_sections = []
+
+    # Look for "Results of Salt water" and "Results of Osmosis water" (or RO water) sections
+    salt_water_match = re.search(r'Results of Salt water(.*?)(?=Results of |$)', text, re.DOTALL | re.IGNORECASE)
+    ro_water_match = re.search(r'Results of (?:Osmosis|RO) water(.*?)(?=Results of |$)', text, re.DOTALL | re.IGNORECASE)
+
+    if salt_water_match:
+        water_sections.append(('saltwater', salt_water_match.group(0)))
+
+    if ro_water_match:
+        water_sections.append(('ro_water', ro_water_match.group(0)))
+
+    # If no sections found, treat entire text as saltwater (backward compatibility)
+    if not water_sections:
+        water_sections.append(('saltwater', text))
+
+    # Extract shared metadata from full text (appears once per PDF)
+    shared_metadata: Dict[str, Any] = {}
 
     # Extract test ID (barcode number)
     test_id_match = re.search(r'(?:Test ID|Barcode)[:\s]+(\d+)', text, re.IGNORECASE)
     if test_id_match:
-        data['test_id'] = test_id_match.group(1)
+        shared_metadata['test_id'] = test_id_match.group(1)
 
     # Extract dates
     # Look for common date labels (ATI uses Created, Evaluated, etc.)
@@ -139,36 +156,45 @@ def parse_ati_pdf(pdf_path: str) -> Dict[str, Any]:
         if match:
             parsed_date = parse_date(match.group(1))
             if parsed_date:
-                data[field] = parsed_date
+                shared_metadata[field] = parsed_date
 
     # For ATI: use Evaluated date as test_date if available
-    if 'test_date' not in data and 'evaluated_date' in data:
-        data['test_date'] = data['evaluated_date']
+    if 'test_date' not in shared_metadata and 'evaluated_date' in shared_metadata:
+        shared_metadata['test_date'] = shared_metadata['evaluated_date']
 
     # If still no test_date, try to extract from filename (YYYY-MM-DD format)
-    if 'test_date' not in data:
+    if 'test_date' not in shared_metadata:
         filename = Path(pdf_path).name
         date_match = re.search(r'(\d{4}-\d{2}-\d{2})', filename)
         if date_match:
-            data['test_date'] = parse_date(date_match.group(1))
+            shared_metadata['test_date'] = parse_date(date_match.group(1))
 
-    # Extract quality scores
-    score_mappings = [
-        ('Major Elements', 'score_major_elements'),
-        ('Minor Elements', 'score_minor_elements'),
-        ('Pollutants', 'score_pollutants'),
-        ('Base Elements', 'score_base_elements'),
-        ('Overall', 'score_overall'),
-    ]
+    results = []
 
-    for label, field in score_mappings:
-        score = extract_score(text, label)
-        if score is not None:
-            data[field] = score
+    for water_type, section_text in water_sections:
+        data: Dict[str, Any] = {
+            'lab_name': 'ATI Aquaristik',
+            'water_type': water_type,
+            **shared_metadata  # Include shared metadata (test_id, dates)
+        }
 
-    # Element mappings: (symbol_pattern, value_field, status_field)
-    # ATI format: Symbol line has value, followed by full name line with ideal value
-    elements = [
+        # Extract quality scores from this section
+        score_mappings = [
+            ('Major Elements', 'score_major_elements'),
+            ('Minor Elements', 'score_minor_elements'),
+            ('Pollutants', 'score_pollutants'),
+            ('Base Elements', 'score_base_elements'),
+            ('Overall', 'score_overall'),
+        ]
+
+        for label, field in score_mappings:
+            score = extract_score(section_text, label)
+            if score is not None:
+                data[field] = score
+
+        # Element mappings: (symbol_pattern, value_field, status_field)
+        # ATI format: Symbol line has value, followed by full name line with ideal value
+        elements = [
         # Base elements
         (r'^Sal\.\s+total', 'salinity', 'salinity_status'),
         (r'^KH\s+', 'kh', 'kh_status'),
@@ -221,70 +247,73 @@ def parse_ati_pdf(pdf_path: str) -> Dict[str, Any]:
         (r'^Ti\s+', 'ti', 'ti_status'),
         (r'^W\s+', 'w', 'w_status'),
         (r'^Hg\s+', 'hg', 'hg_status'),
-    ]
+        ]
 
-    for pattern, value_field, status_field in elements:
-        # Search for lines starting with the element symbol
-        regex = re.compile(pattern, re.MULTILINE)
-        match = regex.search(text)
+        for pattern, value_field, status_field in elements:
+            # Search for lines starting with the element symbol in this section
+            regex = re.compile(pattern, re.MULTILINE)
+            match = regex.search(section_text)
 
-        if match:
-            # Get the full line
-            line_start = match.start()
-            line_end = text.find('\n', line_start)
-            if line_end == -1:
-                line_end = len(text)
-            line = text[line_start:line_end]
+            if match:
+                # Get the full line
+                line_start = match.start()
+                line_end = section_text.find('\n', line_start)
+                if line_end == -1:
+                    line_end = len(section_text)
+                line = section_text[line_start:line_end]
 
-            # Check if value is "---" (not detected)
-            if '---' in line:
-                # Store status but no value
-                _, status = extract_value_and_status(line)
-                if status is not None:
-                    data[status_field] = status
-            else:
-                # Extract value and status
-                value, status = extract_value_and_status(line)
-                if value is not None:
-                    data[value_field] = value
-                if status is not None:
-                    data[status_field] = status
+                # Check if value is "---" (not detected)
+                if '---' in line:
+                    # Store status but no value
+                    _, status = extract_value_and_status(line)
+                    if status is not None:
+                        data[status_field] = status
+                else:
+                    # Extract value and status
+                    value, status = extract_value_and_status(line)
+                    if value is not None:
+                        data[value_field] = value
+                    if status is not None:
+                        data[status_field] = status
 
-    # Extract recommendations (if present)
-    recommendations_section = re.search(
-        r'Recommendations?:(.+?)(?=\n\n|\Z)',
-        text,
-        re.IGNORECASE | re.DOTALL
-    )
-    if recommendations_section:
-        # Parse recommendations into list of dicts
-        recs_text = recommendations_section.group(1).strip()
-        recommendations: List[Dict[str, str]] = []
+        # Extract recommendations (if present in this section)
+        recommendations_section = re.search(
+            r'Recommendations?:(.+?)(?=\n\n|\Z)',
+            section_text,
+            re.IGNORECASE | re.DOTALL
+        )
+        if recommendations_section:
+            # Parse recommendations into list of dicts
+            recs_text = recommendations_section.group(1).strip()
+            recommendations: List[Dict[str, str]] = []
 
-        # Split by newlines and create recommendation objects
-        for line in recs_text.split('\n'):
-            line = line.strip()
-            if line and not line.startswith('-'):
-                recommendations.append({'text': line})
+            # Split by newlines and create recommendation objects
+            for line in recs_text.split('\n'):
+                line = line.strip()
+                if line and not line.startswith('-'):
+                    recommendations.append({'text': line})
 
-        if recommendations:
-            data['recommendations'] = recommendations
+            if recommendations:
+                data['recommendations'] = recommendations
 
-    # Extract dosing instructions (if present)
-    dosing_section = re.search(
-        r'Dosing Instructions?:(.+?)(?=\n\n|\Z)',
-        text,
-        re.IGNORECASE | re.DOTALL
-    )
-    if dosing_section:
-        dosing_text = dosing_section.group(1).strip()
-        data['dosing_instructions'] = {'text': dosing_text}
+        # Extract dosing instructions (if present in this section)
+        dosing_section = re.search(
+            r'Dosing Instructions?:(.+?)(?=\n\n|\Z)',
+            section_text,
+            re.IGNORECASE | re.DOTALL
+        )
+        if dosing_section:
+            dosing_text = dosing_section.group(1).strip()
+            data['dosing_instructions'] = {'text': dosing_text}
 
-    # Ensure test_date exists (required field)
-    if 'test_date' not in data:
-        raise ATIParserError("Could not extract test date from PDF")
+        # Ensure test_date exists (required field)
+        if 'test_date' not in data:
+            raise ATIParserError("Could not extract test date from PDF")
 
-    return data
+        # Add this test result to results list
+        results.append(data)
+
+    return results
 
 
 def validate_parsed_data(data: Dict[str, Any]) -> None:

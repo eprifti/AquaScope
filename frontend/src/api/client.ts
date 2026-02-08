@@ -496,11 +496,11 @@ export const icpTestsApi = {
     return response.data
   },
 
-  upload: async (tank_id: string, file: File): Promise<ICPTest> => {
+  upload: async (tank_id: string, file: File): Promise<ICPTest[]> => {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await apiClient.post<ICPTest>(
+    const response = await apiClient.post<ICPTest[]>(
       `/icp-tests/upload?tank_id=${tank_id}`,
       formData,
       {

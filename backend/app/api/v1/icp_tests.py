@@ -57,7 +57,7 @@ def create_icp_test(
     return db_test
 
 
-@router.post("/upload", response_model=ICPTestResponse, status_code=http_status.HTTP_201_CREATED)
+@router.post("/upload", response_model=List[ICPTestResponse], status_code=http_status.HTTP_201_CREATED)
 async def upload_icp_test_pdf(
     tank_id: UUID,
     file: UploadFile = File(...),
@@ -68,6 +68,8 @@ async def upload_icp_test_pdf(
     Upload an ATI ICP test PDF and automatically extract data.
 
     The PDF will be parsed to extract element values, scores, and metadata.
+    ATI PDFs may contain multiple water types (saltwater, RO water, etc.),
+    and a separate test record will be created for each water type.
     The extracted data will be saved and the PDF will be stored.
     """
     # Verify tank belongs to user
@@ -95,37 +97,50 @@ async def upload_icp_test_pdf(
         tmp_path = tmp_file.name
 
     try:
-        # Parse PDF
-        parsed_data = parse_ati_pdf(tmp_path)
-        validate_parsed_data(parsed_data)
+        # Parse PDF - returns list of tests (one per water type)
+        parsed_tests = parse_ati_pdf(tmp_path)
+
+        if not parsed_tests:
+            raise ATIParserError("No test data could be extracted from PDF")
 
         # Create upload directory if it doesn't exist
         upload_dir = Path("uploads/icp_tests")
         upload_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generate unique filename
-        filename = f"{current_user.id}_{tank_id}_{parsed_data['test_date']}_{file.filename}"
+        # Generate unique filename based on first test
+        first_test = parsed_tests[0]
+        filename = f"{current_user.id}_{tank_id}_{first_test['test_date']}_{file.filename}"
         file_path = upload_dir / filename
 
         # Move PDF to permanent location
         shutil.move(tmp_path, str(file_path))
 
-        # Add PDF storage info to parsed data
-        parsed_data['pdf_filename'] = file.filename
-        parsed_data['pdf_path'] = str(file_path)
-        parsed_data['tank_id'] = tank_id
+        # Create ICP test records for each water type
+        db_tests = []
+        for parsed_data in parsed_tests:
+            validate_parsed_data(parsed_data)
 
-        # Create ICP test from parsed data
-        db_test = ICPTest(
-            **parsed_data,
-            user_id=current_user.id
-        )
+            # Add PDF storage info and tank_id to each test
+            parsed_data['pdf_filename'] = file.filename
+            parsed_data['pdf_path'] = str(file_path)
+            parsed_data['tank_id'] = tank_id
 
-        db.add(db_test)
+            # Create ICP test from parsed data
+            db_test = ICPTest(
+                **parsed_data,
+                user_id=current_user.id
+            )
+
+            db.add(db_test)
+            db_tests.append(db_test)
+
         db.commit()
-        db.refresh(db_test)
 
-        return db_test
+        # Refresh all tests to get generated IDs
+        for db_test in db_tests:
+            db.refresh(db_test)
+
+        return db_tests
 
     except ATIParserError as e:
         # Clean up temp file on parsing error

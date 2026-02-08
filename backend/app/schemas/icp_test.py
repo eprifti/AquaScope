@@ -11,6 +11,7 @@ class ICPTestBase(BaseModel):
     test_date: date
     lab_name: str = Field(..., min_length=1, max_length=100)
     test_id: Optional[str] = Field(None, max_length=200)
+    water_type: str = Field(default="saltwater", description="saltwater, ro_water, or fresh_water")
     sample_date: Optional[date] = None
     received_date: Optional[date] = None
     evaluated_date: Optional[date] = None

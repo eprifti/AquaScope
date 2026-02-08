@@ -341,6 +341,7 @@ export interface ICPTest {
   test_date: string
   lab_name: string
   test_id: string | null
+  water_type: string  // saltwater, ro_water, fresh_water
   sample_date: string | null
   received_date: string | null
   evaluated_date: string | null
@@ -464,6 +465,7 @@ export interface ICPTestCreate {
   test_date: string
   lab_name: string
   test_id?: string | null
+  water_type?: string  // saltwater, ro_water, fresh_water
   sample_date?: string | null
   received_date?: string | null
   evaluated_date?: string | null
@@ -484,6 +486,7 @@ export interface ICPTestUpdate {
   test_date?: string
   lab_name?: string
   test_id?: string | null
+  water_type?: string  // saltwater, ro_water, fresh_water
   sample_date?: string | null
   received_date?: string | null
   evaluated_date?: string | null
@@ -496,6 +499,7 @@ export interface ICPTestSummary {
   tank_id: string
   test_date: string
   lab_name: string
+  water_type: string  // saltwater, ro_water, fresh_water
   score_overall: number | null
   score_major_elements: number | null
   score_minor_elements: number | null

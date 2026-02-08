@@ -54,9 +54,15 @@ export default function ICPTestsPage() {
 
     try {
       setIsUploading(true)
-      await icpTestsApi.upload(uploadTankId, file)
+      const createdTests = await icpTestsApi.upload(uploadTankId, file)
       await loadData()
-      alert('ICP test uploaded and parsed successfully!')
+
+      // Show success message with water types
+      const waterTypes = createdTests.map(t => t.water_type).join(', ')
+      const message = createdTests.length === 1
+        ? `ICP test uploaded successfully (${waterTypes})`
+        : `${createdTests.length} ICP tests uploaded successfully (${waterTypes})`
+      alert(message)
     } catch (error: any) {
       console.error('Failed to upload ICP test:', error)
       alert(`Failed to upload: ${error.response?.data?.detail || error.message}`)

@@ -37,6 +37,7 @@ class ICPTest(Base):
     test_date = Column(Date, nullable=False, index=True)
     lab_name = Column(String, nullable=False, index=True)  # ATI, Triton, Fauna Marin, etc.
     test_id = Column(String, nullable=True)  # Lab's test ID/barcode
+    water_type = Column(String, nullable=False, default='saltwater', index=True)  # saltwater, ro_water, fresh_water
     sample_date = Column(Date, nullable=True)  # When sample was collected
     received_date = Column(Date, nullable=True)  # When lab received sample
     evaluated_date = Column(Date, nullable=True)  # When lab completed analysis
