@@ -130,6 +130,7 @@ export default function EquipmentPage() {
       purchase_date: item.purchase_date || '',
       purchase_price: item.purchase_price || '',
       condition: item.condition || 'good',
+      status: item.status || 'active',
       notes: item.notes || '',
     })
     setEditingId(item.id)
