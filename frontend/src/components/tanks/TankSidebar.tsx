@@ -42,15 +42,20 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
       <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
         {/* Tank Image */}
         <div className="aspect-video bg-gradient-to-br from-ocean-100 to-ocean-200 rounded-lg flex items-center justify-center overflow-hidden relative group">
-          {tank.image_url ? (
-            <img
-              src={tank.image_url}
-              alt={tank.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-6xl">🐠</span>
-          )}
+          <img
+            src={tank.image_url || '/default-tank.svg'}
+            alt={tank.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+              const fallback = target.parentElement?.querySelector('.fallback-icon')
+              if (fallback) {
+                (fallback as HTMLElement).style.display = 'block'
+              }
+            }}
+          />
+          <span className="fallback-icon text-6xl hidden">🐠</span>
           {/* Upload overlay on hover */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
             <button
