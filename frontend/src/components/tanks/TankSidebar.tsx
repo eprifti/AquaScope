@@ -4,6 +4,7 @@
  * Left sidebar for tank detail view showing image, info, stats, and quick actions
  */
 
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Tank } from '../../types'
 import TankStats from './TankStats'
@@ -25,6 +26,8 @@ interface TankSidebarProps {
 }
 
 export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSidebarProps) {
+  const [imageError, setImageError] = useState(false)
+
   const calculateDaysUp = (setupDate: string | null): number => {
     if (!setupDate) return 0
     const setup = new Date(setupDate)
@@ -35,6 +38,7 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
   }
 
   const daysUp = stats?.tank_age_days || calculateDaysUp(tank.setup_date)
+  const hasImage = tank.image_url && !imageError
 
   return (
     <div className="space-y-6">
@@ -42,20 +46,16 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent }: TankSid
       <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
         {/* Tank Image */}
         <div className="aspect-video bg-gradient-to-br from-ocean-100 to-ocean-200 rounded-lg flex items-center justify-center overflow-hidden relative group">
-          <img
-            src={tank.image_url || '/default-tank.svg'}
-            alt={tank.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.style.display = 'none'
-              const fallback = target.parentElement?.querySelector('.fallback-icon')
-              if (fallback) {
-                (fallback as HTMLElement).style.display = 'block'
-              }
-            }}
-          />
-          <span className="fallback-icon text-6xl hidden">🐠</span>
+          {hasImage ? (
+            <img
+              src={tank.image_url!}
+              alt={tank.name}
+              className="w-full h-full object-cover"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <span className="text-6xl">🐠</span>
+          )}
           {/* Upload overlay on hover */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
             <button
