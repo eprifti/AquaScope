@@ -230,7 +230,7 @@ class TestCompleteReminder:
 
     def test_complete_reminder_success(self, authenticated_client, test_reminder):
         """Test successful reminder completion"""
-        original_due = date.fromisoformat(test_reminder.next_due)
+        original_due = test_reminder.next_due  # Already a date object, not a string
         response = authenticated_client.post(
             f"/api/v1/maintenance/reminders/{test_reminder.id}/complete",
             json={}
