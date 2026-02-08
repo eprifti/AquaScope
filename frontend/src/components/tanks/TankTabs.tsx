@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import type { TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../../types'
 import TankOverview from './TankOverview'
 import TankTimeline from './TankTimeline'
-import { photosApi } from '../../api/client'
+import { photosApi, livestockApi } from '../../api/client'
 
 interface TankTabsProps {
   events: TankEvent[]
@@ -48,6 +48,7 @@ export default function TankTabs({
 }: TankTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
+  const [livestockThumbnails, setLivestockThumbnails] = useState<Record<string, string>>({})
 
   // Load photo thumbnails when photos change
   useEffect(() => {
@@ -72,6 +73,30 @@ export default function TankTabs({
       Object.values(photoUrls).forEach((url) => URL.revokeObjectURL(url))
     }
   }, [photos])
+
+  // Load livestock thumbnails from FishBase
+  useEffect(() => {
+    const loadLivestockThumbnails = async () => {
+      const thumbnails: Record<string, string> = {}
+      for (const item of livestock) {
+        if (item.type === 'fish' && item.fishbase_species_id) {
+          try {
+            const images = await livestockApi.getFishBaseSpeciesImages(item.fishbase_species_id)
+            if (images && images.length > 0) {
+              thumbnails[item.id] = images[0].ThumbPic || images[0].Pic
+            }
+          } catch (error) {
+            console.error(`Failed to load FishBase thumbnail for livestock ${item.id}:`, error)
+          }
+        }
+      }
+      setLivestockThumbnails(thumbnails)
+    }
+
+    if (livestock.length > 0) {
+      loadLivestockThumbnails()
+    }
+  }, [livestock])
 
   const tabs: Tab[] = [
     { id: 'overview', label: 'Overview', icon: '📊' },
@@ -169,29 +194,58 @@ export default function TankTabs({
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {livestock.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-4 bg-gradient-to-br from-ocean-50 to-white rounded-lg border border-ocean-100"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-900">{item.species_name}</div>
-                        {item.common_name && (
-                          <div className="text-sm text-gray-600">{item.common_name}</div>
-                        )}
-                        <div className="mt-2">
-                          <span className="inline-block px-2 py-1 bg-ocean-100 text-ocean-700 rounded text-xs font-medium">
-                            {item.type}
-                          </span>
+                {livestock.map((item) => {
+                  const thumbnail = livestockThumbnails[item.id]
+                  const getIcon = () => {
+                    switch (item.type) {
+                      case 'fish': return '🐠'
+                      case 'coral': return '🪸'
+                      case 'invertebrate': return '🦐'
+                      default: return '🐟'
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="bg-gradient-to-br from-ocean-50 to-white rounded-lg border border-ocean-100 overflow-hidden"
+                    >
+                      {/* Thumbnail if available */}
+                      {thumbnail && item.type === 'fish' && (
+                        <div className="h-24 bg-gradient-to-b from-blue-100 to-blue-50 flex items-center justify-center p-2">
+                          <img
+                            src={thumbnail}
+                            alt={item.common_name || item.species_name}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                        </div>
+                      )}
+
+                      {/* Info */}
+                      <div className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="font-semibold text-gray-900">
+                              {item.common_name || item.species_name}
+                            </div>
+                            {item.common_name && (
+                              <div className="text-sm text-gray-600 italic">{item.species_name}</div>
+                            )}
+                            <div className="mt-2">
+                              <span className="inline-block px-2 py-1 bg-ocean-100 text-ocean-700 rounded text-xs font-medium capitalize">
+                                {item.type}
+                              </span>
+                            </div>
+                          </div>
+                          {/* Only show emoji if no thumbnail */}
+                          {!(thumbnail && item.type === 'fish') && (
+                            <div className="text-2xl">{getIcon()}</div>
+                          )}
                         </div>
                       </div>
-                      <div className="text-2xl">
-                        {item.type === 'fish' ? '🐠' : item.type === 'coral' ? '🪸' : '🦐'}
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
