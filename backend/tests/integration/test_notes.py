@@ -12,7 +12,7 @@ class TestNotesAPI:
         """Test creating a new note"""
         from app.models.tank import Tank
 
-        tank = Tank(user_id=test_user.id, name="Test Tank", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Test Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
         db_session.refresh(tank)
@@ -36,7 +36,7 @@ class TestNotesAPI:
         from app.models.tank import Tank
         from app.models.note import Note
 
-        tank = Tank(user_id=test_user.id, name="Test Tank", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Test Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
 
@@ -56,8 +56,8 @@ class TestNotesAPI:
         from app.models.tank import Tank
         from app.models.note import Note
 
-        tank1 = Tank(user_id=test_user.id, name="Tank 1", volume_liters=100.0)
-        tank2 = Tank(user_id=test_user.id, name="Tank 2", volume_liters=100.0)
+        tank1 = Tank(user_id=test_user.id, name="Tank 1", display_volume_liters=100.0)
+        tank2 = Tank(user_id=test_user.id, name="Tank 2", display_volume_liters=100.0)
         db_session.add_all([tank1, tank2])
         db_session.commit()
 
@@ -78,7 +78,7 @@ class TestNotesAPI:
         from app.models.tank import Tank
         from app.models.note import Note
 
-        tank = Tank(user_id=test_user.id, name="Test Tank", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Test Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
 
@@ -101,7 +101,7 @@ class TestNotesAPI:
         from app.models.tank import Tank
         from app.models.note import Note
 
-        tank = Tank(user_id=test_user.id, name="Test Tank", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Test Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
 

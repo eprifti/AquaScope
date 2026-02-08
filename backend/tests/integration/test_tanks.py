@@ -15,7 +15,7 @@ class TestTanksAPI:
             "/api/v1/tanks",
             json={
                 "name": "Main Display Tank",
-                "volume_liters": 200.0,
+                "display_volume_liters": 200.0,
                 "setup_date": str(date.today()),
                 "description": "My main reef tank"
             }
@@ -24,7 +24,7 @@ class TestTanksAPI:
         assert response.status_code == 200
         data = response.json()
         assert data["name"] == "Main Display Tank"
-        assert data["volume_liters"] == 200.0
+        assert data["display_volume_liters"] == 200.0
         assert "id" in data
 
     def test_list_tanks(self, authenticated_client, test_user, db_session):
@@ -32,8 +32,8 @@ class TestTanksAPI:
         # Create some tanks
         from app.models.tank import Tank
 
-        tank1 = Tank(user_id=test_user.id, name="Tank 1", volume_liters=100.0)
-        tank2 = Tank(user_id=test_user.id, name="Tank 2", volume_liters=150.0)
+        tank1 = Tank(user_id=test_user.id, name="Tank 1", display_volume_liters=100.0)
+        tank2 = Tank(user_id=test_user.id, name="Tank 2", display_volume_liters=150.0)
         db_session.add_all([tank1, tank2])
         db_session.commit()
 
@@ -48,7 +48,7 @@ class TestTanksAPI:
         """Test getting a specific tank"""
         from app.models.tank import Tank
 
-        tank = Tank(user_id=test_user.id, name="Test Tank", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Test Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
         db_session.refresh(tank)
@@ -73,7 +73,7 @@ class TestTanksAPI:
         """Test updating a tank"""
         from app.models.tank import Tank
 
-        tank = Tank(user_id=test_user.id, name="Old Name", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="Old Name", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
         db_session.refresh(tank)
@@ -82,20 +82,20 @@ class TestTanksAPI:
             f"/api/v1/tanks/{tank.id}",
             json={
                 "name": "New Name",
-                "volume_liters": 150.0
+                "display_volume_liters": 150.0
             }
         )
 
         assert response.status_code == 200
         data = response.json()
         assert data["name"] == "New Name"
-        assert data["volume_liters"] == 150.0
+        assert data["display_volume_liters"] == 150.0
 
     def test_delete_tank(self, authenticated_client, test_user, db_session):
         """Test deleting a tank"""
         from app.models.tank import Tank
 
-        tank = Tank(user_id=test_user.id, name="To Delete", volume_liters=100.0)
+        tank = Tank(user_id=test_user.id, name="To Delete", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
         db_session.refresh(tank)
@@ -132,7 +132,7 @@ class TestTanksAPI:
         db_session.refresh(user2)
 
         # User1 creates a tank
-        tank = Tank(user_id=user1.id, name="User1 Tank", volume_liters=100.0)
+        tank = Tank(user_id=user1.id, name="User1 Tank", display_volume_liters=100.0)
         db_session.add(tank)
         db_session.commit()
         db_session.refresh(tank)

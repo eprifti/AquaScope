@@ -20,7 +20,7 @@ class TestAuthEndpoints:
             }
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 201  # 201 Created is correct for POST
         data = response.json()
         assert data["email"] == "newuser@example.com"
         assert data["username"] == "newuser"
@@ -65,7 +65,7 @@ class TestAuthEndpoints:
             }
         )
 
-        assert response.status_code == 400
+        assert response.status_code == 422  # 422 Unprocessable Entity for validation errors
 
     def test_login_success(self, client, db_session):
         """Test successful login"""

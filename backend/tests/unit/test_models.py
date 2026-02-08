@@ -66,7 +66,7 @@ class TestTankModel:
         tank = Tank(
             user_id=test_user.id,
             name=fake.word(),
-            volume_liters=100.0,
+            display_volume_liters=100.0,
             setup_date=date.today()
         )
         db_session.add(tank)
@@ -76,7 +76,7 @@ class TestTankModel:
         assert tank.id is not None
         assert tank.user_id == test_user.id
         assert tank.name is not None
-        assert tank.volume_liters == 100.0
+        assert tank.display_volume_liters == 100.0
         assert tank.created_at is not None
 
     def test_tank_user_relationship(self, db_session, test_user, fake):
@@ -84,7 +84,7 @@ class TestTankModel:
         tank = Tank(
             user_id=test_user.id,
             name=fake.word(),
-            volume_liters=50.0
+            display_volume_liters=50.0
         )
         db_session.add(tank)
         db_session.commit()
@@ -104,7 +104,7 @@ class TestNoteModel:
         tank = Tank(
             user_id=test_user.id,
             name=fake.word(),
-            volume_liters=50.0
+            display_volume_liters=50.0
         )
         db_session.add(tank)
         db_session.commit()
@@ -134,7 +134,7 @@ class TestMaintenanceReminderModel:
         tank = Tank(
             user_id=test_user.id,
             name=fake.word(),
-            volume_liters=50.0
+            display_volume_liters=50.0
         )
         db_session.add(tank)
         db_session.commit()
@@ -166,7 +166,7 @@ class TestLivestockModel:
         tank = Tank(
             user_id=test_user.id,
             name=fake.word(),
-            volume_liters=50.0
+            display_volume_liters=50.0
         )
         db_session.add(tank)
         db_session.commit()
