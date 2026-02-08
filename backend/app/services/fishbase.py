@@ -109,33 +109,57 @@ class FishBaseService:
 
             # Disable SSL verification for FishBase API (development only)
             async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
-                # Try searching by scientific name first (Genus + Species)
-                parts = query.split()
                 results = []
+                parts = query.split()
 
+                # Try different API patterns based on query format
                 if len(parts) >= 2:
-                    # Search by Genus and Species separately for better matches
+                    # Scientific name: Try genus/species endpoint
                     genus = parts[0]
-                    species = parts[1]
+                    species_part = parts[1]
 
-                    response = await client.get(
-                        f"{self.base_url}/species",
-                        params={"Genus": genus, "Species": species, "limit": limit}
-                    )
-                    response.raise_for_status()
-                    results = response.json()
+                    try:
+                        # Format: /species?Genus=Amphiprion&Species=ocellaris
+                        response = await client.get(
+                            f"{self.base_url}/species",
+                            params={"Genus": genus, "Species": species_part, "limit": limit}
+                        )
+                        if response.status_code == 200:
+                            results = response.json()
+                            if isinstance(results, dict):
+                                results = [results]
+                    except:
+                        pass
 
-                # If no results, try searching by full query
+                # If no results, try common name search via comnames endpoint
                 if not results:
-                    response = await client.get(
-                        f"{self.base_url}/species",
-                        params={"Species": query, "limit": limit}
-                    )
-                    response.raise_for_status()
-                    results = response.json()
+                    try:
+                        response = await client.get(
+                            f"{self.base_url}/comnames",
+                            params={"ComName": query, "limit": limit}
+                        )
+                        if response.status_code == 200:
+                            comnames_data = response.json()
+                            # Get unique species codes
+                            if isinstance(comnames_data, list):
+                                spec_codes = list(set([item.get("SpecCode") for item in comnames_data if item.get("SpecCode")]))[:limit]
+                                # Fetch full species data for each
+                                for spec_code in spec_codes:
+                                    try:
+                                        spec_response = await client.get(f"{self.base_url}/species/{spec_code}")
+                                        if spec_response.status_code == 200:
+                                            spec_data = spec_response.json()
+                                            if isinstance(spec_data, list) and len(spec_data) > 0:
+                                                results.append(spec_data[0])
+                                            elif isinstance(spec_data, dict):
+                                                results.append(spec_data)
+                                    except:
+                                        continue
+                    except:
+                        pass
 
                 return results if isinstance(results, list) else []
-        except httpx.HTTPError as e:
+        except Exception as e:
             print(f"Error searching FishBase: {e}")
             return []
 
