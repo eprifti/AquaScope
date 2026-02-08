@@ -3,26 +3,33 @@
 ## Overview
 
 Complete ICP-OES water test integration with automatic ATI lab PDF parsing.
+**Now supports multiple water types (Saltwater + RO Water) from a single PDF!**
 
 ## Features Implemented
 
 ### Backend
 - ✅ ICPTest database model (50+ element fields)
-- ✅ Alembic migration for icp_tests table
+- ✅ Alembic migrations (k2l3m4n5o6p7, p7q8r9s0t1u2)
+- ✅ **Multi-water type support** (saltwater, ro_water, fresh_water)
 - ✅ ATI PDF parser with automatic data extraction
+- ✅ **Detects "Results of Salt water" and "Results of Osmosis water" sections**
 - ✅ REST API endpoints at `/api/v1/icp-tests`
-- ✅ PDF upload with multipart/form-data
+- ✅ PDF upload returns list of tests (one per water type)
 - ✅ Element status tracking (NORMAL, CRITICALLY_LOW, etc.)
 - ✅ Quality score storage (Major, Minor, Pollutants, Base)
+- ✅ **Handles RO water elements with "---" (not detected) values**
 
 ### Frontend
-- ✅ TypeScript types for ICP tests
-- ✅ API client with upload support
+- ✅ TypeScript types for ICP tests with water_type field
+- ✅ API client with multi-test upload support
 - ✅ ICP Tests page with list and detail view
 - ✅ Navigation link (🔬 ICP Tests)
 - ✅ PDF upload interface
+- ✅ **Water type badges (🌊 Saltwater / 💧 RO Water)**
+- ✅ **Water type visible in test list and detail view**
 - ✅ Color-coded status indicators
 - ✅ Responsive element display
+- ✅ **Element groups display for status-only fields (RO water)**
 
 ## Testing Steps
 
@@ -69,9 +76,10 @@ Verify:
    - Click "Upload ATI PDF"
    - Select: `data/2025-10-23-347998-ati.lab.results.pdf`
    - Wait for upload confirmation
+   - **Success message: "2 ICP tests uploaded successfully (saltwater, ro_water)"**
 
 3. **Verify Data Extraction**
-   Expected parsed data from sample PDF:
+   Expected parsed data from sample PDF (Saltwater section):
    ```
    Test Date: 2025-10-23
    Lab: ATI Aquaristik
@@ -94,14 +102,31 @@ Verify:
    - F: 0.59 mg/l (CRITICALLY_LOW)
    ```
 
+   Expected parsed data from sample PDF (RO Water section):
+   ```
+   Water Type: ro_water
+
+   Minor Elements (all showing NORMAL status with "---" values):
+   - Li: --- (NORMAL)
+   - Si: --- (NORMAL)
+   - Ba: --- (NORMAL)
+   - Mo: --- (NORMAL)
+   ... (all trace elements showing NORMAL status)
+   ```
+
 4. **Verify UI Display**
-   - Test appears in history list
+   - **Two tests appear in history list:**
+     - One with 🌊 Saltwater badge (blue)
+     - One with 💧 RO Water badge (purple)
    - Quality scores shown with color indicators:
-     - Green (90+): Major Elements
-     - Yellow (86): Minor Elements
+     - Green (90+): Major Elements (Saltwater only)
+     - Yellow (86): Minor Elements (Saltwater only)
      - Green (100): Pollutants
-   - Click test to view details
-   - All element groups displayed correctly
+   - Click each test to view details
+   - **Water type badge visible in detail view header**
+   - All element groups displayed correctly:
+     - Saltwater: Base elements, Major elements, Minor elements, Nutrients, Pollutants
+     - RO Water: Minor elements and Pollutants (with status-only display)
    - Status badges color-coded appropriately:
      - Green: NORMAL
      - Orange: ABOVE_NORMAL/BELOW_NORMAL
