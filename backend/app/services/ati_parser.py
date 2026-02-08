@@ -326,8 +326,12 @@ def validate_parsed_data(data: Dict[str, Any]) -> None:
 
     # Check that at least some element data was extracted
     # For saltwater: check base elements (ca, mg, kh, salinity)
-    # For RO water: check trace elements or pollutants
-    element_fields = ['ca', 'mg', 'kh', 'salinity', 'li', 'si', 'al', 'no3', 'po4']
+    # For RO water: check trace elements or pollutants (may have only status fields if value is "---")
+    element_fields = [
+        'ca', 'mg', 'kh', 'salinity', 'li', 'si', 'al', 'no3', 'po4',  # value fields
+        'ca_status', 'mg_status', 'kh_status', 'salinity_status',  # status fields
+        'li_status', 'si_status', 'al_status', 'no3_status', 'po4_status'
+    ]
     has_data = any(field in data for field in element_fields)
 
     if not has_data:
