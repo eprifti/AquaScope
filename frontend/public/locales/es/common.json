@@ -58,6 +58,43 @@
     "withLove": "con",
     "forCommunity": "para la comunidad de acuaristas de arrecife",
     "builtWith": "Construido con",
-    "copyright": "Todos los derechos reservados"
+    "copyright": "Todos los derechos reservados",
+    "links": "Enlaces",
+    "githubRepository": "Repositorio GitHub",
+    "reportIssues": "Reportar problemas",
+    "documentation": "Documentación",
+    "supportProject": "Apoyar el proyecto",
+    "helpKeepGoing": "Ayuda a mantener el desarrollo de ReefLab",
+    "githubSponsors": "GitHub Sponsors",
+    "buyMeCoffee": "Invítame un café",
+    "openSource": "Código abierto bajo licencia MIT",
+    "reefDescription": "Sistema completo de gestión de acuarios de arrecife"
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signingIn": "Iniciando sesión...",
+    "signInToAccount": "Inicia sesión en tu cuenta",
+    "emailAddress": "Correo electrónico",
+    "password": "Contraseña",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "createOneHere": "Crea una aquí",
+    "createAccount": "Crear cuenta",
+    "creatingAccount": "Creando cuenta...",
+    "fullName": "Nombre completo",
+    "confirmPassword": "Confirmar contraseña",
+    "passwordMinLength": "Mínimo 8 caracteres",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "signInHere": "Inicia sesión aquí",
+    "loginFailed": "Error de inicio de sesión. Verifica tus credenciales.",
+    "registrationFailed": "Error en el registro. Inténtalo de nuevo.",
+    "passwordsDontMatch": "Las contraseñas no coinciden",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+    "reefManagement": "Gestión de Acuario de Arrecife",
+    "trackYourReef": "Controla los parámetros, mantenimiento y animales de tu acuario"
+  },
+  "layout": {
+    "admin": "Admin",
+    "developer": "Desarrollador",
+    "apiDocumentation": "Documentación API →"
   }
 }

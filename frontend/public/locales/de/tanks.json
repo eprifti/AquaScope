@@ -1,0 +1,66 @@
+{
+  "title": "Aquarien",
+  "addTank": "Aquarium hinzufügen",
+  "editTank": "Aquarium bearbeiten",
+  "deleteTank": "Aquarium löschen",
+  "tankDetails": "Aquarium-Details",
+  "quickActions": "Schnellaktionen",
+  "statistics": "Statistiken",
+  "fields": {
+    "name": "Aquariumname",
+    "description": "Beschreibung",
+    "displayVolume": "Anzeigebecken-Volumen",
+    "sumpVolume": "Technikbecken-Volumen",
+    "totalVolume": "Gesamtvolumen",
+    "setupDate": "Einrichtungsdatum",
+    "image": "Aquarium-Bild",
+    "liters": "L"
+  },
+  "stats": {
+    "daysRunning_one": "{{count}} Tag in Betrieb",
+    "daysRunning_other": "{{count}} Tage in Betrieb",
+    "equipmentCount": "Ausrüstung",
+    "livestockCount": "Tierbestand",
+    "photoCount": "Fotos",
+    "noteCount": "Notizen",
+    "maintenanceCount": "Wartung",
+    "icpTestCount": "ICP-Tests",
+    "eventCount": "Ereignisse"
+  },
+  "tabs": {
+    "overview": "Überblick",
+    "events": "Ereignisse",
+    "equipment": "Ausrüstung",
+    "livestock": "Tierbestand",
+    "photos": "Fotos",
+    "notes": "Notizen",
+    "icpTests": "ICP-Tests",
+    "maintenance": "Wartung"
+  },
+  "actions": {
+    "logParameters": "Parameter erfassen",
+    "uploadPhoto": "Foto hochladen",
+    "addEvent": "Ereignis hinzufügen",
+    "manageEquipment": "Ausrüstung verwalten",
+    "manageLivestock": "Tierbestand verwalten",
+    "changeImage": "Bild ändern"
+  },
+  "emptyState": {
+    "noTanks": "Noch keine Aquarien",
+    "noTanksDescription": "Erstellen Sie Ihr erstes Aquarium, um zu beginnen",
+    "noEvents": "Noch keine Ereignisse",
+    "noEquipment": "Noch keine Ausrüstung hinzugefügt",
+    "noLivestock": "Noch kein Tierbestand hinzugefügt",
+    "noPhotos": "Noch keine Fotos",
+    "noNotes": "Noch keine Notizen",
+    "noIcpTests": "Noch keine ICP-Tests",
+    "noMaintenance": "Noch keine Wartungserinnerungen"
+  },
+  "imageUpload": {
+    "title": "Aquarium-Bild hochladen",
+    "dragDrop": "Klicken oder per Drag & Drop hochladen",
+    "fileTypes": "PNG, JPG, GIF bis zu 10 MB",
+    "uploading": "Wird hochgeladen...",
+    "changeImage": "Bild ändern"
+  }
+}

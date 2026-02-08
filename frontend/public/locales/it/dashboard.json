@@ -1,0 +1,16 @@
+{
+  "title": "Pannello",
+  "welcome": "Bentornato, {{name}}!",
+  "quickStats": "Statistiche rapide",
+  "recentActivity": "Attività recente",
+  "overdueMaintenance": "Manutenzione in ritardo",
+  "stats": {
+    "totalTanks": "Vasche totali",
+    "overdueTasks": "Attività in ritardo",
+    "recentPhotos": "Foto recenti",
+    "livestockCount": "Animali totali"
+  },
+  "noMaintenance": "Nessuna manutenzione in ritardo",
+  "noTanks": "Nessuna vasca",
+  "getStarted": "Inizia creando la tua prima vasca"
+}

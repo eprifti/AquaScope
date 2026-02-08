@@ -103,7 +103,7 @@ export default function Layout(): JSX.Element {
                     `}
                   >
                     <span className="mr-3">⚙️</span>
-                    Admin
+                    {t('layout.admin')}
                   </Link>
                 </>
               )}
@@ -112,7 +112,7 @@ export default function Layout(): JSX.Element {
             {/* API Documentation Link */}
             <div className="mt-8 p-4 bg-blue-50 rounded-md">
               <p className="text-xs font-medium text-blue-900 mb-1">
-                Developer
+                {t('layout.developer')}
               </p>
               <a
                 href="http://localhost:8000/docs"
@@ -120,7 +120,7 @@ export default function Layout(): JSX.Element {
                 rel="noopener noreferrer"
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                API Documentation →
+                {t('layout.apiDocumentation')}
               </a>
             </div>
           </aside>

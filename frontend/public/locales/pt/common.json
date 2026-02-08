@@ -1,0 +1,100 @@
+{
+  "app": {
+    "name": "ReefLab",
+    "tagline": "Sistema de Gestão de Aquário de Recife"
+  },
+  "navigation": {
+    "dashboard": "Painel",
+    "tanks": "Aquários",
+    "parameters": "Parâmetros",
+    "photos": "Fotos",
+    "notes": "Notas",
+    "maintenance": "Manutenção",
+    "livestock": "Animais",
+    "equipment": "Equipamento",
+    "icpTests": "Testes ICP"
+  },
+  "actions": {
+    "add": "Adicionar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "upload": "Enviar",
+    "download": "Baixar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "logout": "Sair",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "refresh": "Atualizar"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso!",
+    "noData": "Nenhum dado disponível",
+    "confirm": "Tem certeza?",
+    "yes": "Sim",
+    "no": "Não",
+    "total": "Total",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "date": "Data",
+    "description": "Descrição",
+    "name": "Nome",
+    "status": "Status",
+    "type": "Tipo"
+  },
+  "language": {
+    "select": "Selecionar idioma",
+    "current": "Idioma atual"
+  },
+  "footer": {
+    "createdBy": "Criado por",
+    "withLove": "com",
+    "forCommunity": "para a comunidade de aquarismo marinho",
+    "builtWith": "Desenvolvido com",
+    "copyright": "Todos os direitos reservados",
+    "links": "Links",
+    "githubRepository": "Repositório GitHub",
+    "reportIssues": "Reportar problemas",
+    "documentation": "Documentação",
+    "supportProject": "Apoie o projeto",
+    "helpKeepGoing": "Ajude a manter o desenvolvimento do ReefLab",
+    "githubSponsors": "GitHub Sponsors",
+    "buyMeCoffee": "Pague-me um café",
+    "openSource": "Código aberto sob licença MIT",
+    "reefDescription": "Sistema completo de gestão de aquários de recife"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signingIn": "Entrando...",
+    "signInToAccount": "Entre na sua conta",
+    "emailAddress": "Endereço de email",
+    "password": "Senha",
+    "dontHaveAccount": "Não tem uma conta?",
+    "createOneHere": "Crie uma aqui",
+    "createAccount": "Criar conta",
+    "creatingAccount": "Criando conta...",
+    "fullName": "Nome completo",
+    "confirmPassword": "Confirmar senha",
+    "passwordMinLength": "Mínimo de 8 caracteres",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "signInHere": "Entre aqui",
+    "loginFailed": "Falha no login. Verifique suas credenciais.",
+    "registrationFailed": "Falha no registro. Tente novamente.",
+    "passwordsDontMatch": "As senhas não coincidem",
+    "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
+    "reefManagement": "Gestão de Aquário de Recife",
+    "trackYourReef": "Acompanhe os parâmetros, manutenção e animais do seu aquário"
+  },
+  "layout": {
+    "admin": "Admin",
+    "developer": "Desenvolvedor",
+    "apiDocumentation": "Documentação API →"
+  }
+}

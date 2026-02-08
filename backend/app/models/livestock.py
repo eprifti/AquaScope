@@ -23,7 +23,7 @@ Why track livestock?
 - Historical record if livestock is lost
 - Aid in troubleshooting (new addition causing issues)
 """
-from sqlalchemy import Column, String, Text, Date, DateTime, ForeignKey
+from sqlalchemy import Column, String, Text, Date, DateTime, ForeignKey, Integer
 from app.models.types import GUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -44,11 +44,21 @@ class Livestock(Base):
     common_name = Column(String, nullable=True)  # Common name (e.g., "Clownfish")
     type = Column(String, nullable=False, index=True)  # fish, coral, invertebrate
 
-    # External API integration
-    fishbase_species_id = Column(String, nullable=True)  # Links to FishBase API
+    # External API integration (all nullable for backward compatibility)
+    fishbase_species_id = Column(String, nullable=True, index=True)  # Links to FishBase API
+    worms_id = Column(String, nullable=True, index=True)  # WoRMS AphiaID
+    inaturalist_id = Column(String, nullable=True, index=True)  # iNaturalist taxon ID
+    cached_photo_url = Column(String, nullable=True)  # Primary photo URL (cached)
+
+    # Quantity (number of individuals of this species)
+    quantity = Column(Integer, nullable=False, default=1)
+
+    # Status tracking: alive, dead, removed
+    status = Column(String, nullable=False, default="alive", index=True)
 
     # Tank history
     added_date = Column(Date, nullable=True)  # When added to tank
+    removed_date = Column(Date, nullable=True)  # When removed/died
     notes = Column(Text, nullable=True)  # Observations, source, price, etc.
 
     # Timestamps

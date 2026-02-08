@@ -58,6 +58,43 @@
     "withLove": "with",
     "forCommunity": "for the reef keeping community",
     "builtWith": "Built with",
-    "copyright": "All rights reserved"
+    "copyright": "All rights reserved",
+    "links": "Links",
+    "githubRepository": "GitHub Repository",
+    "reportIssues": "Report Issues",
+    "documentation": "Documentation",
+    "supportProject": "Support the Project",
+    "helpKeepGoing": "Help keep ReefLab development going",
+    "githubSponsors": "GitHub Sponsors",
+    "buyMeCoffee": "Buy me a coffee",
+    "openSource": "Open source under MIT License",
+    "reefDescription": "Comprehensive reef aquarium management system"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "signInToAccount": "Sign in to your account",
+    "emailAddress": "Email address",
+    "password": "Password",
+    "dontHaveAccount": "Don't have an account?",
+    "createOneHere": "Create one here",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account...",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password",
+    "passwordMinLength": "Must be at least 8 characters",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInHere": "Sign in here",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registrationFailed": "Registration failed. Please try again.",
+    "passwordsDontMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 8 characters long",
+    "reefManagement": "Reef Aquarium Management",
+    "trackYourReef": "Track your reef parameters, maintenance, and livestock"
+  },
+  "layout": {
+    "admin": "Admin",
+    "developer": "Developer",
+    "apiDocumentation": "API Documentation →"
   }
 }

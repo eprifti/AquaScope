@@ -247,6 +247,8 @@ export interface MaintenanceReminderUpdate {
 // Livestock Types
 // ============================================================================
 
+export type LivestockStatus = 'alive' | 'dead' | 'removed'
+
 export interface Livestock {
   id: string
   tank_id: string
@@ -255,7 +257,13 @@ export interface Livestock {
   common_name: string | null
   type: 'fish' | 'coral' | 'invertebrate'
   fishbase_species_id: string | null
+  worms_id: string | null  // WoRMS AphiaID
+  inaturalist_id: string | null  // iNaturalist taxon ID
+  cached_photo_url: string | null  // Primary photo URL
+  quantity: number
+  status: LivestockStatus
   added_date: string | null
+  removed_date: string | null
   notes: string | null
   created_at: string
 }
@@ -266,6 +274,11 @@ export interface LivestockCreate {
   common_name?: string | null
   type: 'fish' | 'coral' | 'invertebrate'
   fishbase_species_id?: string | null
+  worms_id?: string | null  // WoRMS AphiaID
+  inaturalist_id?: string | null  // iNaturalist taxon ID
+  cached_photo_url?: string | null  // Primary photo URL
+  quantity?: number
+  status?: LivestockStatus
   added_date?: string | null
   notes?: string | null
 }
@@ -275,7 +288,13 @@ export interface LivestockUpdate {
   common_name?: string | null
   type?: 'fish' | 'coral' | 'invertebrate'
   fishbase_species_id?: string | null
+  worms_id?: string | null  // WoRMS AphiaID
+  inaturalist_id?: string | null  // iNaturalist taxon ID
+  cached_photo_url?: string | null  // Primary photo URL
+  quantity?: number
+  status?: LivestockStatus
   added_date?: string | null
+  removed_date?: string | null
   notes?: string | null
 }
 

@@ -1,0 +1,66 @@
+{
+  "title": "Vasche",
+  "addTank": "Aggiungi vasca",
+  "editTank": "Modifica vasca",
+  "deleteTank": "Elimina vasca",
+  "tankDetails": "Dettagli vasca",
+  "quickActions": "Azioni rapide",
+  "statistics": "Statistiche",
+  "fields": {
+    "name": "Nome vasca",
+    "description": "Descrizione",
+    "displayVolume": "Volume vasca principale",
+    "sumpVolume": "Volume sump",
+    "totalVolume": "Volume totale",
+    "setupDate": "Data di avvio",
+    "image": "Immagine vasca",
+    "liters": "L"
+  },
+  "stats": {
+    "daysRunning_one": "{{count}} giorno attivo",
+    "daysRunning_other": "{{count}} giorni attivi",
+    "equipmentCount": "Attrezzatura",
+    "livestockCount": "Animali",
+    "photoCount": "Foto",
+    "noteCount": "Note",
+    "maintenanceCount": "Manutenzione",
+    "icpTestCount": "Test ICP",
+    "eventCount": "Eventi"
+  },
+  "tabs": {
+    "overview": "Panoramica",
+    "events": "Eventi",
+    "equipment": "Attrezzatura",
+    "livestock": "Animali",
+    "photos": "Foto",
+    "notes": "Note",
+    "icpTests": "Test ICP",
+    "maintenance": "Manutenzione"
+  },
+  "actions": {
+    "logParameters": "Registra parametri",
+    "uploadPhoto": "Carica foto",
+    "addEvent": "Aggiungi evento",
+    "manageEquipment": "Gestisci attrezzatura",
+    "manageLivestock": "Gestisci animali",
+    "changeImage": "Cambia immagine"
+  },
+  "emptyState": {
+    "noTanks": "Nessuna vasca",
+    "noTanksDescription": "Crea la tua prima vasca per iniziare",
+    "noEvents": "Nessun evento",
+    "noEquipment": "Nessuna attrezzatura aggiunta",
+    "noLivestock": "Nessun animale aggiunto",
+    "noPhotos": "Nessuna foto",
+    "noNotes": "Nessuna nota",
+    "noIcpTests": "Nessun test ICP",
+    "noMaintenance": "Nessun promemoria di manutenzione"
+  },
+  "imageUpload": {
+    "title": "Carica immagine vasca",
+    "dragDrop": "Clicca o trascina per caricare",
+    "fileTypes": "PNG, JPG, GIF fino a 10 MB",
+    "uploading": "Caricamento...",
+    "changeImage": "Cambia immagine"
+  }
+}

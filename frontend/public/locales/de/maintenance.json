@@ -1,0 +1,19 @@
+{
+  "title": "Wartung",
+  "addReminder": "Erinnerung hinzufügen",
+  "reminders": "Erinnerungen",
+  "overdue": "Überfällig",
+  "dueSoon": "Bald fällig",
+  "upcoming": "Bevorstehend",
+  "fields": {
+    "title": "Titel",
+    "frequency": "Häufigkeit",
+    "nextDue": "Nächste Fälligkeit",
+    "lastCompleted": "Zuletzt erledigt",
+    "isActive": "Aktiv"
+  },
+  "frequency": {
+    "days_one": "Alle {{count}} Tag",
+    "days_other": "Alle {{count}} Tage"
+  }
+}

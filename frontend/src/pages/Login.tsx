@@ -1,10 +1,13 @@
 import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import LanguageSelector from '../components/LanguageSelector'
 
 export default function Login() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { t } = useTranslation('common')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,7 +25,7 @@ export default function Login() {
     } catch (err: any) {
       console.error('Login error:', err)
       setError(
-        err.response?.data?.detail || 'Login failed. Please check your credentials.'
+        err.response?.data?.detail || t('auth.loginFailed')
       )
     } finally {
       setIsLoading(false)
@@ -35,14 +38,17 @@ export default function Login() {
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-ocean-900 mb-2">ReefLab</h1>
-          <p className="text-ocean-700">Reef Aquarium Management</p>
+          <p className="text-ocean-700">{t('auth.reefManagement')}</p>
         </div>
 
         {/* Login Card */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            Sign in to your account
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {t('auth.signInToAccount')}
+            </h2>
+            <LanguageSelector />
+          </div>
 
           {/* Error Message */}
           {error && (
@@ -58,7 +64,7 @@ export default function Login() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <input
                 id="email"
@@ -77,7 +83,7 @@ export default function Login() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Password
+                {t('auth.password')}
               </label>
               <input
                 id="password"
@@ -96,19 +102,19 @@ export default function Login() {
               disabled={isLoading}
               className="w-full bg-ocean-600 text-white py-2 px-4 rounded-md hover:bg-ocean-700 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </form>
 
           {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              {t('auth.dontHaveAccount')}{' '}
               <Link
                 to="/register"
                 className="text-ocean-600 hover:text-ocean-700 font-medium"
               >
-                Create one here
+                {t('auth.createOneHere')}
               </Link>
             </p>
           </div>
@@ -116,7 +122,7 @@ export default function Login() {
 
         {/* Demo Info */}
         <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Track your reef parameters, maintenance, and livestock</p>
+          <p>{t('auth.trackYourReef')}</p>
         </div>
       </div>
     </div>

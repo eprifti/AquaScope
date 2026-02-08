@@ -1,11 +1,12 @@
 /**
  * Livestock Form Component
  *
- * Form for adding and editing livestock with FishBase search integration
+ * Form for adding and editing livestock with multi-source species search
  */
 
 import { useState, useEffect } from 'react'
-import { Livestock, Tank, LivestockCreate } from '../../types'
+import { useTranslation } from 'react-i18next'
+import { Livestock, Tank, LivestockCreate, LivestockStatus } from '../../types'
 import { livestockApi } from '../../api/client'
 
 interface LivestockFormProps {
@@ -21,18 +22,27 @@ export default function LivestockForm({
   onSubmit,
   onCancel,
 }: LivestockFormProps) {
+  const { t } = useTranslation('livestock')
+  const { t: tc } = useTranslation('common')
   const [tankId, setTankId] = useState('')
   const [speciesName, setSpeciesName] = useState('')
   const [commonName, setCommonName] = useState('')
   const [type, setType] = useState<'fish' | 'coral' | 'invertebrate'>('fish')
+  const [status, setStatus] = useState<LivestockStatus>('alive')
   const [fishbaseSpeciesId, setFishbaseSpeciesId] = useState('')
+  const [wormsId, setWormsId] = useState('')
+  const [inaturalistId, setInaturalistId] = useState('')
+  const [cachedPhotoUrl, setCachedPhotoUrl] = useState('')
+  const [quantity, setQuantity] = useState(1)
   const [addedDate, setAddedDate] = useState('')
   const [notes, setNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // FishBase search
+  // Multi-source species search
+  const [searchSource, setSearchSource] = useState<'worms' | 'inaturalist' | 'fishbase'>('inaturalist')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
+  const [searchError, setSearchError] = useState('')
   const [isSearching, setIsSearching] = useState(false)
 
   useEffect(() => {
@@ -41,7 +51,12 @@ export default function LivestockForm({
       setSpeciesName(livestock.species_name)
       setCommonName(livestock.common_name || '')
       setType(livestock.type)
+      setStatus(livestock.status || 'alive')
+      setQuantity(livestock.quantity || 1)
       setFishbaseSpeciesId(livestock.fishbase_species_id || '')
+      setWormsId(livestock.worms_id || '')
+      setInaturalistId(livestock.inaturalist_id || '')
+      setCachedPhotoUrl(livestock.cached_photo_url || '')
       setAddedDate(livestock.added_date || '')
       setNotes(livestock.notes || '')
     } else {
@@ -50,53 +65,129 @@ export default function LivestockForm({
     }
   }, [livestock])
 
-  const handleFishBaseSearch = async () => {
+  const handleSpeciesSearch = async () => {
     if (!searchQuery || searchQuery.length < 2) return
 
     setIsSearching(true)
+    setSearchError('')
     try {
-      const results = await livestockApi.searchFishBase(searchQuery)
+      let results: any[] = []
 
-      // Enhance results with thumbnails
-      const enhancedResults = await Promise.all(
-        results.slice(0, 5).map(async (result) => {
-          try {
-            const specCode = result.SpecCode || result.species_id
-            if (specCode) {
-              const images = await livestockApi.getFishBaseSpeciesImages(String(specCode))
-              if (images && images.length > 0) {
-                result.thumbnail = images[0].ThumbPic || images[0].Pic
+      switch (searchSource) {
+        case 'worms':
+          results = await livestockApi.searchWoRMS(searchQuery)
+          break
+        case 'inaturalist':
+          results = await livestockApi.searchINaturalist(searchQuery)
+          break
+        case 'fishbase':
+          results = await livestockApi.searchFishBase(searchQuery)
+          break
+      }
+
+      if (results.length === 0) {
+        setSearchError(
+          searchSource === 'worms'
+            ? t('search.noResultsWorms')
+            : searchSource === 'fishbase'
+            ? t('search.noResultsFishbase')
+            : t('search.noResultsINaturalist')
+        )
+        setSearchResults([])
+        return
+      }
+
+      // Enhance WoRMS results with iNaturalist photos
+      if (searchSource === 'worms') {
+        const enhanced = await Promise.all(
+          results.slice(0, 5).map(async (result) => {
+            try {
+              const inatResults = await livestockApi.searchINaturalist(
+                result.scientificname,
+                1
+              )
+              if (inatResults[0]?.default_photo) {
+                result.thumbnail = inatResults[0].default_photo.medium_url
+                result.inaturalist_id = inatResults[0].id
               }
+            } catch {
+              // Continue without photo if fetch fails
             }
-          } catch (error) {
-            // Continue without thumbnail if fetch fails
-          }
-          return result
-        })
-      )
-
-      setSearchResults(enhancedResults)
+            return result
+          })
+        )
+        setSearchResults(enhanced)
+      } else if (searchSource === 'fishbase') {
+        const enhanced = await Promise.all(
+          results.slice(0, 5).map(async (result) => {
+            try {
+              const specCode = result.SpecCode || result.species_id
+              if (specCode) {
+                const images = await livestockApi.getFishBaseSpeciesImages(String(specCode))
+                if (images && images.length > 0) {
+                  result.thumbnail = images[0].ThumbPic || images[0].Pic
+                }
+              }
+            } catch {
+              // Continue without thumbnail if fetch fails
+            }
+            return result
+          })
+        )
+        setSearchResults(enhanced)
+      } else {
+        setSearchResults(results.slice(0, 5))
+      }
     } catch (error) {
-      console.error('Error searching FishBase:', error)
+      console.error('Species search error:', error)
+      setSearchError(t('search.searchFailed'))
       setSearchResults([])
     } finally {
       setIsSearching(false)
     }
   }
 
-  const handleSelectFishBaseResult = (result: any) => {
-    // FishBase API returns different field names
-    const genus = result.Genus || ''
-    const species = result.Species || ''
-    const scientificName = genus && species ? `${genus} ${species}` : result.scientific_name || ''
-    const commonName = result.FBname || result.ComName || result.common_name || ''
-    const speciesId = String(result.SpecCode || result.species_id || result.id || '')
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSpeciesSearch()
+    }
+  }
+
+  const handleSelectResult = (result: any) => {
+    let scientificName = ''
+    let commonNameValue = ''
+    let photoUrl = ''
+
+    if (searchSource === 'worms') {
+      scientificName = result.scientificname || result.valid_name || ''
+      commonNameValue = ''
+      setWormsId(String(result.AphiaID || ''))
+
+      if (result.inaturalist_id) {
+        setInaturalistId(String(result.inaturalist_id))
+        photoUrl = result.thumbnail || ''
+      }
+    } else if (searchSource === 'inaturalist') {
+      scientificName = result.name || ''
+      commonNameValue = result.preferred_common_name || ''
+      setInaturalistId(String(result.id || ''))
+      photoUrl = result.default_photo?.medium_url || ''
+    } else if (searchSource === 'fishbase') {
+      const genus = result.Genus || ''
+      const species = result.Species || ''
+      scientificName = genus && species ? `${genus} ${species}` : ''
+      commonNameValue = result.FBname || result.ComName || ''
+      setFishbaseSpeciesId(String(result.SpecCode || ''))
+      photoUrl = result.thumbnail || ''
+    }
 
     setSpeciesName(scientificName)
-    setCommonName(commonName)
-    setFishbaseSpeciesId(speciesId)
+    setCommonName(commonNameValue)
+    setCachedPhotoUrl(photoUrl)
     setSearchResults([])
     setSearchQuery('')
+    setSearchError('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,19 +200,28 @@ export default function LivestockForm({
         species_name: speciesName,
         common_name: commonName || undefined,
         type,
+        quantity,
+        status,
         fishbase_species_id: fishbaseSpeciesId || undefined,
+        worms_id: wormsId || undefined,
+        inaturalist_id: inaturalistId || undefined,
+        cached_photo_url: cachedPhotoUrl || undefined,
         added_date: addedDate || undefined,
         notes: notes || undefined,
       }
 
       await onSubmit(data)
 
-      // Reset form if adding new livestock
       if (!livestock) {
         setSpeciesName('')
         setCommonName('')
         setType('fish')
+        setQuantity(1)
+        setStatus('alive')
         setFishbaseSpeciesId('')
+        setWormsId('')
+        setInaturalistId('')
+        setCachedPhotoUrl('')
         const today = new Date().toISOString().split('T')[0]
         setAddedDate(today)
         setNotes('')
@@ -137,14 +237,14 @@ export default function LivestockForm({
     <div className="bg-white rounded-lg shadow-md border border-gray-200">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          {livestock ? 'Edit Livestock' : 'Add New Livestock'}
+          {livestock ? t('editLivestock') : t('addLivestock')}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Tank Selection */}
           <div>
             <label htmlFor="tank" className="block text-sm font-medium text-gray-700 mb-2">
-              Tank <span className="text-red-500">*</span>
+              {t('form.tank')} <span className="text-red-500">*</span>
             </label>
             <select
               id="tank"
@@ -154,7 +254,7 @@ export default function LivestockForm({
               disabled={!!livestock}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 disabled:bg-gray-100"
             >
-              <option value="">Select a tank</option>
+              <option value="">{t('form.selectTank')}</option>
               {tanks.map((tank) => (
                 <option key={tank.id} value={tank.id}>
                   {tank.name}
@@ -166,7 +266,7 @@ export default function LivestockForm({
           {/* Type Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Type <span className="text-red-500">*</span>
+              {t('form.type')} <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-3 gap-3">
               <button
@@ -179,7 +279,7 @@ export default function LivestockForm({
                 }`}
               >
                 <div className="text-3xl mb-2">🐠</div>
-                <div className="text-sm font-medium">Fish</div>
+                <div className="text-sm font-medium">{t('form.fish')}</div>
               </button>
               <button
                 type="button"
@@ -191,7 +291,7 @@ export default function LivestockForm({
                 }`}
               >
                 <div className="text-3xl mb-2">🪸</div>
-                <div className="text-sm font-medium">Coral</div>
+                <div className="text-sm font-medium">{t('form.coral')}</div>
               </button>
               <button
                 type="button"
@@ -203,76 +303,145 @@ export default function LivestockForm({
                 }`}
               >
                 <div className="text-3xl mb-2">🦐</div>
-                <div className="text-sm font-medium">Invertebrate</div>
+                <div className="text-sm font-medium">{t('form.invertebrate')}</div>
               </button>
             </div>
           </div>
 
-          {/* FishBase Search (for fish only) */}
-          {type === 'fish' && !livestock && (
+          {/* Species Search - Available for ALL types */}
+          {!livestock && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search FishBase (Optional)
+                {t('form.searchSpecies')}
               </label>
+
+              {/* Source Selector Tabs */}
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => { setSearchSource('worms'); setSearchResults([]); setSearchError('') }}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                    searchSource === 'worms'
+                      ? 'bg-ocean-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  WoRMS
+                  <div className="text-xs opacity-75">{t('form.allSpecies')}</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSearchSource('inaturalist'); setSearchResults([]); setSearchError('') }}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                    searchSource === 'inaturalist'
+                      ? 'bg-ocean-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  iNaturalist
+                  <div className="text-xs opacity-75">{t('form.withPhotos')}</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSearchSource('fishbase'); setSearchResults([]); setSearchError('') }}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                    searchSource === 'fishbase'
+                      ? 'bg-ocean-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  FishBase
+                  <div className="text-xs opacity-75">{t('form.fishOnly')}</div>
+                </button>
+              </div>
+
+              {/* Search Input */}
               <div className="flex space-x-2">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleFishBaseSearch())}
-                  placeholder="e.g., clownfish, tang, goby..."
+                  onKeyDown={handleSearchKeyDown}
+                  placeholder={
+                    searchSource === 'worms' ? t('search.placeholderWorms') :
+                    searchSource === 'inaturalist' ? t('search.placeholderINaturalist') :
+                    t('search.placeholderFishbase')
+                  }
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
                 />
                 <button
                   type="button"
-                  onClick={handleFishBaseSearch}
+                  onClick={handleSpeciesSearch}
                   disabled={isSearching || searchQuery.length < 2}
                   className="px-4 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50"
                 >
-                  {isSearching ? 'Searching...' : 'Search'}
+                  {isSearching ? t('search.searching') : t('search.search')}
                 </button>
               </div>
+
+              {/* Search Error Message */}
+              {searchError && (
+                <div className="mt-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+                  {searchError}
+                </div>
+              )}
 
               {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="mt-3 bg-white border border-gray-300 rounded-md max-h-64 overflow-y-auto">
                   {searchResults.map((result, index) => {
-                    const genus = result.Genus || ''
-                    const species = result.Species || ''
-                    const scientificName = genus && species ? `${genus} ${species}` : ''
-                    const commonName = result.FBname || result.ComName || result.common_name || 'Unknown'
+                    let scientificName = ''
+                    let displayCommonName = ''
+                    let photoUrl = ''
+
+                    if (searchSource === 'worms') {
+                      scientificName = result.scientificname || result.valid_name || ''
+                      displayCommonName = result.preferred_common_name || t('card.unknown')
+                      photoUrl = result.thumbnail || ''
+                    } else if (searchSource === 'inaturalist') {
+                      scientificName = result.name || ''
+                      displayCommonName = result.preferred_common_name || t('card.unknown')
+                      photoUrl = result.default_photo?.medium_url || ''
+                    } else if (searchSource === 'fishbase') {
+                      const genus = result.Genus || ''
+                      const species = result.Species || ''
+                      scientificName = genus && species ? `${genus} ${species}` : ''
+                      displayCommonName = result.FBname || result.ComName || t('card.unknown')
+                      photoUrl = result.thumbnail || ''
+                    }
 
                     return (
                       <button
                         key={index}
                         type="button"
-                        onClick={() => handleSelectFishBaseResult(result)}
+                        onClick={() => handleSelectResult(result)}
                         className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-200 last:border-b-0 flex items-center space-x-3"
                       >
-                        {/* Thumbnail */}
-                        {result.thumbnail ? (
+                        {photoUrl ? (
                           <img
-                            src={result.thumbnail}
-                            alt={commonName}
-                            className="w-16 h-16 object-contain bg-blue-50 rounded"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none'
-                            }}
+                            src={photoUrl}
+                            alt={displayCommonName}
+                            className="w-16 h-16 object-cover rounded bg-blue-50"
+                            onError={(e) => (e.currentTarget.style.display = 'none')}
                           />
                         ) : (
                           <div className="w-16 h-16 bg-blue-50 rounded flex items-center justify-center text-2xl">
-                            🐠
+                            {type === 'fish' ? '🐠' : type === 'coral' ? '🪸' : '🦐'}
                           </div>
                         )}
 
-                        {/* Species Info */}
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-gray-900">
-                            {commonName}
+                            {displayCommonName}
                           </div>
                           {scientificName && (
                             <div className="text-sm text-gray-600 italic">
                               {scientificName}
+                            </div>
+                          )}
+                          {searchSource === 'worms' && result.status && (
+                            <div className="text-xs text-gray-500">
+                              Status: {result.status}
                             </div>
                           )}
                         </div>
@@ -287,7 +456,7 @@ export default function LivestockForm({
           {/* Species Name */}
           <div>
             <label htmlFor="speciesName" className="block text-sm font-medium text-gray-700 mb-2">
-              Scientific Name <span className="text-red-500">*</span>
+              {t('form.scientificName')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -303,7 +472,7 @@ export default function LivestockForm({
           {/* Common Name */}
           <div>
             <label htmlFor="commonName" className="block text-sm font-medium text-gray-700 mb-2">
-              Common Name
+              {t('form.commonName')}
             </label>
             <input
               type="text"
@@ -315,10 +484,73 @@ export default function LivestockForm({
             />
           </div>
 
+          {/* Quantity */}
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+              {t('form.quantity')}
+            </label>
+            <input
+              type="number"
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              min={1}
+              className="w-32 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">{t('form.quantityHelp')}</p>
+          </div>
+
+          {/* Status - only show when editing */}
+          {livestock && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('form.status')}
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStatus('alive')}
+                  className={`p-3 border-2 rounded-md transition-colors ${
+                    status === 'alive'
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="text-xl mb-1">&#x2714;&#xFE0F;</div>
+                  <div className="text-sm font-medium">{t('status.alive')}</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatus('dead')}
+                  className={`p-3 border-2 rounded-md transition-colors ${
+                    status === 'dead'
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="text-xl mb-1">&#x1FAA6;</div>
+                  <div className="text-sm font-medium">{t('status.dead')}</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatus('removed')}
+                  className={`p-3 border-2 rounded-md transition-colors ${
+                    status === 'removed'
+                      ? 'border-yellow-500 bg-yellow-50'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="text-xl mb-1">&#x1F4E6;</div>
+                  <div className="text-sm font-medium">{t('status.removed')}</div>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Added Date */}
           <div>
             <label htmlFor="addedDate" className="block text-sm font-medium text-gray-700 mb-2">
-              Date Added
+              {t('form.dateAdded')}
             </label>
             <input
               type="date"
@@ -332,14 +564,14 @@ export default function LivestockForm({
           {/* Notes */}
           <div>
             <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
-              Notes
+              {t('form.notes')}
             </label>
             <textarea
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              placeholder="Source, price, behavior observations, care notes..."
+              placeholder={t('form.notesPlaceholder')}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
             />
           </div>
@@ -352,14 +584,14 @@ export default function LivestockForm({
               disabled={isSubmitting}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Cancel
+              {tc('actions.cancel')}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !tankId || !speciesName}
               className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Saving...' : livestock ? 'Update Livestock' : 'Add Livestock'}
+              {isSubmitting ? t('form.saving') : livestock ? t('form.updateLivestock') : t('form.addLivestock')}
             </button>
           </div>
         </form>

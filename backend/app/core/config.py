@@ -40,8 +40,10 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE: int = 10485760  # 10MB
     ALLOWED_EXTENSIONS: set = {"jpg", "jpeg", "png", "gif"}
 
-    # External APIs
+    # External APIs for species information
     FISHBASE_API_URL: str = "https://fishbase.ropensci.org"
+    WORMS_API_URL: str = "https://www.marinespecies.org/rest"
+    INATURALIST_API_URL: str = "https://api.inaturalist.org/v1"
 
     model_config = SettingsConfigDict(case_sensitive=True)
 

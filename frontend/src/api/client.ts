@@ -467,6 +467,64 @@ export const livestockApi = {
     )
     return response.data
   },
+
+  // WoRMS API methods
+  searchWoRMS: async (query: string, limit = 10): Promise<any[]> => {
+    const response = await apiClient.get<any[]>('/livestock/worms/search', {
+      params: { query, limit },
+    })
+    return response.data
+  },
+
+  getWoRMSSpecies: async (
+    aphiaId: string,
+    includeVernacular = false
+  ): Promise<any> => {
+    const response = await apiClient.get<any>(
+      `/livestock/worms/species/${aphiaId}`,
+      { params: { include_vernacular: includeVernacular } }
+    )
+    return response.data
+  },
+
+  // iNaturalist API methods
+  searchINaturalist: async (query: string, limit = 10): Promise<any[]> => {
+    const response = await apiClient.get<any[]>(
+      '/livestock/inaturalist/search',
+      { params: { query, limit } }
+    )
+    return response.data
+  },
+
+  getINaturalistSpecies: async (taxonId: string): Promise<any> => {
+    const response = await apiClient.get<any>(
+      `/livestock/inaturalist/species/${taxonId}`
+    )
+    return response.data
+  },
+
+  getINaturalistPhotos: async (
+    taxonId: string,
+    limit = 10
+  ): Promise<any[]> => {
+    const response = await apiClient.get<any[]>(
+      `/livestock/inaturalist/species/${taxonId}/photos`,
+      { params: { limit } }
+    )
+    return response.data
+  },
+
+  // Unified search across multiple sources
+  unifiedSearch: async (
+    query: string,
+    sources = 'worms,inaturalist',
+    limit = 5
+  ): Promise<any> => {
+    const response = await apiClient.get<any>('/livestock/species/search', {
+      params: { query, sources, limit },
+    })
+    return response.data
+  },
 }
 
 // ============================================================================

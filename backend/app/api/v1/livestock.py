@@ -15,6 +15,8 @@ from app.models.livestock import Livestock
 from app.schemas.livestock import LivestockCreate, LivestockUpdate, LivestockResponse
 from app.api.deps import get_current_user
 from app.services.fishbase import fishbase_service
+from app.services.worms import worms_service
+from app.services.inaturalist import inaturalist_service
 
 router = APIRouter()
 
@@ -134,6 +136,13 @@ def update_livestock(
         )
 
     update_data = livestock_in.model_dump(exclude_unset=True)
+
+    # Auto-set removed_date when status changes to dead or removed
+    if "status" in update_data and update_data["status"] in ("dead", "removed"):
+        if not update_data.get("removed_date") and not livestock.removed_date:
+            from datetime import date
+            update_data["removed_date"] = date.today()
+
     for field, value in update_data.items():
         setattr(livestock, field, value)
 
@@ -287,3 +296,203 @@ async def get_fishbase_species_images(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching images from FishBase: {str(e)}"
         )
+
+
+# WoRMS Endpoints
+
+@router.get("/worms/search")
+async def search_worms(
+    query: str = Query(..., min_length=2, description="Species name to search"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum results")
+):
+    """
+    Search WoRMS for ANY marine species (fish, coral, invertebrate, algae).
+
+    WoRMS (World Register of Marine Species) is the authoritative taxonomic database
+    for marine organisms. Unlike FishBase, it covers ALL marine species.
+
+    Example: /livestock/worms/search?query=Acropora (coral)
+    Example: /livestock/worms/search?query=clownfish (fish)
+    Example: /livestock/worms/search?query=hermit+crab (invertebrate)
+
+    Returns species with:
+    - AphiaID: Unique identifier
+    - scientificname: Full scientific name
+    - status: accepted, synonym, unaccepted
+    - rank: Species, Genus, Family, etc.
+    """
+    try:
+        results = await worms_service.search_species(query, limit)
+        return results
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error searching WoRMS: {str(e)}"
+        )
+
+
+@router.get("/worms/species/{aphia_id}")
+async def get_worms_species(
+    aphia_id: str,
+    include_vernacular: bool = Query(False, description="Include common names in all languages")
+):
+    """
+    Get detailed species information from WoRMS.
+
+    Provides taxonomic classification, conservation status, habitat info.
+
+    Example: /livestock/worms/species/275775
+    Example: /livestock/worms/species/275775?include_vernacular=true
+    """
+    try:
+        record = await worms_service.get_record_by_id(aphia_id)
+        if not record:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Species not found in WoRMS"
+            )
+
+        # Optionally add vernacular names
+        if include_vernacular:
+            vernacular = await worms_service.get_vernacular_names(aphia_id)
+            record["vernacular_names"] = vernacular
+
+        return record
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching from WoRMS: {str(e)}"
+        )
+
+
+# iNaturalist Endpoints
+
+@router.get("/inaturalist/search")
+async def search_inaturalist(
+    query: str = Query(..., min_length=2, description="Species name to search"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum results")
+):
+    """
+    Search iNaturalist for species with photos.
+
+    iNaturalist provides community-sourced photos and observations.
+    Great for visual identification.
+
+    Example: /livestock/inaturalist/search?query=Acropora
+    Example: /livestock/inaturalist/search?query=clownfish
+
+    Returns species with:
+    - id: Taxon ID
+    - name: Scientific name
+    - preferred_common_name: Primary common name
+    - default_photo: Photo with medium_url and square_url
+    """
+    try:
+        results = await inaturalist_service.search_species(query, limit)
+        return results
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error searching iNaturalist: {str(e)}"
+        )
+
+
+@router.get("/inaturalist/species/{taxon_id}")
+async def get_inaturalist_species(
+    taxon_id: str
+):
+    """
+    Get detailed taxon information from iNaturalist.
+
+    Provides species info with photos, conservation status, distribution.
+
+    Example: /livestock/inaturalist/species/47691
+    """
+    try:
+        taxon = await inaturalist_service.get_taxon(taxon_id)
+        if not taxon:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Taxon not found in iNaturalist"
+            )
+        return taxon
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching from iNaturalist: {str(e)}"
+        )
+
+
+@router.get("/inaturalist/species/{taxon_id}/photos")
+async def get_inaturalist_photos(
+    taxon_id: str,
+    limit: int = Query(10, ge=1, le=50, description="Maximum photos to return")
+):
+    """
+    Get photos for a species from iNaturalist.
+
+    Returns community-sourced photos with attribution.
+
+    Example: /livestock/inaturalist/species/47691/photos
+    """
+    try:
+        photos = await inaturalist_service.get_taxon_photos(taxon_id, limit)
+        return photos
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching photos from iNaturalist: {str(e)}"
+        )
+
+
+# Unified Search Endpoint
+
+@router.get("/species/search")
+async def unified_species_search(
+    query: str = Query(..., min_length=2, description="Species name to search"),
+    sources: str = Query("worms,inaturalist", description="Comma-separated: worms,inaturalist,fishbase"),
+    limit: int = Query(5, ge=1, le=20, description="Results per source")
+):
+    """
+    Unified search across multiple species databases.
+
+    Returns combined results from WoRMS, iNaturalist, and/or FishBase.
+    Useful for comprehensive species lookup.
+
+    Example: /livestock/species/search?query=clownfish&sources=worms,inaturalist
+    Example: /livestock/species/search?query=Acropora&sources=worms,inaturalist,fishbase
+
+    Default sources: worms,inaturalist (comprehensive coverage)
+    """
+    source_list = [s.strip() for s in sources.split(",")]
+    results = {"query": query, "sources": {}}
+
+    # Search WoRMS
+    if "worms" in source_list:
+        try:
+            worms_results = await worms_service.search_species(query, limit)
+            results["sources"]["worms"] = worms_results
+        except Exception as e:
+            results["sources"]["worms"] = {"error": str(e)}
+
+    # Search iNaturalist
+    if "inaturalist" in source_list:
+        try:
+            inat_results = await inaturalist_service.search_species(query, limit)
+            results["sources"]["inaturalist"] = inat_results
+        except Exception as e:
+            results["sources"]["inaturalist"] = {"error": str(e)}
+
+    # Search FishBase
+    if "fishbase" in source_list:
+        try:
+            fishbase_results = await fishbase_service.search_species(query, limit)
+            results["sources"]["fishbase"] = fishbase_results
+        except Exception as e:
+            results["sources"]["fishbase"] = {"error": str(e)}
+
+    return results

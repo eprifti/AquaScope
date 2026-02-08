@@ -58,6 +58,43 @@
     "withLove": "avec",
     "forCommunity": "pour la communauté des récifalistes",
     "builtWith": "Développé avec",
-    "copyright": "Tous droits réservés"
+    "copyright": "Tous droits réservés",
+    "links": "Liens",
+    "githubRepository": "Dépôt GitHub",
+    "reportIssues": "Signaler des problèmes",
+    "documentation": "Documentation",
+    "supportProject": "Soutenir le projet",
+    "helpKeepGoing": "Aidez à maintenir le développement de ReefLab",
+    "githubSponsors": "GitHub Sponsors",
+    "buyMeCoffee": "Offrez-moi un café",
+    "openSource": "Open source sous licence MIT",
+    "reefDescription": "Système complet de gestion d'aquarium récifal"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signingIn": "Connexion...",
+    "signInToAccount": "Connectez-vous à votre compte",
+    "emailAddress": "Adresse email",
+    "password": "Mot de passe",
+    "dontHaveAccount": "Pas de compte ?",
+    "createOneHere": "Créez-en un ici",
+    "createAccount": "Créer un compte",
+    "creatingAccount": "Création du compte...",
+    "fullName": "Nom complet",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordMinLength": "Au moins 8 caractères",
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "signInHere": "Connectez-vous ici",
+    "loginFailed": "Échec de la connexion. Vérifiez vos identifiants.",
+    "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+    "reefManagement": "Gestion d'Aquarium Récifal",
+    "trackYourReef": "Suivez vos paramètres, maintenance et animaux de votre récif"
+  },
+  "layout": {
+    "admin": "Admin",
+    "developer": "Développeur",
+    "apiDocumentation": "Documentation API →"
   }
 }

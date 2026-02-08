@@ -1,10 +1,13 @@
 import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import LanguageSelector from '../components/LanguageSelector'
 
 export default function Register() {
   const navigate = useNavigate()
   const { register } = useAuth()
+  const { t } = useTranslation('common')
 
   const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
@@ -19,12 +22,12 @@ export default function Register() {
 
     // Validation
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long')
+      setError(t('auth.passwordTooShort'))
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('auth.passwordsDontMatch'))
       return
     }
 
@@ -36,7 +39,7 @@ export default function Register() {
     } catch (err: any) {
       console.error('Registration error:', err)
       setError(
-        err.response?.data?.detail || 'Registration failed. Please try again.'
+        err.response?.data?.detail || t('auth.registrationFailed')
       )
     } finally {
       setIsLoading(false)
@@ -49,14 +52,17 @@ export default function Register() {
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-ocean-900 mb-2">ReefLab</h1>
-          <p className="text-ocean-700">Reef Aquarium Management</p>
+          <p className="text-ocean-700">{t('auth.reefManagement')}</p>
         </div>
 
         {/* Register Card */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            Create your account
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {t('auth.createAccount')}
+            </h2>
+            <LanguageSelector />
+          </div>
 
           {/* Error Message */}
           {error && (
@@ -72,7 +78,7 @@ export default function Register() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <input
                 id="email"
@@ -91,7 +97,7 @@ export default function Register() {
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Full Name
+                {t('auth.fullName')}
               </label>
               <input
                 id="username"
@@ -111,7 +117,7 @@ export default function Register() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Password
+                {t('auth.password')}
               </label>
               <input
                 id="password"
@@ -125,7 +131,7 @@ export default function Register() {
                 disabled={isLoading}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Must be at least 8 characters
+                {t('auth.passwordMinLength')}
               </p>
             </div>
 
@@ -134,7 +140,7 @@ export default function Register() {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Confirm Password
+                {t('auth.confirmPassword')}
               </label>
               <input
                 id="confirmPassword"
@@ -153,19 +159,19 @@ export default function Register() {
               disabled={isLoading}
               className="w-full bg-ocean-600 text-white py-2 px-4 rounded-md hover:bg-ocean-700 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Creating account...' : 'Create account'}
+              {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
             </button>
           </form>
 
           {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
+              {t('auth.alreadyHaveAccount')}{' '}
               <Link
                 to="/login"
                 className="text-ocean-600 hover:text-ocean-700 font-medium"
               >
-                Sign in here
+                {t('auth.signInHere')}
               </Link>
             </p>
           </div>

@@ -34,7 +34,7 @@ i18n
       lookupLocalStorage: 'reeflab_language',
     },
 
-    ns: ['common', 'tanks', 'dashboard', 'parameters', 'maintenance'],
+    ns: ['common', 'tanks', 'dashboard', 'parameters', 'maintenance', 'livestock'],
     defaultNS: 'common',
   })
 
