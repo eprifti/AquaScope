@@ -325,8 +325,10 @@ def validate_parsed_data(data: Dict[str, Any]) -> None:
         raise ATIParserError(f"Missing required fields: {', '.join(missing)}")
 
     # Check that at least some element data was extracted
-    element_fields = ['ca', 'mg', 'kh', 'salinity']
+    # For saltwater: check base elements (ca, mg, kh, salinity)
+    # For RO water: check trace elements or pollutants
+    element_fields = ['ca', 'mg', 'kh', 'salinity', 'li', 'si', 'al', 'no3', 'po4']
     has_data = any(field in data for field in element_fields)
 
     if not has_data:
-        raise ATIParserError("No element data could be extracted from PDF")
+        raise ATIParserError(f"No element data could be extracted from PDF (water_type: {data.get('water_type', 'unknown')})")
