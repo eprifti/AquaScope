@@ -1,24 +1,30 @@
-# ReefLab 🐠
+<p align="center">
+  <img src="docs/images/banner.svg" alt="ReefLab - Reef Aquarium Management" width="900" />
+</p>
 
-[![CI Tests](https://github.com/eprifti/reeflab/actions/workflows/ci.yml/badge.svg)](https://github.com/eprifti/reeflab/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/eprifti/reeflab?color=success)](https://github.com/eprifti/reeflab/releases)
-[![Issues](https://img.shields.io/github/issues/eprifti/reeflab?color=yellow)](https://github.com/eprifti/reeflab/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/eprifti/reeflab?color=brightgreen)](https://github.com/eprifti/reeflab/pulls)
-[![Stars](https://img.shields.io/github/stars/eprifti/reeflab?style=social)](https://github.com/eprifti/reeflab/stargazers)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+<h1 align="center">ReefLab</h1>
 
-A comprehensive web application for managing reef aquarium parameters, maintenance schedules, and livestock tracking.
+<p align="center">
+  <strong>A comprehensive web application for managing reef aquarium parameters, maintenance schedules, and livestock tracking.</strong>
+</p>
 
-![ReefLab Animated Demo](docs/images/tank-animation-placeholder.svg)
-*Animated aquarium visualization for tanks without custom images*
+<p align="center">
+  <a href="https://github.com/eprifti/reeflab/actions/workflows/ci.yml"><img src="https://github.com/eprifti/reeflab/actions/workflows/ci.yml/badge.svg" alt="CI Tests" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="https://github.com/eprifti/reeflab/releases"><img src="https://img.shields.io/github/v/release/eprifti/reeflab?color=success" alt="Release" /></a>
+  <a href="https://github.com/eprifti/reeflab/issues"><img src="https://img.shields.io/github/issues/eprifti/reeflab?color=yellow" alt="Issues" /></a>
+  <a href="https://github.com/eprifti/reeflab/pulls"><img src="https://img.shields.io/github/issues-pr/eprifti/reeflab?color=brightgreen" alt="Pull Requests" /></a>
+  <a href="https://github.com/eprifti/reeflab/stargazers"><img src="https://img.shields.io/github/stars/eprifti/reeflab?style=social" alt="Stars" /></a>
+</p>
 
-> 💡 **Note**: The animation above is an SVG preview. For the full animated GIF, see the [capture instructions](docs/images/README.md) or run `node scripts/capture-tank-animation.js` after installing dependencies.
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Python-3.11+-blue?logo=python" alt="Python" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white" alt="Docker" />
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
+</p>
 
-> **Created by [Edi Prifti](https://github.com/eprifti)** with ❤️ for the reef keeping community
+> **Created by [Edi Prifti](https://github.com/eprifti)** with love for the reef keeping community
 
 ## ✨ Demo & Support
 
@@ -390,7 +396,7 @@ Comprehensive documentation is available in the [docs/](docs/) folder:
 - **[Changelog](docs/CHANGELOG.md)** - Version history and changes
 - **[Release Notes](docs/RELEASE_NOTES_v1.0.0.md)** - Detailed release information
 
-### ✅ Completed (v1.2.0)
+### ✅ Completed (v1.5.1)
 - ✅ Tank management hub with detail views and timeline
 - ✅ Tank image upload with animated fallback visualization
 - ✅ ICP test management with element tracking
@@ -399,13 +405,17 @@ Comprehensive documentation is available in the [docs/](docs/) folder:
 - ✅ Maintenance reminder system with automatic scheduling
 - ✅ Photo gallery with drag-and-drop upload
 - ✅ Notes/journal system
-- ✅ Livestock inventory with FishBase integration
+- ✅ Livestock inventory with FishBase/WoRMS/iNaturalist integration
+- ✅ Livestock split feature (split groups by status)
 - ✅ Multi-user authentication and authorization
 - ✅ Responsive UI with Tailwind CSS
 - ✅ Data visualization with Recharts
 - ✅ Excel/CSV import for historical data
 - ✅ GitHub Actions CI/CD pipeline with automated tests
-- ✅ Comprehensive unit and integration tests
+- ✅ Comprehensive unit and integration tests (121 tests, 60% coverage)
+- ✅ Multi-language support (EN, FR, ES, DE, IT, PT)
+- ✅ Animated aquarium scene with fish, corals, and bottom dwellers
+- ✅ Custom logo and branding
 
 ### 🎯 Roadmap
 
@@ -420,7 +430,6 @@ Comprehensive documentation is available in the [docs/](docs/) folder:
 - [ ] Advanced analytics and trend prediction
 - [ ] Automatic parameter recommendations based on tank type
 - [ ] Real-time parameter monitoring with IoT integration
-- [ ] Multi-language support
 
 ---
 

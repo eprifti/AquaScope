@@ -1,0 +1,335 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300">
+  <defs>
+    <linearGradient id="ocean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#bae6fd;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#7dd3fc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284c7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8d5a3;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#d4c28a;stop-opacity:0.6" />
+    </linearGradient>
+    <radialGradient id="caustic1" cx="30%" cy="20%" r="50%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.25)" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)" />
+    </radialGradient>
+    <radialGradient id="caustic2" cx="70%" cy="40%" r="45%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.15)" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="300" fill="url(#ocean)" rx="12" />
+
+  <!-- Water caustics -->
+  <rect width="900" height="300" fill="url(#caustic1)" rx="12" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.3;0.6" dur="8s" repeatCount="indefinite" />
+  </rect>
+  <rect width="900" height="300" fill="url(#caustic2)" rx="12" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="12s" repeatCount="indefinite" />
+  </rect>
+
+  <!-- Sandy bottom -->
+  <ellipse cx="450" cy="300" rx="500" ry="40" fill="#e8d5a3" opacity="0.6" />
+  <ellipse cx="450" cy="305" rx="480" ry="30" fill="#d4c28a" opacity="0.4" />
+
+  <!-- ═══ ROCKS ═══ -->
+  <!-- Large rock left -->
+  <ellipse cx="130" cy="272" rx="32" ry="16" fill="#7f8c8d" />
+  <ellipse cx="130" cy="270" rx="30" ry="14" fill="#95a5a6" />
+  <ellipse cx="122" cy="268" rx="14" ry="7" fill="#a8b5b8" opacity="0.6" />
+  <!-- Medium rock center-left -->
+  <ellipse cx="310" cy="275" rx="22" ry="12" fill="#6c7a7d" />
+  <ellipse cx="310" cy="273" rx="20" ry="10" fill="#8e9ea2" />
+  <!-- Small rock right-center -->
+  <ellipse cx="560" cy="276" rx="18" ry="10" fill="#7f8c8d" />
+  <ellipse cx="560" cy="274" rx="16" ry="8" fill="#a3b1b5" />
+  <!-- Rock cluster right -->
+  <ellipse cx="770" cy="274" rx="26" ry="13" fill="#6c7a7d" />
+  <ellipse cx="770" cy="272" rx="24" ry="11" fill="#8e9ea2" />
+  <ellipse cx="782" cy="270" rx="12" ry="6" fill="#a8b5b8" opacity="0.5" />
+  <!-- Pebbles -->
+  <ellipse cx="200" cy="278" rx="6" ry="3.5" fill="#a3b1b5" opacity="0.6" />
+  <ellipse cx="440" cy="280" rx="5" ry="3" fill="#95a5a6" opacity="0.5" />
+  <ellipse cx="650" cy="279" rx="7" ry="3.5" fill="#8e9ea2" opacity="0.5" />
+
+  <!-- ═══ CORALS ═══ -->
+  <!-- Branching coral left (pink) - swaying -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" values="-1.5 100 270;1.5 100 270;-1.5 100 270" dur="4s" repeatCount="indefinite" />
+    <path d="M95 268 Q88 240 76 215 Q72 205 68 198" stroke="#e84393" stroke-width="5" fill="none" stroke-linecap="round" />
+    <path d="M95 268 Q100 235 95 212 Q93 202 90 195" stroke="#e84393" stroke-width="5" fill="none" stroke-linecap="round" />
+    <path d="M95 268 Q108 240 120 222 Q125 215 130 208" stroke="#fd79a8" stroke-width="4.5" fill="none" stroke-linecap="round" />
+    <path d="M76 215 Q70 208 62 203" stroke="#e84393" stroke-width="3.5" fill="none" stroke-linecap="round" />
+    <path d="M95 212 Q102 200 108 194" stroke="#fd79a8" stroke-width="3.5" fill="none" stroke-linecap="round" />
+    <!-- Polyp tips -->
+    <circle cx="68" cy="196" r="4" fill="#fab1d0" />
+    <circle cx="62" cy="201" r="3.5" fill="#fab1d0" />
+    <circle cx="90" cy="193" r="4" fill="#fab1d0" />
+    <circle cx="108" cy="192" r="3.5" fill="#fab1d0" />
+    <circle cx="130" cy="206" r="4" fill="#fab1d0" />
+  </g>
+
+  <!-- Brain coral center - slight sway -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" values="1 400 268;-1 400 268;1 400 268" dur="5s" repeatCount="indefinite" />
+    <ellipse cx="400" cy="260" rx="28" ry="15" fill="#a29bfe" />
+    <ellipse cx="400" cy="258" rx="26" ry="13" fill="#b8b0ff" />
+    <path d="M378 258 Q389 250 400 258 Q411 250 422 258" stroke="#8c83e8" stroke-width="2" fill="none" />
+    <path d="M383 260 Q392 253 400 260 Q408 253 417 260" stroke="#8c83e8" stroke-width="1.5" fill="none" />
+  </g>
+
+  <!-- Sea fan coral right (green) - swaying -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" values="-1 680 268;1.5 680 268;-1 680 268" dur="6s" repeatCount="indefinite" />
+    <path d="M680 268 Q674 240 668 218 Q666 208 663 200" stroke="#00b894" stroke-width="4.5" fill="none" stroke-linecap="round" />
+    <path d="M680 268 Q686 235 692 215 Q694 208 697 202" stroke="#00b894" stroke-width="4" fill="none" stroke-linecap="round" />
+    <path d="M668 218 Q662 212 656 208" stroke="#55efc4" stroke-width="3" fill="none" stroke-linecap="round" />
+    <path d="M668 218 Q674 210 680 204" stroke="#55efc4" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <path d="M692 215 Q686 206 683 200" stroke="#55efc4" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <path d="M692 215 Q698 208 704 204" stroke="#55efc4" stroke-width="3" fill="none" stroke-linecap="round" />
+    <!-- Tips -->
+    <circle cx="663" cy="198" r="3.5" fill="#55efc4" />
+    <circle cx="656" cy="206" r="3" fill="#55efc4" />
+    <circle cx="680" cy="202" r="3" fill="#55efc4" />
+    <circle cx="697" cy="200" r="3.5" fill="#55efc4" />
+    <circle cx="683" cy="198" r="3" fill="#55efc4" />
+    <circle cx="704" cy="202" r="3" fill="#55efc4" />
+  </g>
+
+  <!-- Small anemone -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" values="-2 250 272;2 250 272;-2 250 272" dur="4s" repeatCount="indefinite" />
+    <path d="M250 272 Q244 254 238 242" stroke="#fdcb6e" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <path d="M250 272 Q250 250 250 240" stroke="#fdcb6e" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <path d="M250 272 Q256 254 262 242" stroke="#fdcb6e" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <circle cx="238" cy="240" r="3" fill="#ffeaa7" />
+    <circle cx="250" cy="238" r="3" fill="#ffeaa7" />
+    <circle cx="262" cy="240" r="3" fill="#ffeaa7" />
+  </g>
+
+  <!-- ═══ FISH ═══ -->
+  <!-- Fish 1: Clownfish swimming right then left -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="-60,0; 620,0; 620,0; -60,0; -60,0" dur="16s" keyTimes="0;0.48;0.52;0.98;1" repeatCount="indefinite" />
+    <g transform="translate(0, 85)">
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="20" ry="11" fill="#f39c12" />
+      <!-- White stripes -->
+      <path d="M-7 -10 Q-7 0 -7 10" stroke="white" stroke-width="3.5" fill="none" />
+      <path d="M7 -9 Q7 0 7 9" stroke="white" stroke-width="3.5" fill="none" />
+      <!-- Tail -->
+      <path d="M-20 0 L-28 -8 L-28 8 Z" fill="#e67e22" />
+      <!-- Eye -->
+      <circle cx="11" cy="-3" r="3" fill="white" />
+      <circle cx="12" cy="-3" r="1.8" fill="#2d3436" />
+      <!-- Dorsal fin -->
+      <path d="M-2 -11 Q4 -16 8 -11" fill="#f39c12" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- Fish 2: Blue tang -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="-50,0; 650,0; 650,0; -50,0; -50,0" dur="20s" keyTimes="0;0.48;0.52;0.98;1" begin="2s" repeatCount="indefinite" />
+    <g transform="translate(0, 165)">
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="17" ry="10" fill="#0984e3" />
+      <!-- Pattern -->
+      <path d="M-6 -7 Q0 0 -6 7" stroke="#074f8a" stroke-width="2.5" fill="none" />
+      <!-- Tail -->
+      <path d="M-17 0 L-24 -8 L-24 8 Z" fill="#74b9ff" />
+      <!-- Yellow accent -->
+      <path d="M-17 0 L-20 -3.5 L-20 3.5 Z" fill="#fdcb6e" />
+      <!-- Eye -->
+      <circle cx="9" cy="-2" r="2.5" fill="white" />
+      <circle cx="10" cy="-2" r="1.5" fill="#2d3436" />
+      <!-- Top fin -->
+      <path d="M-4 -10 Q3 -16 9 -10" fill="#0984e3" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- Fish 3: Small chromis (fast) -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="-40,0; 660,0; 660,0; -40,0; -40,0" dur="12s" keyTimes="0;0.48;0.52;0.98;1" begin="1s" repeatCount="indefinite" />
+    <g transform="translate(0, 70)">
+      <ellipse cx="0" cy="0" rx="9" ry="5.5" fill="#00cec9" />
+      <path d="M-9 0 L-14 -4.5 L-14 4.5 Z" fill="#81ecec" />
+      <circle cx="4.5" cy="-1.5" r="1.8" fill="white" />
+      <circle cx="5" cy="-1.5" r="1" fill="#2d3436" />
+    </g>
+  </g>
+
+  <!-- Fish 4: Another chromis (slightly behind) -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="-30,0; 670,0; 670,0; -30,0; -30,0" dur="13s" keyTimes="0;0.48;0.52;0.98;1" begin="4s" repeatCount="indefinite" />
+    <g transform="translate(0, 82)">
+      <ellipse cx="0" cy="0" rx="8" ry="5" fill="#00b894" />
+      <path d="M-8 0 L-13 -4 L-13 4 Z" fill="#55efc4" />
+      <circle cx="4" cy="-1" r="1.5" fill="white" />
+      <circle cx="4.5" cy="-1" r="0.8" fill="#2d3436" />
+    </g>
+  </g>
+
+  <!-- Fish 5: Yellow Tang -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="-50,0; 640,0; 640,0; -50,0; -50,0" dur="17s" keyTimes="0;0.48;0.52;0.98;1" begin="3s" repeatCount="indefinite" />
+    <g transform="translate(0, 130)">
+      <!-- Disc-shaped body -->
+      <ellipse cx="0" cy="0" rx="16" ry="14" fill="#f1c40f" />
+      <!-- Dorsal fin -->
+      <path d="M-5 -14 Q0 -22 7 -14" fill="#f1c40f" stroke="#e6b800" stroke-width="0.5" />
+      <!-- Ventral fin -->
+      <path d="M-5 14 Q0 20 7 14" fill="#f1c40f" stroke="#e6b800" stroke-width="0.5" />
+      <!-- Tail -->
+      <path d="M-16 0 L-24 -7 L-24 7 Z" fill="#f9e547" />
+      <!-- Tail spine (white) -->
+      <line x1="-16" y1="-1" x2="-18" y2="-1" stroke="white" stroke-width="2" stroke-linecap="round" />
+      <!-- Eye -->
+      <circle cx="8" cy="-3" r="2.8" fill="white" />
+      <circle cx="9" cy="-3" r="1.6" fill="#2d3436" />
+      <!-- Mouth -->
+      <path d="M15 0 Q16 1.5 15 3" stroke="#d4a800" stroke-width="1" fill="none" />
+    </g>
+  </g>
+
+  <!-- ═══ BOTTOM DWELLERS ═══ -->
+  <!-- Cleaner Shrimp -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0;60,0;60,0;0,0;0,0" dur="12s" keyTimes="0;0.35;0.5;0.9;1" repeatCount="indefinite" />
+    <g transform="translate(170, 268)">
+      <!-- Body -->
+      <path d="M-10 0 Q-7 -5 0 -4 Q7 -3 10 0 Q7 3 0 3 Q-7 2 -10 0Z" fill="#e17055" />
+      <!-- Segments -->
+      <path d="M-3 -3 L-3 2.5" stroke="#d35400" stroke-width="0.6" opacity="0.5" />
+      <path d="M0 -3.5 L0 2.8" stroke="#d35400" stroke-width="0.6" opacity="0.5" />
+      <path d="M3 -3 L3 2.5" stroke="#d35400" stroke-width="0.6" opacity="0.5" />
+      <!-- Tail fan -->
+      <path d="M-10 0 L-14 -3 L-15 0 L-14 3 Z" fill="#fab1a0" />
+      <!-- Long antennae -->
+      <path d="M10 -3 Q17 -10 22 -13" stroke="#e17055" stroke-width="0.8" fill="none" />
+      <path d="M10 -2 Q19 -8 24 -10" stroke="#e17055" stroke-width="0.8" fill="none" />
+      <!-- Legs -->
+      <line x1="-4" y1="3" x2="-5" y2="7" stroke="#d35400" stroke-width="0.6" />
+      <line x1="0" y1="3" x2="0" y2="7" stroke="#d35400" stroke-width="0.6" />
+      <line x1="4" y1="3" x2="4" y2="7" stroke="#d35400" stroke-width="0.6" />
+      <line x1="7" y1="2" x2="8" y2="6" stroke="#d35400" stroke-width="0.6" />
+      <!-- Eye -->
+      <circle cx="9" cy="-4" r="1.3" fill="white" />
+      <circle cx="9.4" cy="-4" r="0.7" fill="#2d3436" />
+    </g>
+  </g>
+
+  <!-- Turbo Snail -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0;55,0;55,0;0,0;0,0" dur="25s" keyTimes="0;0.45;0.5;0.95;1" repeatCount="indefinite" />
+    <g transform="translate(480, 274)">
+      <!-- Foot -->
+      <ellipse cx="0" cy="3" rx="10" ry="4" fill="#b2bec3" />
+      <!-- Shell -->
+      <ellipse cx="-3" cy="-3" rx="9" ry="9" fill="#6c5ce7" />
+      <ellipse cx="-3" cy="-3" rx="8" ry="8" fill="#a29bfe" />
+      <!-- Spiral -->
+      <path d="M-3 -11 Q5 -7 3 -2 Q1 3 -6 1 Q-11 -1 -7 -7" stroke="#6c5ce7" stroke-width="1.3" fill="none" />
+      <path d="M-3 -7 Q1 -4 0 -2" stroke="#6c5ce7" stroke-width="1" fill="none" />
+      <!-- Head -->
+      <ellipse cx="8" cy="0" rx="4" ry="3.5" fill="#b2bec3" />
+      <!-- Eye stalks -->
+      <line x1="9" y1="-2" x2="12" y2="-6" stroke="#b2bec3" stroke-width="1.3" />
+      <line x1="7" y1="-2" x2="8" y2="-6" stroke="#b2bec3" stroke-width="1.3" />
+      <circle cx="12" cy="-6.5" r="1" fill="#2d3436" />
+      <circle cx="8" cy="-6.5" r="1" fill="#2d3436" />
+    </g>
+  </g>
+
+  <!-- Goby 1 - near left rock -->
+  <g transform="translate(155, 268)">
+    <!-- Body -->
+    <ellipse cx="0" cy="0" rx="12" ry="6" fill="#636e72" />
+    <ellipse cx="0" cy="0" rx="11" ry="5.5" fill="#b2bec3" />
+    <!-- Spots -->
+    <circle cx="-4" cy="-1" r="1.2" fill="#636e72" opacity="0.4" />
+    <circle cx="2" cy="0" r="1" fill="#636e72" opacity="0.4" />
+    <!-- Tail -->
+    <path d="M-12 0 L-18 -5 L-18 5 Z" fill="#95a5a6" />
+    <!-- Dorsal fin -->
+    <path d="M-4 -6 Q0 -10 5 -6" fill="#b2bec3" stroke="#95a5a6" stroke-width="0.6" />
+    <!-- Large eyes -->
+    <circle cx="7" cy="-3" r="3" fill="white" />
+    <circle cx="7.6" cy="-3" r="1.8" fill="#2d3436" />
+    <!-- Pectoral fin -->
+    <path d="M2.5 4 Q5 7.5 7.5 5" stroke="#95a5a6" stroke-width="1.2" fill="none" />
+  </g>
+
+  <!-- Goby 2 - near right rock cluster -->
+  <g transform="translate(755, 268)">
+    <!-- Body -->
+    <ellipse cx="0" cy="0" rx="11" ry="5.5" fill="#636e72" />
+    <ellipse cx="0" cy="0" rx="10" ry="5" fill="#dfe6e9" />
+    <!-- Stripes -->
+    <path d="M-5 -4 L-5 4" stroke="#636e72" stroke-width="1" opacity="0.3" />
+    <path d="M0 -5 L0 5" stroke="#636e72" stroke-width="1" opacity="0.3" />
+    <path d="M5 -4 L5 4" stroke="#636e72" stroke-width="1" opacity="0.3" />
+    <!-- Tail -->
+    <path d="M-11 0 L-16 -4.5 L-16 4.5 Z" fill="#b2bec3" />
+    <!-- Dorsal fin -->
+    <path d="M-3 -5 Q1 -9 5 -5" fill="#dfe6e9" stroke="#b2bec3" stroke-width="0.6" />
+    <!-- Large eyes -->
+    <circle cx="6" cy="-2.5" r="2.8" fill="white" />
+    <circle cx="6.6" cy="-2.5" r="1.6" fill="#2d3436" />
+    <!-- Pectoral fin -->
+    <path d="M2 3 Q4 6.5 6.5 4.5" stroke="#b2bec3" stroke-width="1" fill="none" />
+  </g>
+
+  <!-- ═══ BUBBLES ═══ -->
+  <circle cx="200" cy="260" r="3" fill="white" opacity="0.4">
+    <animate attributeName="cy" from="260" to="20" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.4" to="0" dur="4s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="500" cy="255" r="2.5" fill="white" opacity="0.3">
+    <animate attributeName="cy" from="255" to="15" dur="5s" begin="1.5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.3" to="0" dur="5s" begin="1.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="350" cy="265" r="3.5" fill="white" opacity="0.35">
+    <animate attributeName="cy" from="265" to="25" dur="6s" begin="0.8s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.35" to="0" dur="6s" begin="0.8s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="650" cy="260" r="2.8" fill="white" opacity="0.3">
+    <animate attributeName="cy" from="260" to="20" dur="4.5s" begin="2.5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.3" to="0" dur="4.5s" begin="2.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="800" cy="250" r="3" fill="white" opacity="0.25">
+    <animate attributeName="cy" from="250" to="15" dur="5.5s" begin="3.5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.25" to="0" dur="5.5s" begin="3.5s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Floating particles -->
+  <circle cx="250" cy="100" r="1.5" fill="white" opacity="0.2">
+    <animate attributeName="cy" values="100;95;105;100" dur="6s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="250;255;248;250" dur="6s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="600" cy="130" r="1.2" fill="white" opacity="0.15">
+    <animate attributeName="cy" values="130;125;135;130" dur="9s" repeatCount="indefinite" />
+    <animate attributeName="cx" values="600;605;597;600" dur="9s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="820" cy="90" r="1.5" fill="white" opacity="0.2">
+    <animate attributeName="cy" values="90;85;95;90" dur="6s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- ═══ LOGO + BRANDING ═══ -->
+  <!-- Logo circle -->
+  <g transform="translate(450, 40)">
+    <circle cx="0" cy="0" r="28" fill="rgba(255,255,255,0.12)" />
+    <!-- Mini clownfish in circle -->
+    <ellipse cx="0" cy="0" rx="10" ry="6" fill="#f39c12" />
+    <path d="M-3 -5.5 Q-3 0 -3 5.5" stroke="white" stroke-width="1.8" fill="none" />
+    <path d="M3 -5 Q3 0 3 5" stroke="white" stroke-width="1.8" fill="none" />
+    <path d="M-10 0 L-14 -4 L-14 4 Z" fill="#e67e22" />
+    <circle cx="5.5" cy="-2" r="1.8" fill="white" />
+    <circle cx="6.2" cy="-2" r="1" fill="#2d3436" />
+  </g>
+
+  <!-- ReefLab text -->
+  <text x="450" y="90" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="900" fill="white" text-anchor="middle" opacity="0.95">ReefLab</text>
+  <text x="450" y="110" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="middle">Reef Aquarium Management</text>
+</svg>
