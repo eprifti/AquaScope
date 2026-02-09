@@ -120,3 +120,48 @@ class TestNotesAPI:
         data = response.json()
         note_ids = [n["id"] for n in data]
         assert str(note_id) not in note_ids
+
+
+@pytest.mark.integration
+class TestNotesErrorPaths:
+    """Tests for notes error handling paths"""
+
+    def test_create_note_invalid_tank(self, authenticated_client):
+        """Test creating note with non-existent tank"""
+        response = authenticated_client.post(
+            "/api/v1/notes",
+            json={
+                "tank_id": "00000000-0000-0000-0000-000000000000",
+                "content": "This should fail"
+            }
+        )
+        assert response.status_code == 404
+
+    def test_list_notes_invalid_tank(self, authenticated_client):
+        """Test filtering notes by non-existent tank"""
+        response = authenticated_client.get(
+            "/api/v1/notes?tank_id=00000000-0000-0000-0000-000000000000"
+        )
+        assert response.status_code == 404
+
+    def test_get_note_not_found(self, authenticated_client):
+        """Test getting non-existent note"""
+        response = authenticated_client.get(
+            "/api/v1/notes/00000000-0000-0000-0000-000000000000"
+        )
+        assert response.status_code == 404
+
+    def test_update_note_not_found(self, authenticated_client):
+        """Test updating non-existent note"""
+        response = authenticated_client.put(
+            "/api/v1/notes/00000000-0000-0000-0000-000000000000",
+            json={"content": "This should fail"}
+        )
+        assert response.status_code == 404
+
+    def test_delete_note_not_found(self, authenticated_client):
+        """Test deleting non-existent note"""
+        response = authenticated_client.delete(
+            "/api/v1/notes/00000000-0000-0000-0000-000000000000"
+        )
+        assert response.status_code == 404

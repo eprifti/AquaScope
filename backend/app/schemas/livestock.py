@@ -58,3 +58,18 @@ class LivestockResponse(LivestockBase):
 
     class Config:
         from_attributes = True
+
+
+class LivestockSplitRequest(BaseModel):
+    """Schema for splitting a livestock entry (e.g., 3 alive -> 2 alive + 1 dead)"""
+    split_quantity: int = Field(..., ge=1, description="Number of individuals to split off")
+    new_status: str = Field(..., description="Status for the split-off group: dead or removed")
+
+
+class LivestockSplitResponse(BaseModel):
+    """Schema for the split result: returns both the updated original and the new entry"""
+    original: LivestockResponse
+    split: LivestockResponse
+
+    class Config:
+        from_attributes = True

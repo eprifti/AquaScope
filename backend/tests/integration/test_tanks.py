@@ -143,3 +143,208 @@ class TestTanksAPI:
 
         response = client.get(f"/api/v1/tanks/{tank.id}")
         assert response.status_code == 404  # Should not find it (or 401 if endpoint checks ownership)
+
+
+@pytest.mark.integration
+class TestTankEvents:
+    """Tests for tank events CRUD operations"""
+
+    def test_create_tank_event(self, authenticated_client, test_user, db_session):
+        """Test creating a tank event"""
+        from app.models.tank import Tank
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        response = authenticated_client.post(
+            f"/api/v1/tanks/{tank.id}/events",
+            json={
+                "title": "Tank Setup",
+                "description": "Initial setup complete",
+                "event_date": str(date.today()),
+                "event_type": "milestone"
+            }
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["title"] == "Tank Setup"
+        assert data["event_type"] == "milestone"
+        assert data["tank_id"] == str(tank.id)
+
+    def test_create_tank_event_invalid_tank(self, authenticated_client):
+        """Test creating event for non-existent tank"""
+        response = authenticated_client.post(
+            "/api/v1/tanks/00000000-0000-0000-0000-000000000000/events",
+            json={
+                "title": "Test Event",
+                "event_date": str(date.today())
+            }
+        )
+        assert response.status_code == 404
+
+    def test_list_tank_events(self, authenticated_client, test_user, db_session):
+        """Test listing tank events"""
+        from app.models.tank import Tank, TankEvent
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        event1 = TankEvent(
+            tank_id=tank.id, user_id=test_user.id,
+            title="Event 1", event_date=date(2026, 1, 1)
+        )
+        event2 = TankEvent(
+            tank_id=tank.id, user_id=test_user.id,
+            title="Event 2", event_date=date(2026, 2, 1)
+        )
+        db_session.add_all([event1, event2])
+        db_session.commit()
+
+        response = authenticated_client.get(f"/api/v1/tanks/{tank.id}/events")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 2
+        # Should be ordered by date desc
+        assert data[0]["title"] == "Event 2"
+
+    def test_list_tank_events_invalid_tank(self, authenticated_client):
+        """Test listing events for non-existent tank"""
+        response = authenticated_client.get(
+            "/api/v1/tanks/00000000-0000-0000-0000-000000000000/events"
+        )
+        assert response.status_code == 404
+
+    def test_update_tank_event(self, authenticated_client, test_user, db_session):
+        """Test updating a tank event"""
+        from app.models.tank import Tank, TankEvent
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        event = TankEvent(
+            tank_id=tank.id, user_id=test_user.id,
+            title="Original Title", event_date=date.today()
+        )
+        db_session.add(event)
+        db_session.commit()
+        db_session.refresh(event)
+
+        response = authenticated_client.put(
+            f"/api/v1/tanks/{tank.id}/events/{event.id}",
+            json={"title": "Updated Title", "description": "Added details"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["title"] == "Updated Title"
+        assert data["description"] == "Added details"
+
+    def test_update_tank_event_not_found(self, authenticated_client, test_user, db_session):
+        """Test updating non-existent event"""
+        from app.models.tank import Tank
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        response = authenticated_client.put(
+            f"/api/v1/tanks/{tank.id}/events/00000000-0000-0000-0000-000000000000",
+            json={"title": "Test"}
+        )
+        assert response.status_code == 404
+
+    def test_delete_tank_event(self, authenticated_client, test_user, db_session):
+        """Test deleting a tank event"""
+        from app.models.tank import Tank, TankEvent
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        event = TankEvent(
+            tank_id=tank.id, user_id=test_user.id,
+            title="To Delete", event_date=date.today()
+        )
+        db_session.add(event)
+        db_session.commit()
+        db_session.refresh(event)
+
+        response = authenticated_client.delete(
+            f"/api/v1/tanks/{tank.id}/events/{event.id}"
+        )
+        assert response.status_code == 204
+
+        # Verify deletion
+        response = authenticated_client.get(f"/api/v1/tanks/{tank.id}/events")
+        assert response.status_code == 200
+        assert len(response.json()) == 0
+
+    def test_delete_tank_event_not_found(self, authenticated_client, test_user, db_session):
+        """Test deleting non-existent event"""
+        from app.models.tank import Tank
+
+        tank = Tank(user_id=test_user.id, name="Event Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        response = authenticated_client.delete(
+            f"/api/v1/tanks/{tank.id}/events/00000000-0000-0000-0000-000000000000"
+        )
+        assert response.status_code == 404
+
+
+@pytest.mark.integration
+class TestTankImage:
+    """Tests for tank image upload/download"""
+
+    def test_upload_image_invalid_tank(self, authenticated_client):
+        """Test uploading image to non-existent tank"""
+        import io
+        response = authenticated_client.post(
+            "/api/v1/tanks/00000000-0000-0000-0000-000000000000/upload-image",
+            files={"file": ("test.jpg", io.BytesIO(b"fake image data"), "image/jpeg")}
+        )
+        assert response.status_code == 404
+
+    def test_upload_image_invalid_type(self, authenticated_client, test_user, db_session):
+        """Test uploading non-image file"""
+        from app.models.tank import Tank
+        import io
+
+        tank = Tank(user_id=test_user.id, name="Image Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        response = authenticated_client.post(
+            f"/api/v1/tanks/{tank.id}/upload-image",
+            files={"file": ("test.pdf", io.BytesIO(b"fake pdf data"), "application/pdf")}
+        )
+        assert response.status_code == 400
+
+    def test_get_image_no_image(self, authenticated_client, test_user, db_session):
+        """Test getting image for tank with no image"""
+        from app.models.tank import Tank
+
+        tank = Tank(user_id=test_user.id, name="No Image Tank", display_volume_liters=100.0)
+        db_session.add(tank)
+        db_session.commit()
+        db_session.refresh(tank)
+
+        response = authenticated_client.get(f"/api/v1/tanks/{tank.id}/image")
+        assert response.status_code == 404
+
+    def test_get_image_invalid_tank(self, authenticated_client):
+        """Test getting image for non-existent tank"""
+        response = authenticated_client.get(
+            "/api/v1/tanks/00000000-0000-0000-0000-000000000000/image"
+        )
+        assert response.status_code == 404

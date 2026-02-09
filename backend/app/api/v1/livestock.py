@@ -12,7 +12,7 @@ from app.database import get_db
 from app.models.user import User
 from app.models.tank import Tank
 from app.models.livestock import Livestock
-from app.schemas.livestock import LivestockCreate, LivestockUpdate, LivestockResponse
+from app.schemas.livestock import LivestockCreate, LivestockUpdate, LivestockResponse, LivestockSplitRequest, LivestockSplitResponse
 from app.api.deps import get_current_user
 from app.services.fishbase import fishbase_service
 from app.services.worms import worms_service
@@ -176,6 +176,74 @@ def delete_livestock(
     db.delete(livestock)
     db.commit()
     return None
+
+
+@router.post("/{livestock_id}/split", response_model=LivestockSplitResponse)
+def split_livestock(
+    livestock_id: UUID,
+    split_in: LivestockSplitRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Split a livestock entry into two: keep some alive, mark others as dead/removed.
+
+    Example: 3 Chromis viridis (alive) -> 2 alive + 1 dead.
+
+    The original entry's quantity is reduced by split_quantity.
+    A new entry is created copying all species data with the split_quantity and new status.
+    """
+    livestock = db.query(Livestock).filter(
+        Livestock.id == livestock_id,
+        Livestock.user_id == current_user.id
+    ).first()
+
+    if not livestock:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Livestock not found"
+        )
+
+    if split_in.new_status not in ("dead", "removed"):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="new_status must be 'dead' or 'removed'"
+        )
+
+    if split_in.split_quantity >= livestock.quantity:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"split_quantity must be less than current quantity ({livestock.quantity}). Use regular update to change status of all."
+        )
+
+    # Reduce original quantity
+    livestock.quantity = livestock.quantity - split_in.split_quantity
+
+    # Create new entry copying species data from original
+    from datetime import date as date_type
+    new_entry = Livestock(
+        tank_id=livestock.tank_id,
+        user_id=livestock.user_id,
+        species_name=livestock.species_name,
+        common_name=livestock.common_name,
+        type=livestock.type,
+        fishbase_species_id=livestock.fishbase_species_id,
+        worms_id=livestock.worms_id,
+        inaturalist_id=livestock.inaturalist_id,
+        cached_photo_url=livestock.cached_photo_url,
+        quantity=split_in.split_quantity,
+        status=split_in.new_status,
+        added_date=livestock.added_date,
+        removed_date=date_type.today(),
+        notes=livestock.notes,
+    )
+
+    db.add(new_entry)
+    db.commit()
+    db.refresh(livestock)
+    db.refresh(new_entry)
+
+    return LivestockSplitResponse(original=livestock, split=new_entry)
 
 
 @router.get("/fishbase/search")

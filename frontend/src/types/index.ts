@@ -298,6 +298,16 @@ export interface LivestockUpdate {
   notes?: string | null
 }
 
+export interface LivestockSplitRequest {
+  split_quantity: number
+  new_status: 'dead' | 'removed'
+}
+
+export interface LivestockSplitResponse {
+  original: Livestock
+  split: Livestock
+}
+
 // ============================================================================
 // Equipment Types
 // ============================================================================

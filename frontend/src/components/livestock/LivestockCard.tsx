@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Livestock, Tank } from '../../types'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, formatDistance } from 'date-fns'
 import { livestockApi } from '../../api/client'
 
 interface LivestockCardProps {
@@ -16,6 +16,7 @@ interface LivestockCardProps {
   tanks: Tank[]
   onEdit: (livestock: Livestock) => void
   onDelete: (id: string) => void
+  onSplit: (id: string, splitQuantity: number, newStatus: 'dead' | 'removed') => void
 }
 
 export default function LivestockCard({
@@ -23,6 +24,7 @@ export default function LivestockCard({
   tanks,
   onEdit,
   onDelete,
+  onSplit,
 }: LivestockCardProps) {
   const { t } = useTranslation('livestock')
   const { t: tc } = useTranslation('common')
@@ -30,6 +32,9 @@ export default function LivestockCard({
   const [thumbnail, setThumbnail] = useState<string | null>(null)
   const [imageLoading, setImageLoading] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [showSplitDialog, setShowSplitDialog] = useState(false)
+  const [splitQuantity, setSplitQuantity] = useState(1)
+  const [splitStatus, setSplitStatus] = useState<'dead' | 'removed'>('dead')
 
   // Load thumbnail with priority: cached_photo_url > iNaturalist > FishBase
   useEffect(() => {
@@ -154,6 +159,15 @@ export default function LivestockCard({
     return formatDistanceToNow(date, { addSuffix: false })
   }
 
+  const getTimeInTank = () => {
+    if (!livestock.added_date) return null
+    const addedDate = new Date(livestock.added_date)
+    if (isPast && livestock.removed_date) {
+      return formatDistance(addedDate, new Date(livestock.removed_date))
+    }
+    return formatDistanceToNow(addedDate, { addSuffix: false })
+  }
+
   const getTypeLabel = () => {
     switch (livestock.type) {
       case 'fish':
@@ -227,6 +241,21 @@ export default function LivestockCard({
             </div>
           </div>
           <div className="flex space-x-1 ml-2">
+            {livestock.quantity > 1 && livestock.status === 'alive' && (
+              <button
+                onClick={() => {
+                  setSplitQuantity(1)
+                  setSplitStatus('dead')
+                  setShowSplitDialog(!showSplitDialog)
+                }}
+                className={`p-1 rounded ${showSplitDialog ? 'text-amber-800 bg-amber-200' : 'text-amber-600 hover:bg-amber-100'}`}
+                title={t('split.title')}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </button>
+            )}
             <button
               onClick={() => onEdit(livestock)}
               className="p-1 text-gray-600 hover:bg-gray-200 rounded"
@@ -290,6 +319,16 @@ export default function LivestockCard({
           </div>
         )}
 
+        {/* Time in Tank */}
+        {livestock.added_date && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">{t('card.timeInTank')}</span>
+            <span className={`font-medium ${isPast ? 'text-gray-500' : 'text-green-700'}`}>
+              {getTimeInTank()}
+            </span>
+          </div>
+        )}
+
         {/* External Database Links */}
         {(livestock.worms_id || livestock.inaturalist_id || livestock.fishbase_species_id) && (
           <div className="pt-2 border-t border-gray-200 space-y-1">
@@ -342,6 +381,85 @@ export default function LivestockCard({
           </div>
         )}
       </div>
+
+      {/* Inline Split Dialog */}
+      {showSplitDialog && (
+        <div className="p-4 bg-amber-50 border-t-2 border-amber-300">
+          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('split.title')}</h4>
+          <p className="text-xs text-gray-600 mb-3">
+            {t('split.description', { total: livestock.quantity, name: livestock.common_name || livestock.species_name })}
+          </p>
+
+          <div className="mb-3">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              {t('split.quantity')}
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={1}
+                max={livestock.quantity - 1}
+                value={splitQuantity}
+                onChange={(e) => setSplitQuantity(Math.max(1, Math.min(livestock.quantity - 1, parseInt(e.target.value) || 1)))}
+                className="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              />
+              <span className="text-xs text-gray-500">
+                {t('split.remaining', { count: livestock.quantity - splitQuantity })}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              {t('split.newStatus')}
+            </label>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => setSplitStatus('dead')}
+                className={`px-3 py-1 text-xs rounded-md border-2 transition-colors ${
+                  splitStatus === 'dead'
+                    ? 'border-red-500 bg-red-50 text-red-800'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                {t('status.dead')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSplitStatus('removed')}
+                className={`px-3 py-1 text-xs rounded-md border-2 transition-colors ${
+                  splitStatus === 'removed'
+                    ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                {t('status.removed')}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={() => setShowSplitDialog(false)}
+              className="px-3 py-1 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              {tc('actions.cancel')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onSplit(livestock.id, splitQuantity, splitStatus)
+                setShowSplitDialog(false)
+              }}
+              className="px-3 py-1 text-xs bg-amber-600 text-white rounded-md hover:bg-amber-700"
+            >
+              {t('split.confirm')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

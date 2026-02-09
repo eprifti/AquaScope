@@ -62,7 +62,8 @@
     "unknown": "Desconocido",
     "viewOnWorms": "Ver en WoRMS",
     "viewOnINaturalist": "Ver en iNaturalist",
-    "viewOnFishBase": "Ver en FishBase"
+    "viewOnFishBase": "Ver en FishBase",
+    "timeInTank": "Tiempo en acuario"
   },
   "pastLivestock": "Animales anteriores",
   "deadOrRemoved": "Muertos o retirados del acuario",
@@ -71,5 +72,14 @@
   "addFirst": "Agregar primer animal",
   "noActiveLivestock": "No hay animales activos. Todos están en la sección de anteriores.",
   "confirmDelete": "¿Estás seguro de que deseas eliminar permanentemente este animal?",
-  "deleteFailed": "Error al eliminar el animal"
+  "deleteFailed": "Error al eliminar el animal",
+  "split": {
+    "title": "Dividir grupo",
+    "description": "Dividir {{total}} {{name}} en dos grupos",
+    "quantity": "¿Cuántos separar?",
+    "remaining": "{{count}} seguirán vivos",
+    "newStatus": "Estado del grupo separado",
+    "confirm": "Dividir",
+    "failed": "Error al dividir el animal"
+  }
 }

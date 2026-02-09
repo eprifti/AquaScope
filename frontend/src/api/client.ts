@@ -443,6 +443,11 @@ export const livestockApi = {
     await apiClient.delete(`/livestock/${id}`)
   },
 
+  split: async (id: string, data: { split_quantity: number; new_status: 'dead' | 'removed' }): Promise<{ original: Livestock; split: Livestock }> => {
+    const response = await apiClient.post<{ original: Livestock; split: Livestock }>(`/livestock/${id}/split`, data)
+    return response.data
+  },
+
   searchFishBase: async (query: string, limit = 10): Promise<any[]> => {
     const response = await apiClient.get<any[]>('/livestock/fishbase/search', {
       params: { query, limit },

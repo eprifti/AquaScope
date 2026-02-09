@@ -82,6 +82,16 @@ export default function Livestock() {
     setEditingLivestock(null)
   }
 
+  const handleSplit = async (id: string, splitQuantity: number, newStatus: 'dead' | 'removed') => {
+    try {
+      await livestockApi.split(id, { split_quantity: splitQuantity, new_status: newStatus })
+      loadData()
+    } catch (error) {
+      console.error('Failed to split livestock:', error)
+      alert(t('split.failed'))
+    }
+  }
+
   // Separate alive from dead/removed
   const alive = livestock.filter((l) => l.status === 'alive' || !l.status)
   const past = livestock.filter((l) => l.status === 'dead' || l.status === 'removed')
@@ -296,6 +306,7 @@ export default function Livestock() {
                         tanks={tanks}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onSplit={handleSplit}
                       />
                     ))}
                   </div>
@@ -317,6 +328,7 @@ export default function Livestock() {
                         tanks={tanks}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onSplit={handleSplit}
                       />
                     ))}
                   </div>
@@ -338,6 +350,7 @@ export default function Livestock() {
                         tanks={tanks}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onSplit={handleSplit}
                       />
                     ))}
                   </div>
@@ -378,6 +391,7 @@ export default function Livestock() {
                       tanks={tanks}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
+                      onSplit={handleSplit}
                     />
                   ))}
                 </div>

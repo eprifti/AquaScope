@@ -62,7 +62,8 @@
     "unknown": "Unknown",
     "viewOnWorms": "View on WoRMS",
     "viewOnINaturalist": "View on iNaturalist",
-    "viewOnFishBase": "View on FishBase"
+    "viewOnFishBase": "View on FishBase",
+    "timeInTank": "Time in tank"
   },
   "pastLivestock": "Past Livestock",
   "deadOrRemoved": "Dead or removed from tank",
@@ -71,5 +72,14 @@
   "addFirst": "Add First Livestock",
   "noActiveLivestock": "No active livestock. All entries are in past livestock.",
   "confirmDelete": "Are you sure you want to permanently delete this livestock entry?",
-  "deleteFailed": "Failed to delete livestock"
+  "deleteFailed": "Failed to delete livestock",
+  "split": {
+    "title": "Split Group",
+    "description": "Split {{total}} {{name}} into two groups",
+    "quantity": "How many to split off?",
+    "remaining": "{{count}} will remain alive",
+    "newStatus": "Status for split-off group",
+    "confirm": "Split",
+    "failed": "Failed to split livestock"
+  }
 }
