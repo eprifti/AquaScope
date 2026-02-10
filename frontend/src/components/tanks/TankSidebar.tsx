@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import type { Tank } from '../../types'
 import TankStats from './TankStats'
 import TankImageUpload from './TankImageUpload'
+import DefaultTankAnimation from './DefaultTankAnimation'
 import { tanksApi } from '../../api/client'
 
 interface TankSidebarProps {
@@ -88,7 +89,7 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent, onRefresh
           ) : tank.image_url && !imageUrl ? (
             <div className="text-ocean-400">Loading...</div>
           ) : (
-            <span className="text-6xl">🐠</span>
+            <DefaultTankAnimation waterType={tank.water_type} />
           )}
           {/* Upload overlay on hover */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
@@ -138,6 +139,24 @@ export default function TankSidebar({ tank, stats, onEdit, onAddEvent, onRefresh
               </button>
             )}
           </div>
+          {(tank.water_type || tank.aquarium_subtype) && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {tank.water_type && (
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                  tank.water_type === 'saltwater' ? 'bg-blue-100 text-blue-700' :
+                  tank.water_type === 'freshwater' ? 'bg-emerald-100 text-emerald-700' :
+                  'bg-teal-100 text-teal-700'
+                }`}>
+                  {tank.water_type.charAt(0).toUpperCase() + tank.water_type.slice(1)}
+                </span>
+              )}
+              {tank.aquarium_subtype && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 capitalize">
+                  {tank.aquarium_subtype.replace(/_/g, ' ')}
+                </span>
+              )}
+            </div>
+          )}
           {tank.description && (
             <p className="text-gray-600 text-sm">{tank.description}</p>
           )}

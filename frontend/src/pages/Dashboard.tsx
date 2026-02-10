@@ -170,13 +170,34 @@ export default function Dashboard() {
                 >
                   <div className="flex flex-col md:flex-row">
                     {/* Left Section - Tank Info */}
-                    <div className="bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50 p-6 md:w-64 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-200">
+                    <div className={`p-6 md:w-64 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-200 ${
+                      tank.water_type === 'freshwater' ? 'bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-50' :
+                      tank.water_type === 'brackish' ? 'bg-gradient-to-br from-teal-50 via-teal-100 to-teal-50' :
+                      'bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50'
+                    }`}>
                       <div>
                         <Link to={`/tanks/${tank.id}`} className="group">
                           <h3 className="font-bold text-xl text-gray-900 group-hover:text-ocean-600 transition-colors">
                             {tank.name}
                           </h3>
                         </Link>
+                        {(tank.water_type || tank.aquarium_subtype) && (
+                          <div className="flex flex-wrap gap-1.5 mt-1.5">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                              tank.water_type === 'freshwater' ? 'bg-emerald-200 text-emerald-800' :
+                              tank.water_type === 'brackish' ? 'bg-teal-200 text-teal-800' :
+                              'bg-blue-200 text-blue-800'
+                            }`}>
+                              {tank.water_type === 'freshwater' ? '🌿' : tank.water_type === 'brackish' ? '🌊' : '🪸'}{' '}
+                              {tank.water_type?.charAt(0).toUpperCase()}{tank.water_type?.slice(1)}
+                            </span>
+                            {tank.aquarium_subtype && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white/70 text-gray-600 capitalize">
+                                {tank.aquarium_subtype.replace(/_/g, ' ')}
+                              </span>
+                            )}
+                          </div>
+                        )}
                         {tank.total_volume_liters > 0 && (
                           <div className="mt-2 flex items-center">
                             <span className="text-2xl font-bold text-ocean-700">

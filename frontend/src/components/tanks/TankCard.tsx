@@ -104,7 +104,7 @@ export default function TankCard({ tank, onEdit, onDelete }: TankCardProps) {
             <div className="text-ocean-400 text-sm">Loading...</div>
           </div>
         ) : (
-          <DefaultTankAnimation />
+          <DefaultTankAnimation waterType={tank.water_type} />
         )}
         <div className="absolute top-3 right-3 flex space-x-2">
           <button
@@ -146,7 +146,14 @@ export default function TankCard({ tank, onEdit, onDelete }: TankCardProps) {
 
       {/* Header */}
       <div className="p-6 border-b border-gray-100">
-        <h3 className="text-xl font-semibold text-gray-900">{tank.name}</h3>
+        <div className="flex items-start justify-between">
+          <h3 className="text-xl font-semibold text-gray-900">{tank.name}</h3>
+          {tank.aquarium_subtype && (
+            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full capitalize whitespace-nowrap ml-2">
+              {tank.aquarium_subtype.replace(/_/g, ' ')}
+            </span>
+          )}
+        </div>
         {age && (
           <p className="text-sm text-gray-500 mt-1">
             Running for {age}
