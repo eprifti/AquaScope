@@ -178,6 +178,18 @@ Open your browser and navigate to:
 3. Create your first tank
 4. Start logging parameters!
 
+### 6. Load Demo Data (Optional)
+
+Seed the database with two fully configured aquariums (saltwater SPS reef + freshwater Amazonian biotope) including livestock, equipment, maintenance schedules, notes, and months of parameter history:
+
+```bash
+bash scripts/seed_demo.sh
+```
+
+Then log in with:
+- **Email**: `demo@reeflab.io`
+- **Password**: `demo1234`
+
 ## Grafana Integration
 
 ### Configure Grafana Datasource
