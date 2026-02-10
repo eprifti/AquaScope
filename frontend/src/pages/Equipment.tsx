@@ -57,6 +57,7 @@ export default function EquipmentPage() {
   const [selectedTank, setSelectedTank] = useState<string>('')
   const [selectedType, setSelectedType] = useState<string>('')
   const [selectedStatus, setSelectedStatus] = useState<string>('')
+  const [selectedCondition, setSelectedCondition] = useState<string>('')
 
   // Form state
   const [formData, setFormData] = useState<EquipmentCreate>({
@@ -75,7 +76,7 @@ export default function EquipmentPage() {
 
   useEffect(() => {
     loadData()
-  }, [selectedTank, selectedType, selectedStatus])
+  }, [selectedTank, selectedType, selectedStatus, selectedCondition])
 
   const loadData = async () => {
     try {
@@ -207,6 +208,24 @@ export default function EquipmentPage() {
     return status.charAt(0).toUpperCase() + status.slice(1)
   }
 
+  const getConditionCardStyle = (condition: string | null) => {
+    switch (condition) {
+      case 'new':
+      case 'excellent':
+        return 'border-l-4 border-l-green-500 bg-green-50/30'
+      case 'good':
+        return 'border-l-4 border-l-blue-500 bg-blue-50/30'
+      case 'fair':
+        return 'border-l-4 border-l-yellow-500 bg-yellow-50/40'
+      case 'needs_maintenance':
+        return 'border-l-4 border-l-orange-500 bg-orange-50/50'
+      case 'failing':
+        return 'border-l-4 border-l-red-500 bg-red-50/50'
+      default:
+        return 'border-l-4 border-l-gray-300'
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -237,7 +256,7 @@ export default function EquipmentPage() {
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('filterByTank')}</label>
             <select
@@ -271,6 +290,22 @@ export default function EquipmentPage() {
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('filterByCondition', { defaultValue: 'Condition' })}</label>
+            <select
+              value={selectedCondition}
+              onChange={(e) => setSelectedCondition(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            >
+              <option value="">{t('allConditions', { defaultValue: 'All Conditions' })}</option>
+              {CONDITIONS.map((cond) => (
+                <option key={cond} value={cond}>
+                  {formatCondition(cond)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('filterByStatus')}</label>
             <select
               value={selectedStatus}
@@ -290,8 +325,10 @@ export default function EquipmentPage() {
 
       {/* Equipment List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {equipment.map((item) => (
-          <div key={item.id} className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow">
+        {equipment
+          .filter((item) => !selectedCondition || item.condition === selectedCondition)
+          .map((item) => (
+          <div key={item.id} className={`rounded-lg shadow p-4 hover:shadow-lg transition-shadow ${getConditionCardStyle(item.condition)}`}>
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
@@ -377,7 +414,7 @@ export default function EquipmentPage() {
           </div>
         ))}
 
-        {equipment.length === 0 && (
+        {equipment.filter((item) => !selectedCondition || item.condition === selectedCondition).length === 0 && (
           <div className="col-span-full text-center py-12 text-gray-500">
             {t('noEquipment')}
           </div>
