@@ -99,6 +99,8 @@ export interface Tank {
   id: string
   user_id: string
   name: string
+  water_type: string           // 'freshwater' | 'saltwater' | 'brackish'
+  aquarium_subtype: string | null
   display_volume_liters: number | null
   sump_volume_liters: number | null
   total_volume_liters: number
@@ -112,6 +114,8 @@ export interface Tank {
 
 export interface TankCreate {
   name: string
+  water_type?: string
+  aquarium_subtype?: string | null
   display_volume_liters?: number | null
   sump_volume_liters?: number | null
   description?: string | null
@@ -121,6 +125,8 @@ export interface TankCreate {
 
 export interface TankUpdate {
   name?: string
+  water_type?: string
+  aquarium_subtype?: string | null
   display_volume_liters?: number | null
   sump_volume_liters?: number | null
   description?: string | null
@@ -143,6 +149,30 @@ export interface ParameterSubmission {
   salinity?: number | null
   temperature?: number | null
   ph?: number | null
+  // Freshwater parameters
+  gh?: number | null
+  ammonia?: number | null
+  nitrite?: number | null
+}
+
+// ============================================================================
+// Parameter Range Types
+// ============================================================================
+
+export interface ParameterRangeConfig {
+  parameter_type: string
+  name: string
+  unit: string
+  min_value: number
+  max_value: number
+  ideal_value: number | null
+}
+
+export interface ParameterRangeResponse extends ParameterRangeConfig {
+  id: string
+  tank_id: string
+  created_at: string
+  updated_at: string
 }
 
 export interface ParameterReading {

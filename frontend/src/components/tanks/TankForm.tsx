@@ -1,11 +1,12 @@
 /**
  * Tank Form Component
  *
- * Form for creating and editing tanks
+ * Form for creating and editing tanks with water type and subtype selection
  */
 
 import { useState, useEffect } from 'react'
 import { Tank, TankCreate } from '../../types'
+import { WATER_TYPES, AQUARIUM_SUBTYPES } from '../../config/parameterRanges'
 
 interface TankFormProps {
   tank?: Tank
@@ -15,6 +16,8 @@ interface TankFormProps {
 
 export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
   const [name, setName] = useState('')
+  const [waterType, setWaterType] = useState('saltwater')
+  const [aquariumSubtype, setAquariumSubtype] = useState('')
   const [displayVolume, setDisplayVolume] = useState('')
   const [sumpVolume, setSumpVolume] = useState('')
   const [description, setDescription] = useState('')
@@ -24,6 +27,8 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
   useEffect(() => {
     if (tank) {
       setName(tank.name)
+      setWaterType(tank.water_type || 'saltwater')
+      setAquariumSubtype(tank.aquarium_subtype || '')
       setDisplayVolume(tank.display_volume_liters?.toString() || '')
       setSumpVolume(tank.sump_volume_liters?.toString() || '')
       setDescription(tank.description || '')
@@ -37,6 +42,13 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
     return display + sump
   }
 
+  const handleWaterTypeChange = (newType: string) => {
+    setWaterType(newType)
+    setAquariumSubtype('') // Reset subtype when water type changes
+  }
+
+  const subtypeOptions = AQUARIUM_SUBTYPES[waterType] || []
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -44,6 +56,8 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
     try {
       const data: TankCreate = {
         name,
+        water_type: waterType,
+        aquarium_subtype: aquariumSubtype || null,
         display_volume_liters: displayVolume ? parseFloat(displayVolume) : null,
         sump_volume_liters: sumpVolume ? parseFloat(sumpVolume) : null,
         description: description || null,
@@ -55,6 +69,8 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
       // Reset form if creating new tank
       if (!tank) {
         setName('')
+        setWaterType('saltwater')
+        setAquariumSubtype('')
         setDisplayVolume('')
         setSumpVolume('')
         setDescription('')
@@ -92,6 +108,62 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               placeholder="e.g., Main Display Tank"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
             />
+          </div>
+
+          {/* Water Type & Subtype */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-gray-900">Aquarium Type</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Water Type */}
+              <div>
+                <label
+                  htmlFor="waterType"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Water Type <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="waterType"
+                  value={waterType}
+                  onChange={(e) => handleWaterTypeChange(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+                >
+                  {WATER_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Aquarium Subtype */}
+              <div>
+                <label
+                  htmlFor="aquariumSubtype"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Aquarium Subtype
+                </label>
+                <select
+                  id="aquariumSubtype"
+                  value={aquariumSubtype}
+                  onChange={(e) => setAquariumSubtype(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+                >
+                  <option value="">-- Select subtype --</option>
+                  {subtypeOptions.map((sub) => (
+                    <option key={sub.key} value={sub.key}>
+                      {sub.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-500">
+              Parameter ranges will be set based on your aquarium type. You can customize them later.
+            </p>
           </div>
 
           {/* Description */}

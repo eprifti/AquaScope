@@ -14,7 +14,9 @@
     "totalVolume": "Total Volume",
     "setupDate": "Setup Date",
     "image": "Tank Image",
-    "liters": "L"
+    "liters": "L",
+    "waterType": "Water Type",
+    "aquariumSubtype": "Aquarium Subtype"
   },
   "stats": {
     "daysRunning_one": "{{count}} day running",
@@ -69,5 +71,35 @@
     "fileTypes": "PNG, JPG, GIF up to 10MB",
     "uploading": "Uploading...",
     "changeImage": "Change image"
+  },
+  "waterType": {
+    "freshwater": "Freshwater",
+    "saltwater": "Saltwater",
+    "brackish": "Brackish"
+  },
+  "subtype": {
+    "sps_dominant": "SPS Dominant",
+    "lps_dominant": "LPS Dominant",
+    "soft_coral": "Soft Coral",
+    "mixed_reef": "Mixed Reef",
+    "fish_only": "Fish Only",
+    "fowlr": "FOWLR",
+    "amazonian": "Amazonian",
+    "tanganyika": "Tanganyika",
+    "malawi": "Malawi",
+    "planted": "Planted",
+    "community": "Community",
+    "discus": "Discus",
+    "shrimp": "Shrimp",
+    "goldfish": "Goldfish",
+    "axolotl": "Axolotl",
+    "mangrove": "Mangrove",
+    "brackish_community": "Brackish Community"
+  },
+  "parameterRanges": {
+    "title": "Parameter Ranges",
+    "resetDefaults": "Reset to Defaults",
+    "customizeRanges": "Customize Ranges",
+    "rangesNote": "Parameter ranges will be set based on your aquarium type. You can customize them later."
   }
 }

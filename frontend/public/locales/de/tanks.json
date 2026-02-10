@@ -14,7 +14,9 @@
     "totalVolume": "Gesamtvolumen",
     "setupDate": "Einrichtungsdatum",
     "image": "Aquarium-Bild",
-    "liters": "L"
+    "liters": "L",
+    "waterType": "Wasserart",
+    "aquariumSubtype": "Aquarium-Untertyp"
   },
   "stats": {
     "daysRunning_one": "{{count}} Tag in Betrieb",
@@ -69,5 +71,35 @@
     "fileTypes": "PNG, JPG, GIF bis zu 10 MB",
     "uploading": "Wird hochgeladen...",
     "changeImage": "Bild ändern"
+  },
+  "waterType": {
+    "freshwater": "Süßwasser",
+    "saltwater": "Salzwasser",
+    "brackish": "Brackwasser"
+  },
+  "subtype": {
+    "sps_dominant": "SPS-dominant",
+    "lps_dominant": "LPS-dominant",
+    "soft_coral": "Weichkorallen",
+    "mixed_reef": "Mischbecken",
+    "fish_only": "Nur Fische",
+    "fowlr": "FOWLR",
+    "amazonian": "Amazonas",
+    "tanganyika": "Tanganjika",
+    "malawi": "Malawi",
+    "planted": "Bepflanzt",
+    "community": "Gesellschaft",
+    "discus": "Diskus",
+    "shrimp": "Garnelen",
+    "goldfish": "Goldfische",
+    "axolotl": "Axolotl",
+    "mangrove": "Mangrove",
+    "brackish_community": "Brackwasser-Gesellschaft"
+  },
+  "parameterRanges": {
+    "title": "Parameterbereiche",
+    "resetDefaults": "Zurücksetzen",
+    "customizeRanges": "Bereiche anpassen",
+    "rangesNote": "Parameterbereiche werden basierend auf Ihrem Aquariumtyp festgelegt. Sie können diese später anpassen."
   }
 }

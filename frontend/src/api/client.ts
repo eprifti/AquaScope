@@ -27,6 +27,8 @@ import type {
   ParameterSubmissionResponse,
   ParameterReading,
   LatestParameters,
+  ParameterRangeConfig,
+  ParameterRangeResponse,
   Note,
   NoteCreate,
   NoteUpdate,
@@ -616,6 +618,37 @@ export const icpTestsApi = {
 
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/icp-tests/${id}`)
+  },
+}
+
+// ============================================================================
+// Parameter Ranges API
+// ============================================================================
+
+export const parameterRangesApi = {
+  getForTank: async (tankId: string): Promise<ParameterRangeResponse[]> => {
+    const response = await apiClient.get<ParameterRangeResponse[]>(
+      `/tanks/${tankId}/parameter-ranges`
+    )
+    return response.data
+  },
+
+  updateForTank: async (
+    tankId: string,
+    ranges: ParameterRangeConfig[]
+  ): Promise<ParameterRangeResponse[]> => {
+    const response = await apiClient.put<ParameterRangeResponse[]>(
+      `/tanks/${tankId}/parameter-ranges`,
+      { ranges }
+    )
+    return response.data
+  },
+
+  resetDefaults: async (tankId: string): Promise<ParameterRangeResponse[]> => {
+    const response = await apiClient.post<ParameterRangeResponse[]>(
+      `/tanks/${tankId}/parameter-ranges/reset-defaults`
+    )
+    return response.data
   },
 }
 

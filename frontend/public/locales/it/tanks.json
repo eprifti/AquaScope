@@ -14,7 +14,9 @@
     "totalVolume": "Volume totale",
     "setupDate": "Data di avvio",
     "image": "Immagine vasca",
-    "liters": "L"
+    "liters": "L",
+    "waterType": "Tipo di acqua",
+    "aquariumSubtype": "Sottotipo di acquario"
   },
   "stats": {
     "daysRunning_one": "{{count}} giorno attivo",
@@ -69,5 +71,35 @@
     "fileTypes": "PNG, JPG, GIF fino a 10 MB",
     "uploading": "Caricamento...",
     "changeImage": "Cambia immagine"
+  },
+  "waterType": {
+    "freshwater": "Acqua dolce",
+    "saltwater": "Acqua salata",
+    "brackish": "Acqua salmastra"
+  },
+  "subtype": {
+    "sps_dominant": "Dominanza SPS",
+    "lps_dominant": "Dominanza LPS",
+    "soft_coral": "Coralli molli",
+    "mixed_reef": "Barriera mista",
+    "fish_only": "Solo pesci",
+    "fowlr": "FOWLR",
+    "amazonian": "Amazzonico",
+    "tanganyika": "Tanganyika",
+    "malawi": "Malawi",
+    "planted": "Piantumato",
+    "community": "Comunitario",
+    "discus": "Discus",
+    "shrimp": "Gamberetti",
+    "goldfish": "Pesci rossi",
+    "axolotl": "Axolotl",
+    "mangrove": "Mangrovie",
+    "brackish_community": "Comunitario salmastro"
+  },
+  "parameterRanges": {
+    "title": "Intervalli parametri",
+    "resetDefaults": "Ripristina predefiniti",
+    "customizeRanges": "Personalizza intervalli",
+    "rangesNote": "Gli intervalli dei parametri verranno impostati in base al tipo di acquario. È possibile personalizzarli in seguito."
   }
 }

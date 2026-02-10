@@ -14,7 +14,9 @@
     "totalVolume": "Volume total",
     "setupDate": "Date d'installation",
     "image": "Image de l'aquarium",
-    "liters": "L"
+    "liters": "L",
+    "waterType": "Type d'eau",
+    "aquariumSubtype": "Sous-type d'aquarium"
   },
   "stats": {
     "daysRunning_one": "{{count}} jour de fonctionnement",
@@ -69,5 +71,35 @@
     "fileTypes": "PNG, JPG, GIF jusqu'à 10 Mo",
     "uploading": "Téléchargement en cours...",
     "changeImage": "Changer l'image"
+  },
+  "waterType": {
+    "freshwater": "Eau douce",
+    "saltwater": "Eau de mer",
+    "brackish": "Eau saumâtre"
+  },
+  "subtype": {
+    "sps_dominant": "Dominance SPS",
+    "lps_dominant": "Dominance LPS",
+    "soft_coral": "Coraux mous",
+    "mixed_reef": "Récif mixte",
+    "fish_only": "Poissons uniquement",
+    "fowlr": "FOWLR",
+    "amazonian": "Amazonien",
+    "tanganyika": "Tanganyika",
+    "malawi": "Malawi",
+    "planted": "Planté",
+    "community": "Communautaire",
+    "discus": "Discus",
+    "shrimp": "Crevettes",
+    "goldfish": "Poissons rouges",
+    "axolotl": "Axolotl",
+    "mangrove": "Mangrove",
+    "brackish_community": "Communautaire saumâtre"
+  },
+  "parameterRanges": {
+    "title": "Plages de paramètres",
+    "resetDefaults": "Réinitialiser",
+    "customizeRanges": "Personnaliser les plages",
+    "rangesNote": "Les plages de paramètres seront définies en fonction de votre type d'aquarium. Vous pouvez les personnaliser ultérieurement."
   }
 }

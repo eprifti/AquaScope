@@ -14,7 +14,9 @@
     "totalVolume": "Volume total",
     "setupDate": "Data de montagem",
     "image": "Imagem do aquário",
-    "liters": "L"
+    "liters": "L",
+    "waterType": "Tipo de água",
+    "aquariumSubtype": "Subtipo de aquário"
   },
   "stats": {
     "daysRunning_one": "{{count}} dia ativo",
@@ -69,5 +71,35 @@
     "fileTypes": "PNG, JPG, GIF até 10 MB",
     "uploading": "Enviando...",
     "changeImage": "Alterar imagem"
+  },
+  "waterType": {
+    "freshwater": "Água doce",
+    "saltwater": "Água salgada",
+    "brackish": "Água salobra"
+  },
+  "subtype": {
+    "sps_dominant": "Dominância SPS",
+    "lps_dominant": "Dominância LPS",
+    "soft_coral": "Coral mole",
+    "mixed_reef": "Recife misto",
+    "fish_only": "Só peixes",
+    "fowlr": "FOWLR",
+    "amazonian": "Amazônico",
+    "tanganyika": "Tanganyika",
+    "malawi": "Malawi",
+    "planted": "Plantado",
+    "community": "Comunitário",
+    "discus": "Disco",
+    "shrimp": "Camarões",
+    "goldfish": "Peixe dourado",
+    "axolotl": "Axolotl",
+    "mangrove": "Mangue",
+    "brackish_community": "Comunitário salobro"
+  },
+  "parameterRanges": {
+    "title": "Faixas de parâmetros",
+    "resetDefaults": "Redefinir padrões",
+    "customizeRanges": "Personalizar faixas",
+    "rangesNote": "As faixas de parâmetros serão definidas com base no tipo de aquário. Pode personalizá-las mais tarde."
   }
 }

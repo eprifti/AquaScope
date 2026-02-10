@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 import { tanksApi, maintenanceApi, equipmentApi, livestockApi, photosApi, notesApi } from '../api/client'
@@ -18,6 +18,7 @@ interface TankSummary {
 export default function Dashboard() {
   const { user } = useAuth()
   const { t } = useTranslation('dashboard')
+  const navigate = useNavigate()
   const [tankSummaries, setTankSummaries] = useState<TankSummary[]>([])
   const [overdueReminders, setOverdueReminders] = useState<MaintenanceReminder[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -138,12 +139,12 @@ export default function Dashboard() {
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold text-gray-900">{t('yourTanks')}</h2>
-            <Link
-              to="/tanks/new"
+            <button
+              onClick={() => navigate('/tanks', { state: { showForm: true } })}
               className="px-4 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 text-sm"
             >
               {t('addTank')}
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -153,12 +154,12 @@ export default function Dashboard() {
               <p className="text-gray-600 mb-4">
                 {t('noTanksYet')}
               </p>
-              <Link
-                to="/tanks/new"
+              <button
+                onClick={() => navigate('/tanks', { state: { showForm: true } })}
                 className="inline-block px-4 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700"
               >
                 {t('addFirstTank')}
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
