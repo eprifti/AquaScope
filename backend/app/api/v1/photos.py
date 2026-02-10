@@ -349,6 +349,14 @@ def pin_photo_as_tank_display(
 
     # Pin this photo
     photo.is_tank_display = True
+
+    # Update the tank's image_url so TankCard/TankSidebar display the pinned photo
+    tank = db.query(Tank).filter(Tank.id == photo.tank_id).first()
+    if tank:
+        # Strip /app prefix to store as relative path (tank image endpoint prepends /app)
+        relative_path = photo.file_path.replace("/app", "", 1) if photo.file_path.startswith("/app") else photo.file_path
+        tank.image_url = relative_path
+
     db.commit()
     db.refresh(photo)
 
@@ -374,6 +382,18 @@ def unpin_photo_as_tank_display(
         )
 
     photo.is_tank_display = False
+
+    # Clear tank's image_url if no other photo is pinned
+    other_pinned = db.query(Photo).filter(
+        Photo.tank_id == photo.tank_id,
+        Photo.id != photo_id,
+        Photo.is_tank_display == True
+    ).first()
+    if not other_pinned:
+        tank = db.query(Tank).filter(Tank.id == photo.tank_id).first()
+        if tank:
+            tank.image_url = None
+
     db.commit()
     db.refresh(photo)
 
