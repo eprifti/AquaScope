@@ -5,6 +5,8 @@ import './index.css'
 import { initializeApi } from './api'
 import { isNativePlatform, isLocalMode } from './platform'
 
+declare const __CAPACITOR_BUILD__: boolean
+
 async function bootstrap() {
   // 1. Initialize the API layer (picks local SQLite or remote REST)
   await initializeApi()
@@ -15,8 +17,9 @@ async function bootstrap() {
     await db.initialize()
   }
 
-  // 3. Register PWA service worker only for web (not native Capacitor)
-  if (!isNativePlatform()) {
+  // 3. Register PWA service worker only for web builds (not Capacitor)
+  // Guard with build-time constant so Rollup tree-shakes the virtual module
+  if (!__CAPACITOR_BUILD__ && !isNativePlatform()) {
     const { registerSW } = await import('virtual:pwa-register')
     const updateSW = registerSW({
       onNeedRefresh() {

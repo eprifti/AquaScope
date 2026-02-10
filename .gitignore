@@ -74,6 +74,10 @@ coverage.xml
 # Backups
 backups/
 
+# Capacitor native platforms (generated, recreated via `npx cap add`)
+frontend/ios/
+frontend/android/
+
 # Build outputs
 frontend/dist/
 frontend/build/

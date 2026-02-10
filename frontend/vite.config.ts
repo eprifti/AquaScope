@@ -126,6 +126,7 @@ export default defineConfig({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(`v${pkg.version}`),
+    __CAPACITOR_BUILD__: JSON.stringify(isCapacitorBuild),
   },
   resolve: {
     alias: {
