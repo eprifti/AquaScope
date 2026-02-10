@@ -5,12 +5,15 @@
  */
 
 import { useState, useEffect } from 'react'
-import type { TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
+import type { Tank, TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { photosApi } from '../../api/client'
+import TankTimelineVisual from './TankTimelineVisual'
+import { buildTimelineEntries } from '../../utils/timeline'
 
 interface TankOverviewProps {
+  tank: Tank
   events: TankEvent[]
   equipment: Equipment[]
   livestock: Livestock[]
@@ -20,6 +23,7 @@ interface TankOverviewProps {
 }
 
 export default function TankOverview({
+  tank,
   events,
   equipment,
   livestock,
@@ -31,11 +35,7 @@ export default function TankOverview({
   const { t: tc } = useTranslation('common')
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
 
-  // Get recent items (last 3 of each)
-  const recentEvents = [...events]
-    .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime())
-    .slice(0, 3)
-
+  // Get recent items
   const recentPhotos = [...photos]
     .sort((a, b) => new Date(b.taken_at).getTime() - new Date(a.taken_at).getTime())
     .slice(0, 4)
@@ -130,30 +130,13 @@ export default function TankOverview({
         </div>
       )}
 
-      {/* Recent Events */}
-      {recentEvents.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">{t('recentEvents')}</h3>
-            <button className="text-sm text-ocean-600 hover:text-ocean-700 font-medium">
-              {t('viewAll')} →
-            </button>
-          </div>
-          <div className="space-y-3">
-            {recentEvents.map((event) => (
-              <div key={event.id} className="flex items-start gap-3 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
-                <div className="w-2 h-2 rounded-full bg-ocean-500 mt-2 flex-shrink-0"></div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900">{event.title}</div>
-                  <div className="text-sm text-gray-500">
-                    {new Date(event.event_date).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Visual Timeline */}
+      {(() => {
+        const timelineEntries = buildTimelineEntries(tank, events, livestock, equipment, photos, icpTests)
+        return timelineEntries.length > 0 ? (
+          <TankTimelineVisual entries={timelineEntries} compact />
+        ) : null
+      })()}
 
       {/* Recent Photos */}
       {recentPhotos.length > 0 && (

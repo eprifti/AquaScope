@@ -139,5 +139,17 @@
     "resetDefaults": "Reset to Defaults",
     "customizeRanges": "Customize Ranges",
     "rangesNote": "Parameter ranges will be set based on your aquarium type. You can customize them later."
+  },
+  "timeline": {
+    "title": "Timeline",
+    "noEvents": "No events to display on the timeline",
+    "categories": {
+      "setup": "Setup",
+      "event": "Events",
+      "livestock": "Livestock",
+      "equipment": "Equipment",
+      "photo": "Photos",
+      "icp_test": "ICP Tests"
+    }
   }
 }

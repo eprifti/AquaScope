@@ -5,6 +5,69 @@ All notable changes to ReefLab will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-02-10
+
+### Added
+
+#### Consumables Module (Full Stack)
+- **Backend**: `Consumable` and `ConsumableUsage` SQLAlchemy models with full CRUD
+  - `consumables` table: name, type, brand, quantity, unit, purchase info, expiration, status, notes
+  - `consumable_usage` table: dosing/usage log per consumable with date, quantity, notes
+  - Relationships to Tank and User with cascade delete
+  - Alembic migration `ac13e0b88fe5` for both tables
+- **API Endpoints** (`/api/v1/consumables`):
+  - `POST /` — Create consumable (validates tank ownership)
+  - `GET /` — List consumables with filters (tank_id, consumable_type, status)
+  - `GET /{id}` — Get single consumable with usage count
+  - `PUT /{id}` — Update consumable
+  - `DELETE /{id}` — Delete consumable
+  - `POST /{id}/usage` — Log usage (auto-deducts quantity, auto-updates status to low_stock/depleted)
+  - `GET /{id}/usage` — List usage history
+- **Pydantic Schemas**: ConsumableBase/Create/Update/Response, ConsumableUsageBase/Create/Response
+- **Frontend Page** (`Consumables.tsx`):
+  - Responsive card grid with 3 filter dropdowns (tank, type, status)
+  - Create/edit modal with 2-column form layout
+  - Status badges: active (green), low_stock (amber), depleted (gray), expired (red)
+  - Expiration warnings (amber < 30 days, red when past)
+  - Inline usage logging per card with quantity, unit, date
+  - Usage history viewer per card
+  - Purchase URL "Buy Again" links
+  - 8 consumable types: salt_mix, additive, supplement, food, filter_media, test_kit, medication, other
+  - 7 quantity units: ml, L, g, kg, pieces, drops, tablets
+- **API Client**: `consumablesApi` with list, get, create, update, delete, logUsage, listUsage methods
+- **TypeScript Types**: Consumable, ConsumableCreate, ConsumableUpdate, ConsumableUsage, ConsumableUsageCreate
+- **Routing**: `/consumables` route in App.tsx
+- **Navigation**: Consumables link with beaker icon in sidebar
+- **i18n**: `consumables` namespace with full translations in 6 languages (EN, FR, DE, ES, IT, PT)
+- **Translation files**: `consumables.json` for all 6 locales with 29 keys each
+
+#### Visual Timeline Component
+- **TankTimelineVisual**: SVG-based horizontal timeline showing tank history at a glance
+  - Category-based color coding (events, livestock, equipment, photos, ICP tests)
+  - Compact mode for TankOverview, full mode for TankTabs
+  - Interactive tooltips with entry details
+- **TimelineTooltip**: Positioned tooltip component for timeline entries
+- **Timeline Utilities** (`utils/timeline.ts`): `buildTimelineEntries` aggregates events, livestock, equipment, photos, and ICP tests into a unified timeline
+- **Category Filtering**: Unified category filters on both timeline visual and event list in TankTabs
+
+#### Tank Timeline Enhancements
+- Unified category filter bar shared between timeline visual and event list
+- Pagination for event list to prevent vertical overflow
+- Category-based event type display (replaces double-colon separators)
+
+### Changed
+- **TankOverview**: Now renders visual timeline using `buildTimelineEntries` instead of separate recent events section
+- **TankTabs**: Added visual timeline and unified category filter bar above event list
+- **TankTimeline**: Refactored with pagination and category-based filtering
+
+### Fixed
+- **TankOverview tests**: Added missing `tank` prop and mocked `TankTimelineVisual`/`buildTimelineEntries`
+- **TankTabs tests**: Added missing `tank` prop and mocked timeline dependencies
+
+### Testing
+- All 144 frontend tests passing (19 test files)
+- All 450 backend tests passing (79% coverage)
+
 ## [1.5.1] - 2026-02-09
 
 ### Added
@@ -745,6 +808,7 @@ All releases are tagged in Git and available on GitHub:
 - `v1.4.0` - Livestock split, time-in-tank, test coverage
 - `v1.5.0` - Full i18n (6 languages), aquarium animation, yellow tang
 - `v1.5.1` - Bottom dwellers, rocks, logo, GitHub banner
+- `v1.7.0` - Consumables module, visual timeline, timeline enhancements
 
 ## Versioning Strategy
 
@@ -763,6 +827,7 @@ We follow [Semantic Versioning](https://semver.org/):
 - ✅ **Phase 8** (v1.2.0): Tank hub, CI/CD, footer & credits
 - ✅ **Phase 9** (v1.3.0-v1.4.0): Livestock enhancements & split feature
 - ✅ **Phase 10** (v1.5.x): i18n, animations, branding
+- ✅ **Phase 11** (v1.7.0): Consumables module, visual timeline
 
 ## Contributing
 

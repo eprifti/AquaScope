@@ -399,6 +399,80 @@ export interface EquipmentUpdate {
 }
 
 // ============================================================================
+// Consumable Types
+// ============================================================================
+
+export interface Consumable {
+  id: string
+  tank_id: string
+  user_id: string
+  name: string
+  consumable_type: string
+  brand: string | null
+  product_name: string | null
+  quantity_on_hand: number | null
+  quantity_unit: string | null
+  purchase_date: string | null
+  purchase_price: string | null
+  purchase_url: string | null
+  expiration_date: string | null
+  status: string
+  notes: string | null
+  usage_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ConsumableCreate {
+  tank_id: string
+  name: string
+  consumable_type: string
+  brand?: string | null
+  product_name?: string | null
+  quantity_on_hand?: number | null
+  quantity_unit?: string | null
+  purchase_date?: string | null
+  purchase_price?: string | null
+  purchase_url?: string | null
+  expiration_date?: string | null
+  status?: string
+  notes?: string | null
+}
+
+export interface ConsumableUpdate {
+  name?: string
+  consumable_type?: string
+  brand?: string | null
+  product_name?: string | null
+  quantity_on_hand?: number | null
+  quantity_unit?: string | null
+  purchase_date?: string | null
+  purchase_price?: string | null
+  purchase_url?: string | null
+  expiration_date?: string | null
+  status?: string
+  notes?: string | null
+}
+
+export interface ConsumableUsage {
+  id: string
+  consumable_id: string
+  user_id: string
+  usage_date: string
+  quantity_used: number
+  quantity_unit: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface ConsumableUsageCreate {
+  usage_date: string
+  quantity_used: number
+  quantity_unit?: string | null
+  notes?: string | null
+}
+
+// ============================================================================
 // ICP Test Types
 // ============================================================================
 
@@ -628,6 +702,25 @@ export interface StorageStats {
   }>
   orphan_count: number
   orphan_size_bytes: number
+}
+
+// ============================================================================
+// Timeline Types
+// ============================================================================
+
+export type TimelineCategory = 'event' | 'livestock' | 'equipment' | 'photo' | 'icp_test' | 'setup'
+
+export interface TimelineEntry {
+  id: string
+  date: string
+  category: TimelineCategory
+  title: string
+  subtitle: string | null
+  icon: string
+  color: string
+  eventType: string | null
+  sourceId: string
+  metadata: Record<string, any>
 }
 
 export interface StorageFile {

@@ -125,6 +125,14 @@ If you find AquaScope useful, consider supporting its development:
   - Installation dates and status tracking
   - Tank-specific equipment filtering
 
+- **Consumables Tracking**: Track salt mix, additives, food, and supplies
+  - Inventory management with quantity, brand, and expiration tracking
+  - Usage/dosing log with automatic stock deduction
+  - Status tracking (active, low stock, depleted, expired)
+  - Expiration warnings (amber < 30 days, red when expired)
+  - Purchase URL for easy re-ordering
+  - 8 consumable types: salt mix, additive, supplement, food, filter media, test kit, medication, other
+
 - **Admin Panel**: System administration dashboard
   - User management with stats
   - Database information
@@ -399,6 +407,8 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 - `GET /api/v1/parameters` - Query parameter history
 - `POST /api/v1/photos` - Upload photos
 - `POST /api/v1/maintenance/reminders` - Create maintenance reminder
+- `GET /api/v1/consumables` - List consumables
+- `POST /api/v1/consumables/{id}/usage` - Log consumable usage
 - `GET /api/v1/admin/storage/stats` - Admin storage statistics
 
 ## Contributing
@@ -458,13 +468,15 @@ For issues and questions:
 
 ## Features Status
 
-### Completed (v1.6.0)
+### Completed (v1.7.0)
 - Tank management hub with detail views and timeline
 - Tank image upload with default images per water type
 - Multi water type support (saltwater, freshwater, brackish)
+- Visual timeline with category-based filtering and tooltips
 - ICP test management with element tracking
 - Parameter tracking with InfluxDB integration
 - Equipment tracking and inventory management
+- Consumables tracking with usage/dosing log and stock management
 - Maintenance reminder system with automatic scheduling
 - Photo gallery with drag-and-drop upload
 - Notes/journal system
@@ -477,7 +489,7 @@ For issues and questions:
 - Data visualization with Recharts
 - Excel/CSV import for historical data
 - GitHub Actions CI/CD pipeline with automated tests
-- Comprehensive unit and integration tests (590+ tests, 79% backend coverage)
+- Comprehensive unit and integration tests (594+ tests, 79% backend coverage)
 - Multi-language support (EN, FR, ES, DE, IT, PT)
 - Default aquarium images for each water type
 - Custom logo and branding

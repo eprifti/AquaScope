@@ -13,6 +13,7 @@ import TankDetail from './pages/TankDetail'
 import Maintenance from './pages/Maintenance'
 import Livestock from './pages/Livestock'
 import Equipment from './pages/Equipment'
+import Consumables from './pages/Consumables'
 import ICPTests from './pages/ICPTests'
 import Photos from './pages/Photos'
 import Notes from './pages/Notes'
@@ -49,6 +50,7 @@ function App() {
 
             <Route path="livestock" element={<Livestock />} />
             <Route path="equipment" element={<Equipment />} />
+            <Route path="consumables" element={<Consumables />} />
             <Route path="icp-tests" element={<ICPTests />} />
             <Route path="photos" element={<Photos />} />
             <Route path="notes" element={<Notes />} />

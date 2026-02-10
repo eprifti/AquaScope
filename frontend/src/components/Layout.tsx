@@ -28,6 +28,7 @@ export default function Layout(): JSX.Element {
     { name: t('navigation.maintenance'), href: '/maintenance', icon: '🔧' },
     { name: t('navigation.livestock'), href: '/livestock', icon: '🐟' },
     { name: t('navigation.equipment'), href: '/equipment', icon: '⚙️' },
+    { name: t('navigation.consumables'), href: '/consumables', icon: '🧪' },
   ]
 
   const isActive = (path: string) => location.pathname.startsWith(path)

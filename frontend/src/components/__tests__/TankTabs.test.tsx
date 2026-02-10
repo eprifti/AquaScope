@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithProviders, userEvent } from '../../test/test-utils'
 import TankTabs from '../tanks/TankTabs'
-import type { TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../../types'
+import type { Tank, TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../../types'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -29,10 +29,38 @@ vi.mock('../tanks/TankTimeline', () => ({
   default: () => <div data-testid="tank-timeline">Timeline</div>,
 }))
 
+vi.mock('../tanks/TankTimelineVisual', () => ({
+  default: () => <div data-testid="tank-timeline-visual">TimelineVisual</div>,
+  CATEGORY_LABELS: {},
+}))
+
+vi.mock('../../utils/timeline', () => ({
+  buildTimelineEntries: () => [],
+  CATEGORY_COLORS: {},
+}))
+
 globalThis.URL.createObjectURL = vi.fn(() => 'blob:test-url')
 globalThis.URL.revokeObjectURL = vi.fn()
 
 // --- Factory helpers ---
+
+const makeTank = (overrides: Partial<Tank> = {}): Tank => ({
+  id: 'tank-1',
+  user_id: 'user-1',
+  name: 'Test Tank',
+  water_type: 'saltwater',
+  aquarium_subtype: null,
+  display_volume_liters: 200,
+  sump_volume_liters: 50,
+  total_volume_liters: 250,
+  description: null,
+  image_url: null,
+  setup_date: '2024-01-01',
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
+  events: [],
+  ...overrides,
+})
 
 const makeEvent = (overrides: Partial<TankEvent> = {}): TankEvent => ({
   id: 'evt-1',
@@ -151,6 +179,7 @@ const defaultCallbacks = {
 }
 
 const emptyProps = {
+  tank: makeTank(),
   events: [] as TankEvent[],
   equipment: [] as Equipment[],
   livestock: [] as Livestock[],

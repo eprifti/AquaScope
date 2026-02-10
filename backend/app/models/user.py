@@ -38,6 +38,7 @@ class User(Base):
     livestock = relationship("Livestock", back_populates="owner", cascade="all, delete-orphan")
     equipment = relationship("Equipment", back_populates="owner", cascade="all, delete-orphan")
     icp_tests = relationship("ICPTest", back_populates="owner", cascade="all, delete-orphan")
+    consumables = relationship("Consumable", back_populates="owner", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.email}>"

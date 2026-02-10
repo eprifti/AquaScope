@@ -6,12 +6,15 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../../types'
+import type { Tank, TankEvent, Equipment, Livestock, Photo, Note, MaintenanceReminder, ICPTestSummary, TimelineCategory } from '../../types'
 import TankOverview from './TankOverview'
 import TankTimeline from './TankTimeline'
+import TankTimelineVisual, { CATEGORY_LABELS } from './TankTimelineVisual'
+import { buildTimelineEntries, CATEGORY_COLORS } from '../../utils/timeline'
 import { photosApi, livestockApi } from '../../api/client'
 
 interface TankTabsProps {
+  tank: Tank
   events: TankEvent[]
   equipment: Equipment[]
   livestock: Livestock[]
@@ -35,6 +38,7 @@ interface Tab {
 }
 
 export default function TankTabs({
+  tank,
   events,
   equipment,
   livestock,
@@ -52,6 +56,26 @@ export default function TankTabs({
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
   const [livestockThumbnails, setLivestockThumbnails] = useState<Record<string, string>>({})
+
+  // Shared category filter for Events tab (timeline + event list)
+  const [hiddenCategories, setHiddenCategories] = useState<Set<TimelineCategory>>(new Set())
+
+  // Category-to-eventType mapping for filtering the event list
+  const CATEGORY_EVENT_TYPES: Record<string, string[]> = {
+    setup: ['setup'],
+    livestock: ['livestock_added', 'livestock_lost'],
+    equipment: ['equipment_added', 'equipment_removed'],
+    event: ['water_change', 'rescape', 'cleaning', 'upgrade', 'issue', 'crash', 'milestone', 'other'],
+  }
+
+  const toggleCategory = (cat: TimelineCategory) => {
+    setHiddenCategories(prev => {
+      const next = new Set(prev)
+      if (next.has(cat)) next.delete(cat)
+      else next.add(cat)
+      return next
+    })
+  }
 
   // Load photo thumbnails when photos change
   useEffect(() => {
@@ -117,6 +141,7 @@ export default function TankTabs({
       case 'overview':
         return (
           <TankOverview
+            tank={tank}
             events={events}
             equipment={equipment}
             livestock={livestock}
@@ -126,16 +151,64 @@ export default function TankTabs({
           />
         )
 
-      case 'events':
+      case 'events': {
+        const timelineEntries = buildTimelineEntries(tank, events, livestock, equipment, photos, icpTests)
+        const activeCategories = new Set<TimelineCategory>(timelineEntries.map(e => e.category))
+
+        // Filter events based on hidden categories
+        const hiddenEventTypes = new Set<string>()
+        hiddenCategories.forEach(cat => {
+          const types = CATEGORY_EVENT_TYPES[cat]
+          if (types) types.forEach(t => hiddenEventTypes.add(t))
+        })
+        const filteredEvents = hiddenCategories.has('event') && !hiddenEventTypes.size
+          ? events
+          : events.filter(e => !e.event_type || !hiddenEventTypes.has(e.event_type))
+
         return (
-          <TankTimeline
-            events={events}
-            onCreateEvent={onCreateEvent}
-            onUpdateEvent={onUpdateEvent}
-            onDeleteEvent={onDeleteEvent}
-            onRefresh={onRefresh}
-          />
+          <div className="space-y-4">
+            {/* Unified category filter pills */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {(Object.keys(CATEGORY_LABELS) as TimelineCategory[])
+                .filter(cat => activeCategories.has(cat))
+                .map(cat => {
+                  const isHidden = hiddenCategories.has(cat)
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => toggleCategory(cat)}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition border ${
+                        isHidden
+                          ? 'bg-gray-100 text-gray-400 border-gray-200'
+                          : 'text-white border-transparent'
+                      }`}
+                      style={!isHidden ? { backgroundColor: CATEGORY_COLORS[cat] } : undefined}
+                    >
+                      {CATEGORY_LABELS[cat]}
+                    </button>
+                  )
+                })}
+              {hiddenCategories.size > 0 && (
+                <button
+                  onClick={() => setHiddenCategories(new Set())}
+                  className="px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 transition"
+                >
+                  Show all
+                </button>
+              )}
+            </div>
+
+            <TankTimelineVisual entries={timelineEntries} hiddenCategories={hiddenCategories} />
+            <TankTimeline
+              events={filteredEvents}
+              onCreateEvent={onCreateEvent}
+              onUpdateEvent={onUpdateEvent}
+              onDeleteEvent={onDeleteEvent}
+              onRefresh={onRefresh}
+            />
+          </div>
         )
+      }
 
       case 'equipment':
         return (

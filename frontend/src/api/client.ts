@@ -44,6 +44,11 @@ import type {
   Equipment,
   EquipmentCreate,
   EquipmentUpdate,
+  Consumable,
+  ConsumableCreate,
+  ConsumableUpdate,
+  ConsumableUsage,
+  ConsumableUsageCreate,
   ICPTest,
   ICPTestCreate,
   ICPTestUpdate,
@@ -568,6 +573,50 @@ export const equipmentApi = {
 
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/equipment/${id}`)
+  },
+}
+
+// ============================================================================
+// Consumables API
+// ============================================================================
+
+export const consumablesApi = {
+  list: async (params?: {
+    tank_id?: string
+    consumable_type?: string
+    status?: string
+  }): Promise<Consumable[]> => {
+    const response = await apiClient.get<Consumable[]>('/consumables', { params })
+    return response.data
+  },
+
+  get: async (id: string): Promise<Consumable> => {
+    const response = await apiClient.get<Consumable>(`/consumables/${id}`)
+    return response.data
+  },
+
+  create: async (data: ConsumableCreate): Promise<Consumable> => {
+    const response = await apiClient.post<Consumable>('/consumables', data)
+    return response.data
+  },
+
+  update: async (id: string, data: ConsumableUpdate): Promise<Consumable> => {
+    const response = await apiClient.put<Consumable>(`/consumables/${id}`, data)
+    return response.data
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/consumables/${id}`)
+  },
+
+  logUsage: async (id: string, data: ConsumableUsageCreate): Promise<ConsumableUsage> => {
+    const response = await apiClient.post<ConsumableUsage>(`/consumables/${id}/usage`, data)
+    return response.data
+  },
+
+  listUsage: async (id: string): Promise<ConsumableUsage[]> => {
+    const response = await apiClient.get<ConsumableUsage[]>(`/consumables/${id}/usage`)
+    return response.data
   },
 }
 

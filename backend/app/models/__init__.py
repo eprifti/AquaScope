@@ -8,5 +8,6 @@ from app.models.livestock import Livestock
 from app.models.equipment import Equipment
 from app.models.icp_test import ICPTest
 from app.models.parameter_range import ParameterRange
+from app.models.consumable import Consumable, ConsumableUsage
 
-__all__ = ["User", "Tank", "Note", "Photo", "MaintenanceReminder", "Livestock", "Equipment", "ICPTest", "ParameterRange"]
+__all__ = ["User", "Tank", "Note", "Photo", "MaintenanceReminder", "Livestock", "Equipment", "ICPTest", "ParameterRange", "Consumable", "ConsumableUsage"]

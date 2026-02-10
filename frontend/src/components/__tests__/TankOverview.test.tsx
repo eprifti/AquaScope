@@ -5,7 +5,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithProviders } from '../../test/test-utils'
 import TankOverview from '../tanks/TankOverview'
-import type { TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
+import type { Tank, TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
+import { buildTimelineEntries } from '../../utils/timeline'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -21,8 +22,36 @@ vi.mock('../../api/client', () => ({
   photosApi: { getFileBlobUrl: vi.fn().mockResolvedValue('blob:test-photo-url') },
 }))
 
+vi.mock('../tanks/TankTimelineVisual', () => ({
+  default: () => <div data-testid="tank-timeline-visual">TimelineVisual</div>,
+  CATEGORY_LABELS: {},
+}))
+
+vi.mock('../../utils/timeline', () => ({
+  buildTimelineEntries: vi.fn(() => []),
+  CATEGORY_COLORS: {},
+}))
+
 globalThis.URL.createObjectURL = vi.fn(() => 'blob:test-url')
 globalThis.URL.revokeObjectURL = vi.fn()
+
+const makeTank = (overrides: Partial<Tank> = {}): Tank => ({
+  id: 'tank-1',
+  user_id: 'user-1',
+  name: 'Test Tank',
+  water_type: 'saltwater',
+  aquarium_subtype: null,
+  display_volume_liters: 200,
+  sump_volume_liters: 50,
+  total_volume_liters: 250,
+  description: null,
+  image_url: null,
+  setup_date: '2024-01-01',
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
+  events: [],
+  ...overrides,
+})
 
 const makeEvent = (overrides: Partial<TankEvent> = {}): TankEvent => ({
   id: 'evt-1',
@@ -115,6 +144,7 @@ const makeICPTest = (overrides: Partial<ICPTestSummary> = {}): ICPTestSummary =>
 })
 
 const emptyProps = {
+  tank: makeTank(),
   events: [] as TankEvent[],
   equipment: [] as Equipment[],
   livestock: [] as Livestock[],
@@ -126,6 +156,7 @@ const emptyProps = {
 describe('TankOverview Component', () => {
   it('renders quick stats with correct counts', () => {
     const props = {
+      tank: makeTank(),
       events: [makeEvent()],
       equipment: [makeEquipment(), makeEquipment({ id: 'equip-2', name: 'Heater' })],
       livestock: [makeLivestock(), makeLivestock({ id: 'live-2', species_name: 'Zebrasoma flavescens' })],
@@ -167,7 +198,12 @@ describe('TankOverview Component', () => {
     expect(screen.queryByText('emptyState.startStory')).not.toBeInTheDocument()
   })
 
-  it('renders recent events when provided', () => {
+  it('renders timeline visual when events produce timeline entries', () => {
+    // Make buildTimelineEntries return entries so the visual renders
+    vi.mocked(buildTimelineEntries).mockReturnValueOnce([
+      { date: '2024-01-10', category: 'event', label: 'Water Change' },
+    ] as any)
+
     const props = {
       ...emptyProps,
       events: [
@@ -178,9 +214,8 @@ describe('TankOverview Component', () => {
 
     renderWithProviders(<TankOverview {...props} />)
 
-    expect(screen.getByText('recentEvents')).toBeInTheDocument()
-    expect(screen.getByText('Water Change')).toBeInTheDocument()
-    expect(screen.getByText('Added Coral Frag')).toBeInTheDocument()
+    // The timeline visual mock should be rendered
+    expect(screen.getByTestId('tank-timeline-visual')).toBeInTheDocument()
   })
 
   it('renders recent notes when provided', () => {

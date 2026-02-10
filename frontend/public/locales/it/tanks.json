@@ -139,5 +139,17 @@
     "resetDefaults": "Ripristina predefiniti",
     "customizeRanges": "Personalizza intervalli",
     "rangesNote": "Gli intervalli dei parametri verranno impostati in base al tipo di acquario. È possibile personalizzarli in seguito."
+  },
+  "timeline": {
+    "title": "Cronologia",
+    "noEvents": "Nessun evento da visualizzare sulla cronologia",
+    "categories": {
+      "setup": "Avvio",
+      "event": "Eventi",
+      "livestock": "Animali",
+      "equipment": "Attrezzatura",
+      "photo": "Foto",
+      "icp_test": "Test ICP"
+    }
   }
 }

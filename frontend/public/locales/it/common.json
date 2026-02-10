@@ -12,7 +12,8 @@
     "maintenance": "Manutenzione",
     "livestock": "Animali",
     "equipment": "Attrezzatura",
-    "icpTests": "Test ICP"
+    "icpTests": "Test ICP",
+    "consumables": "Consumabili"
   },
   "actions": {
     "add": "Aggiungi",

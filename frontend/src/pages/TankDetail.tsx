@@ -169,6 +169,7 @@ export default function TankDetail() {
         {/* Right Content Area - Tabbed Data Views */}
         <div className="lg:col-span-2">
           <TankTabs
+            tank={tank}
             events={events}
             equipment={equipment}
             livestock={livestock}

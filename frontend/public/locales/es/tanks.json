@@ -139,5 +139,17 @@
     "resetDefaults": "Restablecer",
     "customizeRanges": "Personalizar rangos",
     "rangesNote": "Los rangos de parámetros se establecerán según su tipo de acuario. Puede personalizarlos más tarde."
+  },
+  "timeline": {
+    "title": "Cronología",
+    "noEvents": "No hay eventos para mostrar en la cronología",
+    "categories": {
+      "setup": "Instalación",
+      "event": "Eventos",
+      "livestock": "Animales",
+      "equipment": "Equipo",
+      "photo": "Fotos",
+      "icp_test": "Pruebas ICP"
+    }
   }
 }

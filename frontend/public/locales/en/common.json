@@ -12,7 +12,8 @@
     "maintenance": "Maintenance",
     "livestock": "Livestock",
     "equipment": "Equipment",
-    "icpTests": "ICP Tests"
+    "icpTests": "ICP Tests",
+    "consumables": "Consumables"
   },
   "actions": {
     "add": "Add",

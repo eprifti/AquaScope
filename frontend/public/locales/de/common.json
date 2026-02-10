@@ -12,7 +12,8 @@
     "maintenance": "Wartung",
     "livestock": "Tierbestand",
     "equipment": "Ausrüstung",
-    "icpTests": "ICP-Tests"
+    "icpTests": "ICP-Tests",
+    "consumables": "Verbrauchsmaterial"
   },
   "actions": {
     "add": "Hinzufügen",

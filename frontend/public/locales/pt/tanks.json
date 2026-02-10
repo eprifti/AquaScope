@@ -139,5 +139,17 @@
     "resetDefaults": "Redefinir padrões",
     "customizeRanges": "Personalizar faixas",
     "rangesNote": "As faixas de parâmetros serão definidas com base no tipo de aquário. Pode personalizá-las mais tarde."
+  },
+  "timeline": {
+    "title": "Cronologia",
+    "noEvents": "Nenhum evento para exibir na cronologia",
+    "categories": {
+      "setup": "Montagem",
+      "event": "Eventos",
+      "livestock": "Animais",
+      "equipment": "Equipamento",
+      "photo": "Fotos",
+      "icp_test": "Testes ICP"
+    }
   }
 }

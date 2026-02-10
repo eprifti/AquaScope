@@ -139,5 +139,17 @@
     "resetDefaults": "Zurücksetzen",
     "customizeRanges": "Bereiche anpassen",
     "rangesNote": "Parameterbereiche werden basierend auf Ihrem Aquariumtyp festgelegt. Sie können diese später anpassen."
+  },
+  "timeline": {
+    "title": "Zeitleiste",
+    "noEvents": "Keine Ereignisse auf der Zeitleiste",
+    "categories": {
+      "setup": "Einrichtung",
+      "event": "Ereignisse",
+      "livestock": "Tierbestand",
+      "equipment": "Ausrüstung",
+      "photo": "Fotos",
+      "icp_test": "ICP-Tests"
+    }
   }
 }

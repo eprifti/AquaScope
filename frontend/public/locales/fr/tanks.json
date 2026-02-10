@@ -139,5 +139,17 @@
     "resetDefaults": "Réinitialiser",
     "customizeRanges": "Personnaliser les plages",
     "rangesNote": "Les plages de paramètres seront définies en fonction de votre type d'aquarium. Vous pouvez les personnaliser ultérieurement."
+  },
+  "timeline": {
+    "title": "Chronologie",
+    "noEvents": "Aucun événement à afficher sur la chronologie",
+    "categories": {
+      "setup": "Installation",
+      "event": "Événements",
+      "livestock": "Animaux",
+      "equipment": "Équipement",
+      "photo": "Photos",
+      "icp_test": "Tests ICP"
+    }
   }
 }
