@@ -23,7 +23,7 @@ if settings.BACKEND_CORS_ORIGINS:
 async def root():
     """Health check endpoint"""
     return {
-        "message": "ReefLab API",
+        "message": "AquaScope API",
         "version": "0.1.0",
         "status": "healthy"
     }

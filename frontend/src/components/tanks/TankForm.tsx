@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Tank, TankCreate } from '../../types'
 import { WATER_TYPES, AQUARIUM_SUBTYPES } from '../../config/parameterRanges'
 
@@ -15,6 +16,8 @@ interface TankFormProps {
 }
 
 export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
+  const { t } = useTranslation('tanks')
+  const { t: tc } = useTranslation('common')
   const [name, setName] = useState('')
   const [waterType, setWaterType] = useState('saltwater')
   const [aquariumSubtype, setAquariumSubtype] = useState('')
@@ -87,7 +90,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
     <div className="bg-white rounded-lg shadow-md border border-gray-200">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          {tank ? 'Edit Tank' : 'Create New Tank'}
+          {tank ? t('editTank') : t('createTank')}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +100,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Tank Name <span className="text-red-500">*</span>
+              {t('fields.name')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -112,7 +115,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
 
           {/* Water Type & Subtype */}
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-900">Aquarium Type</h3>
+            <h3 className="text-sm font-medium text-gray-900">{t('fields.aquariumType')}</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Water Type */}
@@ -121,7 +124,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   htmlFor="waterType"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Water Type <span className="text-red-500">*</span>
+                  {t('fields.waterType')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="waterType"
@@ -131,7 +134,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                 >
                   {WATER_TYPES.map((type) => (
                     <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {t(`waterType.${type}`)}
                     </option>
                   ))}
                 </select>
@@ -143,7 +146,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   htmlFor="aquariumSubtype"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Aquarium Subtype
+                  {t('fields.aquariumSubtype')}
                 </label>
                 <select
                   id="aquariumSubtype"
@@ -151,10 +154,10 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   onChange={(e) => setAquariumSubtype(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
                 >
-                  <option value="">-- Select subtype --</option>
+                  <option value="">{t('fields.selectSubtype')}</option>
                   {subtypeOptions.map((sub) => (
                     <option key={sub.key} value={sub.key}>
-                      {sub.label}
+                      {t(`subtype.${sub.key}`)}
                     </option>
                   ))}
                 </select>
@@ -162,7 +165,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
             </div>
 
             <p className="text-xs text-gray-500">
-              Parameter ranges will be set based on your aquarium type. You can customize them later.
+              {t('parameterRanges.rangesNote')}
             </p>
           </div>
 
@@ -172,7 +175,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Description
+              {t('fields.description')}
             </label>
             <textarea
               id="description"
@@ -186,7 +189,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
 
           {/* Volume Section */}
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-900">System Volume (Liters)</h3>
+            <h3 className="text-sm font-medium text-gray-900">{t('fields.systemVolume')}</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Display Volume */}
@@ -195,7 +198,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   htmlFor="displayVolume"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Display Tank
+                  {t('fields.displayVolume')}
                 </label>
                 <input
                   type="number"
@@ -215,7 +218,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   htmlFor="sumpVolume"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Sump
+                  {t('fields.sumpVolume')}
                 </label>
                 <input
                   type="number"
@@ -234,7 +237,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
             {(displayVolume || sumpVolume) && (
               <div className="bg-ocean-50 border border-ocean-200 rounded-md p-3">
                 <p className="text-sm text-ocean-900">
-                  <span className="font-medium">Total System Volume:</span>{' '}
+                  <span className="font-medium">{t('fields.totalSystem')}:</span>{' '}
                   <span className="text-lg font-semibold">{getTotalVolume().toFixed(1)} L</span>
                 </p>
               </div>
@@ -247,7 +250,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               htmlFor="setupDate"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Setup Date
+              {t('fields.setupDate')}
             </label>
             <input
               type="date"
@@ -257,7 +260,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
             />
             <p className="mt-1 text-sm text-gray-500">
-              When did you first set up this tank?
+              {t('fields.setupDateHint')}
             </p>
           </div>
 
@@ -269,14 +272,14 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
               disabled={isSubmitting}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Cancel
+              {tc('actions.cancel')}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !name}
               className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Saving...' : tank ? 'Update Tank' : 'Create Tank'}
+              {isSubmitting ? t('saving') : tank ? t('updateTank') : t('createTank')}
             </button>
           </div>
         </form>

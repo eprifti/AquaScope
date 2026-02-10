@@ -1,5 +1,5 @@
 /**
- * TypeScript Type Definitions for ReefLab
+ * TypeScript Type Definitions for AquaScope
  *
  * These types match the backend Pydantic schemas for type-safe API communication.
  */
@@ -35,6 +35,17 @@ export interface SystemStats {
   total_equipment: number
   database_size_mb: number | null
   active_users_last_30_days: number
+}
+
+export interface UserWithStats extends User {
+  tank_count: number
+  livestock_count: number
+  equipment_count: number
+  photo_count: number
+  note_count: number
+  reminder_count: number
+  total_records: number
+  data_size_mb: number
 }
 
 export interface UserDataSummary {
@@ -596,4 +607,34 @@ export interface DashboardStats {
   overdueReminders: number
   recentPhotos: number
   latestParameters?: LatestParameters
+}
+
+// ============================================================================
+// Storage Types
+// ============================================================================
+
+export interface StorageStats {
+  total_size_bytes: number
+  total_files: number
+  categories: Record<string, { count: number; size_bytes: number }>
+  per_user: Array<{
+    user_id: string
+    email: string
+    count: number
+    size_bytes: number
+  }>
+  orphan_count: number
+  orphan_size_bytes: number
+}
+
+export interface StorageFile {
+  name: string
+  path: string
+  size_bytes: number
+  modified: string
+  category: string
+  user_id: string | null
+  owner_email: string | null
+  tank_name: string | null
+  is_orphan: boolean
 }
