@@ -616,12 +616,15 @@ export interface DashboardStats {
 export interface StorageStats {
   total_size_bytes: number
   total_files: number
-  categories: Record<string, { count: number; size_bytes: number }>
+  files_on_disk: number
+  missing_count: number
+  categories: Record<string, { count: number; size_bytes: number; missing: number }>
   per_user: Array<{
     user_id: string
     email: string
     count: number
     size_bytes: number
+    missing: number
   }>
   orphan_count: number
   orphan_size_bytes: number
@@ -631,10 +634,11 @@ export interface StorageFile {
   name: string
   path: string
   size_bytes: number
-  modified: string
+  modified: string | null
   category: string
   user_id: string | null
   owner_email: string | null
   tank_name: string | null
   is_orphan: boolean
+  is_missing: boolean
 }

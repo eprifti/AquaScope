@@ -810,42 +810,83 @@ def export_tank_data(
 # Storage Management Endpoints
 # ============================================================================
 
-def _get_all_known_paths(db: Session) -> set:
-    """Get all file paths referenced in the database."""
-    known = set()
+def _resolve_path(file_path: str) -> Path:
+    """Resolve a DB file path to an absolute path on disk."""
+    upload_dir = Path(settings.UPLOAD_DIR)
+    # "/uploads/..." -> treat as relative to UPLOAD_DIR parent
+    if file_path.startswith("/uploads/"):
+        return upload_dir / file_path[len("/uploads/"):]
+    # "uploads/..." -> strip prefix
+    if file_path.startswith("uploads/"):
+        return upload_dir / file_path[len("uploads/"):]
+    # Already absolute (e.g. "/app/uploads/...")
+    p = Path(file_path)
+    if p.is_absolute():
+        return p
+    return upload_dir / file_path
 
-    # Photo file paths and thumbnails
-    photos = db.query(Photo.file_path, Photo.thumbnail_path).all()
-    for file_path, thumb_path in photos:
-        if file_path:
-            known.add(file_path)
-        if thumb_path:
-            known.add(thumb_path)
 
-    # Tank image URLs
-    tanks = db.query(Tank.image_url).filter(Tank.image_url.isnot(None)).all()
-    for (image_url,) in tanks:
-        if image_url:
-            known.add(image_url)
+def _get_db_file_records(db: Session) -> list:
+    """Build a list of all file references from the database."""
+    records = []
+
+    # Photos (file + thumbnail)
+    photos = db.query(Photo).all()
+    for p in photos:
+        user = db.query(User).filter(User.id == p.user_id).first()
+        tank = db.query(Tank).filter(Tank.id == p.tank_id).first() if p.tank_id else None
+        if p.file_path:
+            records.append({
+                "db_path": p.file_path,
+                "abs_path": _resolve_path(p.file_path),
+                "category": "photos",
+                "user_id": str(p.user_id),
+                "owner_email": user.email if user else None,
+                "tank_name": tank.name if tank else None,
+            })
+        if p.thumbnail_path:
+            records.append({
+                "db_path": p.thumbnail_path,
+                "abs_path": _resolve_path(p.thumbnail_path),
+                "category": "thumbnails",
+                "user_id": str(p.user_id),
+                "owner_email": user.email if user else None,
+                "tank_name": tank.name if tank else None,
+            })
+
+    # Tank images
+    tanks = db.query(Tank).filter(Tank.image_url.isnot(None)).all()
+    for t in tanks:
+        user = db.query(User).filter(User.id == t.user_id).first()
+        records.append({
+            "db_path": t.image_url,
+            "abs_path": _resolve_path(t.image_url),
+            "category": "tank-images",
+            "user_id": str(t.user_id),
+            "owner_email": user.email if user else None,
+            "tank_name": t.name,
+        })
 
     # ICP test PDFs
-    icp_tests = db.query(ICPTest.pdf_path).filter(ICPTest.pdf_path.isnot(None)).all()
-    for (pdf_path,) in icp_tests:
-        if pdf_path:
-            known.add(pdf_path)
+    icp_tests = db.query(ICPTest).filter(ICPTest.pdf_path.isnot(None)).all()
+    for icp in icp_tests:
+        user = db.query(User).filter(User.id == icp.user_id).first()
+        tank = db.query(Tank).filter(Tank.id == icp.tank_id).first() if icp.tank_id else None
+        records.append({
+            "db_path": icp.pdf_path,
+            "abs_path": _resolve_path(icp.pdf_path),
+            "category": "icp-tests",
+            "user_id": str(icp.user_id),
+            "owner_email": user.email if user else None,
+            "tank_name": tank.name if tank else None,
+        })
 
-    return known
+    return records
 
 
-def _categorize_file(rel_path: str) -> str:
-    """Categorize a file based on its path."""
-    if "tank-images" in rel_path:
-        return "tank-images"
-    if "icp_tests" in rel_path:
-        return "icp-tests"
-    if "thumb_" in rel_path:
-        return "thumbnails"
-    return "photos"
+def _get_known_abs_paths(db_records: list) -> set:
+    """Get the set of absolute paths that the DB knows about."""
+    return {str(r["abs_path"]) for r in db_records}
 
 
 @router.get("/storage/stats")
@@ -853,71 +894,67 @@ def get_storage_stats(
     admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Get storage usage statistics."""
+    """Get storage usage statistics derived from database records and disk state."""
     upload_dir = Path(settings.UPLOAD_DIR)
-    if not upload_dir.exists():
-        return {
-            "total_size_bytes": 0,
-            "total_files": 0,
-            "categories": {},
-            "per_user": [],
-            "orphan_count": 0,
-            "orphan_size_bytes": 0,
-        }
+    db_records = _get_db_file_records(db)
+    known_abs = _get_known_abs_paths(db_records)
 
-    known_paths = _get_all_known_paths(db)
     categories: dict = {}
     per_user: dict = {}
+    total_size = 0
+    total_files = len(db_records)
+    missing_count = 0
+    files_on_disk = 0
+
+    for rec in db_records:
+        cat = rec["category"]
+        uid = rec["user_id"]
+        exists = rec["abs_path"].is_file()
+        size = rec["abs_path"].stat().st_size if exists else 0
+
+        total_size += size
+        if exists:
+            files_on_disk += 1
+        else:
+            missing_count += 1
+
+        if cat not in categories:
+            categories[cat] = {"count": 0, "size_bytes": 0, "missing": 0}
+        categories[cat]["count"] += 1
+        categories[cat]["size_bytes"] += size
+        if not exists:
+            categories[cat]["missing"] += 1
+
+        if uid not in per_user:
+            per_user[uid] = {
+                "user_id": uid,
+                "email": rec["owner_email"] or "unknown",
+                "count": 0,
+                "size_bytes": 0,
+                "missing": 0,
+            }
+        per_user[uid]["count"] += 1
+        per_user[uid]["size_bytes"] += size
+        if not exists:
+            per_user[uid]["missing"] += 1
+
+    # Scan disk for orphans (files not referenced in DB)
     orphan_count = 0
     orphan_size_bytes = 0
-    total_size = 0
-    total_files = 0
-
-    for root, _dirs, files in os.walk(upload_dir):
-        for fname in files:
-            full_path = Path(root) / fname
-            rel_path = "/" + str(full_path.relative_to(upload_dir.parent.parent))
-            size = full_path.stat().st_size
-            total_size += size
-            total_files += 1
-
-            category = _categorize_file(str(full_path.relative_to(upload_dir)))
-            if category not in categories:
-                categories[category] = {"count": 0, "size_bytes": 0}
-            categories[category]["count"] += 1
-            categories[category]["size_bytes"] += size
-
-            # Determine user
-            try:
-                rel_to_uploads = full_path.relative_to(upload_dir)
-                parts = rel_to_uploads.parts
-                if parts and parts[0] not in ("tank-images", "icp_tests"):
-                    user_id = parts[0]
-                    if user_id not in per_user:
-                        user = db.query(User).filter(User.id == user_id).first()
-                        per_user[user_id] = {
-                            "user_id": user_id,
-                            "email": user.email if user else "unknown",
-                            "count": 0,
-                            "size_bytes": 0,
-                        }
-                    per_user[user_id]["count"] += 1
-                    per_user[user_id]["size_bytes"] += size
-            except (ValueError, IndexError):
-                pass
-
-            # Check orphan status
-            is_known = any(
-                rel_path.endswith(p.lstrip("/")) or p.lstrip("/") in str(full_path)
-                for p in known_paths
-            )
-            if not is_known:
-                orphan_count += 1
-                orphan_size_bytes += size
+    if upload_dir.exists():
+        for root, _dirs, files in os.walk(upload_dir):
+            for fname in files:
+                full_path = Path(root) / fname
+                if str(full_path) not in known_abs:
+                    orphan_count += 1
+                    orphan_size_bytes += full_path.stat().st_size
+                    total_size += full_path.stat().st_size
 
     return {
         "total_size_bytes": total_size,
-        "total_files": total_files,
+        "total_files": total_files + orphan_count,
+        "files_on_disk": files_on_disk + orphan_count,
+        "missing_count": missing_count,
         "categories": categories,
         "per_user": list(per_user.values()),
         "orphan_count": orphan_count,
@@ -932,72 +969,98 @@ def list_storage_files(
     admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Browse uploaded files with optional filters."""
+    """Browse files starting from DB records, then add disk-only orphans."""
     upload_dir = Path(settings.UPLOAD_DIR)
-    if not upload_dir.exists():
-        return []
+    db_records = _get_db_file_records(db)
+    known_abs = _get_known_abs_paths(db_records)
 
-    known_paths = _get_all_known_paths(db)
     files = []
 
-    for root, _dirs, filenames in os.walk(upload_dir):
-        for fname in filenames:
-            full_path = Path(root) / fname
-            rel_to_uploads = str(full_path.relative_to(upload_dir))
-            file_category = _categorize_file(rel_to_uploads)
+    # 1. DB-referenced files (always shown, even when missing from disk)
+    for rec in db_records:
+        file_category = rec["category"]
+        file_user_id = rec["user_id"]
 
-            # Apply category filter
-            if category and file_category != category:
-                continue
+        if category and file_category != category:
+            continue
+        if user_id and file_user_id != user_id:
+            continue
 
-            # Apply user_id filter
-            parts = Path(rel_to_uploads).parts
-            file_user_id = None
-            if parts and parts[0] not in ("tank-images", "icp_tests"):
-                file_user_id = parts[0]
-            if user_id and file_user_id != user_id:
-                continue
+        exists = rec["abs_path"].is_file()
+        size = rec["abs_path"].stat().st_size if exists else 0
+        modified = (
+            datetime.fromtimestamp(rec["abs_path"].stat().st_mtime).isoformat()
+            if exists else None
+        )
 
-            stat = full_path.stat()
-            rel_path = "/" + str(full_path.relative_to(upload_dir.parent.parent))
+        try:
+            rel_path = str(rec["abs_path"].relative_to(upload_dir))
+        except ValueError:
+            rel_path = rec["db_path"]
 
-            is_known = any(
-                rel_path.endswith(p.lstrip("/")) or p.lstrip("/") in str(full_path)
-                for p in known_paths
-            )
+        files.append({
+            "name": rec["abs_path"].name,
+            "path": rel_path,
+            "size_bytes": size,
+            "modified": modified,
+            "category": file_category,
+            "user_id": file_user_id,
+            "owner_email": rec["owner_email"],
+            "tank_name": rec["tank_name"],
+            "is_orphan": False,
+            "is_missing": not exists,
+        })
 
-            # Look up owner
-            owner_email = None
-            if file_user_id:
-                user = db.query(User).filter(User.id == file_user_id).first()
-                owner_email = user.email if user else None
+    # 2. Disk-only orphans (files not in any DB record)
+    if upload_dir.exists():
+        for root, _dirs, filenames in os.walk(upload_dir):
+            for fname in filenames:
+                full_path = Path(root) / fname
+                if str(full_path) in known_abs:
+                    continue
 
-            # Look up linked tank
-            tank_name = None
-            if file_category == "tank-images":
-                tank = db.query(Tank).filter(Tank.image_url.contains(fname)).first()
-                if tank:
-                    tank_name = tank.name
-            elif file_user_id and len(parts) >= 2:
-                tank_id = parts[1] if parts[1] != fname else None
-                if tank_id:
-                    tank = db.query(Tank).filter(Tank.id == tank_id).first()
-                    if tank:
-                        tank_name = tank.name
+                rel_to_uploads = str(full_path.relative_to(upload_dir))
+                stat = full_path.stat()
 
-            files.append({
-                "name": fname,
-                "path": rel_to_uploads,
-                "size_bytes": stat.st_size,
-                "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                "category": file_category,
-                "user_id": file_user_id,
-                "owner_email": owner_email,
-                "tank_name": tank_name,
-                "is_orphan": not is_known,
-            })
+                if "tank-images" in rel_to_uploads:
+                    file_category = "tank-images"
+                elif "icp_tests" in rel_to_uploads:
+                    file_category = "icp-tests"
+                elif "thumb_" in fname:
+                    file_category = "thumbnails"
+                else:
+                    file_category = "photos"
 
-    files.sort(key=lambda f: f["modified"], reverse=True)
+                if category and file_category != category:
+                    continue
+
+                parts = Path(rel_to_uploads).parts
+                file_user_id = None
+                if parts and parts[0] not in ("tank-images", "icp_tests"):
+                    file_user_id = parts[0]
+                if user_id and file_user_id != user_id:
+                    continue
+
+                owner_email = None
+                if file_user_id:
+                    u = db.query(User).filter(User.id == file_user_id).first()
+                    owner_email = u.email if u else None
+
+                files.append({
+                    "name": fname,
+                    "path": rel_to_uploads,
+                    "size_bytes": stat.st_size,
+                    "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    "category": file_category,
+                    "user_id": file_user_id,
+                    "owner_email": owner_email,
+                    "tank_name": None,
+                    "is_orphan": True,
+                    "is_missing": False,
+                })
+
+    # Show missing files first, then by date
+    files.sort(key=lambda f: (not f["is_missing"], f["modified"] or ""), reverse=True)
     return files
 
 
@@ -1011,21 +1074,14 @@ def delete_orphan_files(
     if not upload_dir.exists():
         return {"deleted": 0, "freed_bytes": 0}
 
-    known_paths = _get_all_known_paths(db)
+    known_abs = _get_known_abs_paths(_get_db_file_records(db))
     deleted = 0
     freed_bytes = 0
 
     for root, _dirs, filenames in os.walk(upload_dir):
         for fname in filenames:
             full_path = Path(root) / fname
-            rel_path = "/" + str(full_path.relative_to(upload_dir.parent.parent))
-
-            is_known = any(
-                rel_path.endswith(p.lstrip("/")) or p.lstrip("/") in str(full_path)
-                for p in known_paths
-            )
-
-            if not is_known:
+            if str(full_path) not in known_abs:
                 size = full_path.stat().st_size
                 full_path.unlink()
                 deleted += 1

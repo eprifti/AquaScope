@@ -809,21 +809,31 @@ export default function Admin() {
           {storageStats && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-4">
-                <div className="text-sm text-gray-600 mb-1">Total Disk Usage</div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {(storageStats.total_size_bytes / 1024 / 1024).toFixed(1)} MB
+                <div className="text-sm text-gray-600 mb-1">Total Files (DB)</div>
+                <div className="text-2xl font-bold text-gray-900">{storageStats.total_files}</div>
+                <div className="text-xs text-gray-500">
+                  {storageStats.files_on_disk} on disk &middot; {(storageStats.total_size_bytes / 1024 / 1024).toFixed(1)} MB
                 </div>
-                <div className="text-xs text-gray-500">{storageStats.total_files} files</div>
               </div>
               {Object.entries(storageStats.categories).map(([cat, data]) => (
                 <div key={cat} className="bg-white rounded-lg shadow p-4">
                   <div className="text-sm text-gray-600 mb-1 capitalize">{cat.replace('-', ' ')}</div>
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900">{data.count}</div>
+                  <div className="text-xs text-gray-500">
                     {(data.size_bytes / 1024 / 1024).toFixed(1)} MB
+                    {data.missing > 0 && (
+                      <span className="text-red-500 ml-1">({data.missing} missing)</span>
+                    )}
                   </div>
-                  <div className="text-xs text-gray-500">{data.count} files</div>
                 </div>
               ))}
+              {storageStats.missing_count > 0 && (
+                <div className="rounded-lg shadow p-4 bg-red-50 border border-red-200">
+                  <div className="text-sm text-gray-600 mb-1">Missing Files</div>
+                  <div className="text-2xl font-bold text-red-600">{storageStats.missing_count}</div>
+                  <div className="text-xs text-red-500">DB records with no file on disk</div>
+                </div>
+              )}
               <div className={`rounded-lg shadow p-4 ${storageStats.orphan_count > 0 ? 'bg-amber-50 border border-amber-200' : 'bg-white'}`}>
                 <div className="text-sm text-gray-600 mb-1">Orphaned Files</div>
                 <div className={`text-2xl font-bold ${storageStats.orphan_count > 0 ? 'text-amber-600' : 'text-gray-900'}`}>
@@ -846,6 +856,9 @@ export default function Admin() {
                     <span className="text-sm text-gray-700">{u.email}</span>
                     <span className="text-sm font-medium">
                       {u.count} files &middot; {(u.size_bytes / 1024 / 1024).toFixed(1)} MB
+                      {u.missing > 0 && (
+                        <span className="text-red-500 ml-1">({u.missing} missing)</span>
+                      )}
                     </span>
                   </div>
                 ))}
@@ -950,7 +963,7 @@ export default function Admin() {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {storageFiles.map((file) => (
-                    <tr key={file.path} className={file.is_orphan ? 'bg-amber-50' : ''}>
+                    <tr key={file.path} className={file.is_missing ? 'bg-red-50' : file.is_orphan ? 'bg-amber-50' : ''}>
                       <td className="px-4 py-3 text-gray-900 truncate max-w-xs" title={file.path}>
                         {file.name}
                       </td>
@@ -962,42 +975,50 @@ export default function Admin() {
                       <td className="px-4 py-3 text-gray-600">{file.owner_email || '-'}</td>
                       <td className="px-4 py-3 text-gray-600">{file.tank_name || '-'}</td>
                       <td className="px-4 py-3 text-right text-gray-600">
-                        {file.size_bytes > 1024 * 1024
-                          ? `${(file.size_bytes / 1024 / 1024).toFixed(1)} MB`
-                          : `${(file.size_bytes / 1024).toFixed(0)} KB`}
+                        {file.is_missing
+                          ? '-'
+                          : file.size_bytes > 1024 * 1024
+                            ? `${(file.size_bytes / 1024 / 1024).toFixed(1)} MB`
+                            : `${(file.size_bytes / 1024).toFixed(0)} KB`}
                       </td>
                       <td className="px-4 py-3">
-                        {file.is_orphan ? (
+                        {file.is_missing ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
+                            Missing
+                          </span>
+                        ) : file.is_orphan ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700">
                             Orphan
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
-                            Linked
+                            OK
                           </span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <a
-                          href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/storage/download/${file.path}`}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            const token = localStorage.getItem('aquascope_token')
-                            const url = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/storage/download/${file.path}`
-                            fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-                              .then(res => res.blob())
-                              .then(blob => {
-                                const a = document.createElement('a')
-                                a.href = URL.createObjectURL(blob)
-                                a.download = file.name
-                                a.click()
-                                URL.revokeObjectURL(a.href)
-                              })
-                          }}
-                          className="text-ocean-600 hover:text-ocean-700 text-xs font-medium"
-                        >
-                          Download
-                        </a>
+                        {!file.is_missing && (
+                          <a
+                            href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/storage/download/${file.path}`}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              const token = localStorage.getItem('aquascope_token')
+                              const url = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/storage/download/${file.path}`
+                              fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+                                .then(res => res.blob())
+                                .then(blob => {
+                                  const a = document.createElement('a')
+                                  a.href = URL.createObjectURL(blob)
+                                  a.download = file.name
+                                  a.click()
+                                  URL.revokeObjectURL(a.href)
+                                })
+                            }}
+                            className="text-ocean-600 hover:text-ocean-700 text-xs font-medium"
+                          >
+                            Download
+                          </a>
+                        )}
                       </td>
                     </tr>
                   ))}
