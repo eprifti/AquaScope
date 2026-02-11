@@ -41,7 +41,9 @@
     "aquariumType": "Aquarium Type",
     "systemVolume": "System Volume (Liters)",
     "selectSubtype": "-- Select subtype --",
-    "setupDateHint": "When did you first set up this tank?"
+    "setupDateHint": "When did you first set up this tank?",
+    "electricityCost": "Electricity Cost / Day",
+    "electricityCostHint": "Daily electricity cost for this tank's equipment"
   },
   "stats": {
     "daysRunning_one": "{{count}} day running",

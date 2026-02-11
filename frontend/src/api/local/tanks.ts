@@ -25,6 +25,7 @@ function rowToTank(row: any, events: TankEvent[] = []): Tank {
     description: row.description || null,
     image_url: row.image_url || null,
     setup_date: row.setup_date || null,
+    electricity_cost_per_day: row.electricity_cost_per_day ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
     is_archived: !!row.is_archived,

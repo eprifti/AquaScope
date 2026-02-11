@@ -14,13 +14,15 @@
     "equipment": "Attrezzatura",
     "consumables": "Consumabili",
     "livestock": "Animali",
-    "icpTests": "Test ICP"
+    "icpTests": "Test ICP",
+    "electricity": "Elettricità"
   },
   "categories": {
     "equipment": "Attrezzatura",
     "consumables": "Consumabili",
     "livestock": "Animali",
-    "icp_tests": "Test ICP"
+    "icp_tests": "Test ICP",
+    "electricity": "Elettricità"
   },
   "charts": {
     "categoryBreakdown": "Spese per categoria",

@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
 import math
-from datetime import datetime
+import calendar
+from datetime import datetime, date
 from collections import defaultdict
 
 from app.database import get_db
@@ -72,6 +73,59 @@ def _collect_costs(db: Session, user_id, tank_id: Optional[UUID] = None):
     return items
 
 
+def _calc_electricity(db: Session, user_id, tank_id: Optional[UUID] = None):
+    """Calculate electricity costs per tank and per month.
+
+    Returns:
+        total: float — grand total electricity cost
+        per_tank: dict[UUID, float] — electricity total per tank
+        per_month: dict[(year, month), float] — electricity per month
+    """
+    q = db.query(Tank).filter(Tank.user_id == user_id, Tank.is_archived == False)
+    if tank_id:
+        q = q.filter(Tank.id == tank_id)
+    tanks = q.all()
+
+    today = date.today()
+    total = 0.0
+    per_tank = {}
+    per_month: dict = defaultdict(float)
+
+    for tank in tanks:
+        rate = tank.electricity_cost_per_day or 0.0
+        if rate <= 0:
+            continue
+
+        start = tank.setup_date or tank.created_at.date()
+        if start > today:
+            continue
+
+        # Total days
+        days = (today - start).days + 1  # inclusive
+        tank_total = rate * days
+        total += tank_total
+        per_tank[tank.id] = tank_total
+
+        # Monthly breakdown: iterate month by month
+        cur_year, cur_month = start.year, start.month
+        while (cur_year, cur_month) <= (today.year, today.month):
+            month_start = date(cur_year, cur_month, 1)
+            month_end = date(cur_year, cur_month, calendar.monthrange(cur_year, cur_month)[1])
+            # Clamp to tank start and today
+            eff_start = max(month_start, start)
+            eff_end = min(month_end, today)
+            month_days = (eff_end - eff_start).days + 1
+            per_month[(cur_year, cur_month)] += rate * month_days
+            # Advance to next month
+            if cur_month == 12:
+                cur_year += 1
+                cur_month = 1
+            else:
+                cur_month += 1
+
+    return total, per_tank, dict(per_month)
+
+
 # ---- Aggregation Endpoints ----
 
 @router.get("/summary", response_model=FinanceSummary)
@@ -82,6 +136,7 @@ def get_finance_summary(
 ):
     """Get complete financial summary with breakdowns."""
     items = _collect_costs(db, current_user.id, tank_id)
+    elec_total, elec_per_tank, elec_per_month = _calc_electricity(db, current_user.id, tank_id)
 
     # Category totals
     cat_totals = defaultdict(lambda: {"total": 0.0, "count": 0})
@@ -93,18 +148,22 @@ def get_finance_summary(
     total_consumables = cat_totals["consumables"]["total"]
     total_livestock = cat_totals["livestock"]["total"]
     total_icp = cat_totals["icp_tests"]["total"]
-    total_spent = total_equipment + total_consumables + total_livestock + total_icp
+    total_spent = total_equipment + total_consumables + total_livestock + total_icp + elec_total
 
     by_category = [
         CategorySpending(category=cat, total=d["total"], count=d["count"])
         for cat, d in cat_totals.items()
         if d["total"] > 0
     ]
+    if elec_total > 0:
+        by_category.append(CategorySpending(category="electricity", total=round(elec_total, 2), count=1))
 
     # By tank
-    tank_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0})
+    tank_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0, "electricity": 0.0})
     for cat, tid, _, price in items:
         tank_data[tid][cat] += price
+    for tid, elec in elec_per_tank.items():
+        tank_data[tid]["electricity"] = elec
 
     tank_names = {}
     if tank_data:
@@ -113,7 +172,7 @@ def get_finance_summary(
 
     by_tank = []
     for tid, d in tank_data.items():
-        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"]
+        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"] + d["electricity"]
         by_tank.append(TankSpending(
             tank_id=tid,
             tank_name=tank_names.get(tid, "Unknown"),
@@ -123,17 +182,19 @@ def get_finance_summary(
     by_tank.sort(key=lambda x: x.total, reverse=True)
 
     # Monthly breakdown
-    monthly_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0})
+    monthly_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0, "electricity": 0.0})
     for cat, _, dt, price in items:
         if dt:
             key = (dt.year, dt.month)
             monthly_data[key][cat] += price
+    for key, elec in elec_per_month.items():
+        monthly_data[key]["electricity"] += elec
 
     monthly = []
     cumulative = 0.0
     for (year, month) in sorted(monthly_data.keys()):
         d = monthly_data[(year, month)]
-        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"]
+        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"] + d["electricity"]
         cumulative += total
         monthly.append(MonthlySpending(
             year=year,
@@ -144,6 +205,7 @@ def get_finance_summary(
             consumables=round(d["consumables"], 2),
             livestock=round(d["livestock"], 2),
             icp_tests=round(d["icp_tests"], 2),
+            electricity=round(d["electricity"], 2),
             cumulative=round(cumulative, 2),
         ))
 
@@ -153,6 +215,7 @@ def get_finance_summary(
         total_consumables=round(total_consumables, 2),
         total_livestock=round(total_livestock, 2),
         total_icp_tests=round(total_icp, 2),
+        total_electricity=round(elec_total, 2),
         by_category=by_category,
         by_tank=by_tank,
         monthly=monthly,
@@ -168,20 +231,25 @@ def get_monthly_spending(
 ):
     """Get monthly spending with cumulative totals."""
     items = _collect_costs(db, current_user.id, tank_id)
+    _, _, elec_per_month = _calc_electricity(db, current_user.id, tank_id)
 
-    monthly_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0})
+    monthly_data = defaultdict(lambda: {"equipment": 0.0, "consumables": 0.0, "livestock": 0.0, "icp_tests": 0.0, "electricity": 0.0})
     for cat, _, dt, price in items:
         if dt:
             if year and dt.year != year:
                 continue
             key = (dt.year, dt.month)
             monthly_data[key][cat] += price
+    for key, elec in elec_per_month.items():
+        if year and key[0] != year:
+            continue
+        monthly_data[key]["electricity"] += elec
 
     monthly = []
     cumulative = 0.0
     for (y, m) in sorted(monthly_data.keys()):
         d = monthly_data[(y, m)]
-        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"]
+        total = d["equipment"] + d["consumables"] + d["livestock"] + d["icp_tests"] + d["electricity"]
         cumulative += total
         monthly.append(MonthlySpending(
             year=y, month=m, label=f"{y}-{m:02d}",
@@ -190,6 +258,7 @@ def get_monthly_spending(
             consumables=round(d["consumables"], 2),
             livestock=round(d["livestock"], 2),
             icp_tests=round(d["icp_tests"], 2),
+            electricity=round(d["electricity"], 2),
             cumulative=round(cumulative, 2),
         ))
 

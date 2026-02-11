@@ -52,6 +52,7 @@ class TankBase(BaseModel):
     description: Optional[str] = None
     image_url: Optional[str] = None
     setup_date: Optional[date] = None
+    electricity_cost_per_day: Optional[float] = Field(None, ge=0)
 
 
 class TankCreate(TankBase):
@@ -69,6 +70,7 @@ class TankUpdate(BaseModel):
     description: Optional[str] = None
     image_url: Optional[str] = None
     setup_date: Optional[date] = None
+    electricity_cost_per_day: Optional[float] = Field(None, ge=0)
 
 
 class TankResponse(TankBase):

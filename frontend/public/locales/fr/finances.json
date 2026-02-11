@@ -14,13 +14,15 @@
     "equipment": "Équipement",
     "consumables": "Consommables",
     "livestock": "Vivant",
-    "icpTests": "Tests ICP"
+    "icpTests": "Tests ICP",
+    "electricity": "Électricité"
   },
   "categories": {
     "equipment": "Équipement",
     "consumables": "Consommables",
     "livestock": "Vivant",
-    "icp_tests": "Tests ICP"
+    "icp_tests": "Tests ICP",
+    "electricity": "Électricité"
   },
   "charts": {
     "categoryBreakdown": "Dépenses par catégorie",

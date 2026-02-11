@@ -127,6 +127,12 @@ export default function MonthlyBarChart({ data, currency = 'EUR' }: Props) {
             stackId="a"
             fill="#8b5cf6"
           />
+          <Bar
+            dataKey="electricity"
+            name={t('categories.electricity')}
+            stackId="a"
+            fill="#ef4444"
+          />
           <Line
             type="monotone"
             dataKey="cumulative"

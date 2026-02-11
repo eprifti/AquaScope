@@ -25,6 +25,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
   const [sumpVolume, setSumpVolume] = useState('')
   const [description, setDescription] = useState('')
   const [setupDate, setSetupDate] = useState('')
+  const [electricityCost, setElectricityCost] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
       setSumpVolume(tank.sump_volume_liters?.toString() || '')
       setDescription(tank.description || '')
       setSetupDate(tank.setup_date || '')
+      setElectricityCost(tank.electricity_cost_per_day?.toString() || '')
     }
   }, [tank])
 
@@ -65,6 +67,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
         sump_volume_liters: sumpVolume ? parseFloat(sumpVolume) : null,
         description: description || null,
         setup_date: setupDate || null,
+        electricity_cost_per_day: electricityCost ? parseFloat(electricityCost) : null,
       }
 
       await onSubmit(data)
@@ -78,6 +81,7 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
         setSumpVolume('')
         setDescription('')
         setSetupDate('')
+        setElectricityCost('')
       }
     } catch (error) {
       console.error('Error submitting tank:', error)
@@ -244,24 +248,48 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
             )}
           </div>
 
-          {/* Setup Date */}
-          <div>
-            <label
-              htmlFor="setupDate"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              {t('fields.setupDate')}
-            </label>
-            <input
-              type="date"
-              id="setupDate"
-              value={setupDate}
-              onChange={(e) => setSetupDate(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-            />
-            <p className="mt-1 text-sm text-gray-500">
-              {t('fields.setupDateHint')}
-            </p>
+          {/* Setup Date & Electricity Cost */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="setupDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t('fields.setupDate')}
+              </label>
+              <input
+                type="date"
+                id="setupDate"
+                value={setupDate}
+                onChange={(e) => setSetupDate(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+              />
+              <p className="mt-1 text-sm text-gray-500">
+                {t('fields.setupDateHint')}
+              </p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="electricityCost"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t('fields.electricityCost')}
+              </label>
+              <input
+                type="number"
+                id="electricityCost"
+                value={electricityCost}
+                onChange={(e) => setElectricityCost(e.target.value)}
+                step="0.01"
+                min="0"
+                placeholder="e.g., 1.00"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+              />
+              <p className="mt-1 text-sm text-gray-500">
+                {t('fields.electricityCostHint')}
+              </p>
+            </div>
           </div>
 
           {/* Form Actions */}

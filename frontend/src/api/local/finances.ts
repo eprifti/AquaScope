@@ -21,6 +21,7 @@ const emptySummary: FinanceSummary = {
   total_consumables: 0,
   total_livestock: 0,
   total_icp_tests: 0,
+  total_electricity: 0,
   by_category: [],
   by_tank: [],
   monthly: [],

@@ -120,6 +120,7 @@ export interface Tank {
   description: string | null
   image_url: string | null
   setup_date: string | null
+  electricity_cost_per_day: number | null
   is_archived: boolean
   created_at: string
   updated_at: string
@@ -135,6 +136,7 @@ export interface TankCreate {
   description?: string | null
   image_url?: string | null
   setup_date?: string | null
+  electricity_cost_per_day?: number | null
 }
 
 export interface TankUpdate {
@@ -146,6 +148,7 @@ export interface TankUpdate {
   description?: string | null
   image_url?: string | null
   setup_date?: string | null
+  electricity_cost_per_day?: number | null
 }
 
 // ============================================================================
@@ -786,6 +789,7 @@ export interface TankSpending {
   consumables: number
   livestock: number
   icp_tests: number
+  electricity: number
 }
 
 export interface MonthlySpending {
@@ -797,6 +801,7 @@ export interface MonthlySpending {
   consumables: number
   livestock: number
   icp_tests: number
+  electricity: number
   cumulative: number
 }
 
@@ -806,6 +811,7 @@ export interface FinanceSummary {
   total_consumables: number
   total_livestock: number
   total_icp_tests: number
+  total_electricity: number
   by_category: CategorySpending[]
   by_tank: TankSpending[]
   monthly: MonthlySpending[]

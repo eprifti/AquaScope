@@ -14,13 +14,15 @@
     "equipment": "Ausrüstung",
     "consumables": "Verbrauchsmaterialien",
     "livestock": "Lebendtiere",
-    "icpTests": "ICP-Tests"
+    "icpTests": "ICP-Tests",
+    "electricity": "Strom"
   },
   "categories": {
     "equipment": "Ausrüstung",
     "consumables": "Verbrauchsmaterialien",
     "livestock": "Lebendtiere",
-    "icp_tests": "ICP-Tests"
+    "icp_tests": "ICP-Tests",
+    "electricity": "Strom"
   },
   "charts": {
     "categoryBreakdown": "Ausgaben nach Kategorie",

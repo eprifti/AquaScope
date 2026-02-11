@@ -51,6 +51,9 @@ class Tank(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
+    # Running costs
+    electricity_cost_per_day = Column(Float, nullable=True)
+
     # Archive
     is_archived = Column(Boolean, default=False, nullable=False, index=True)
 

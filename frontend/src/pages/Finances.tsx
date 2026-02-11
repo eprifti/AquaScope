@@ -41,6 +41,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   consumables: 'bg-green-100 text-green-800',
   livestock: 'bg-purple-100 text-purple-800',
   icp_tests: 'bg-amber-100 text-amber-800',
+  electricity: 'bg-red-100 text-red-800',
 }
 
 const DETAILS_PAGE_SIZE = 20
@@ -196,6 +197,7 @@ export default function Finances() {
         { label: t('stats.consumables'), value: summary.total_consumables, icon: '🧪' },
         { label: t('stats.livestock'), value: summary.total_livestock, icon: '🐟' },
         { label: t('stats.icpTests'), value: summary.total_icp_tests, icon: '🔬' },
+        { label: t('stats.electricity'), value: summary.total_electricity, icon: '⚡' },
       ]
     : []
 
@@ -243,7 +245,7 @@ export default function Finances() {
         /* ============== Summary Tab ============== */
         <div className="space-y-6">
           {/* Stat cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {statCards.map((card) => (
               <div
                 key={card.label}
@@ -292,6 +294,7 @@ export default function Finances() {
                       <th className="pb-2 font-medium text-right">{t('categories.consumables')}</th>
                       <th className="pb-2 font-medium text-right">{t('categories.livestock')}</th>
                       <th className="pb-2 font-medium text-right">{t('categories.icp_tests')}</th>
+                      <th className="pb-2 font-medium text-right">{t('categories.electricity')}</th>
                       <th className="pb-2 font-medium text-right">{t('table.total')}</th>
                     </tr>
                   </thead>
@@ -303,6 +306,7 @@ export default function Finances() {
                         <td className="py-2 text-right">{fp(row.consumables)}</td>
                         <td className="py-2 text-right">{fp(row.livestock)}</td>
                         <td className="py-2 text-right">{fp(row.icp_tests)}</td>
+                        <td className="py-2 text-right">{fp(row.electricity)}</td>
                         <td className="py-2 text-right font-semibold">{fp(row.total)}</td>
                       </tr>
                     ))}

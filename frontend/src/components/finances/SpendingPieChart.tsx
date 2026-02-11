@@ -14,6 +14,7 @@ const COLORS: Record<string, string> = {
   consumables: '#10b981',  // green
   livestock: '#f59e0b',    // amber
   icp_tests: '#8b5cf6',   // purple
+  electricity: '#ef4444',  // red
 }
 
 interface Props {

@@ -41,7 +41,9 @@
     "aquariumType": "Type d'aquarium",
     "systemVolume": "Volume du système (Litres)",
     "selectSubtype": "-- Sélectionner le sous-type --",
-    "setupDateHint": "Quand avez-vous installé cet aquarium ?"
+    "setupDateHint": "Quand avez-vous installé cet aquarium ?",
+    "electricityCost": "Coût électricité / jour",
+    "electricityCostHint": "Coût quotidien en électricité pour cet aquarium"
   },
   "stats": {
     "daysRunning_one": "{{count}} jour de fonctionnement",

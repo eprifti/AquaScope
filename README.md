@@ -133,6 +133,16 @@ If you find AquaScope useful, consider supporting its development:
   - Purchase URL for easy re-ordering
   - 8 consumable types: salt mix, additive, supplement, food, filter media, test kit, medication, other
 
+- **Finance Module**: Full spending analysis and budget management
+  - Category breakdown: equipment, consumables, livestock, ICP tests, electricity
+  - Electricity running cost calculated from per-tank daily rate and setup date
+  - Monthly spending stacked bar chart with cumulative line
+  - Category pie chart with amount labels
+  - Per-tank spending comparison table
+  - Individual expense editing with inline price, date, and URL management
+  - Budget creation with monthly/yearly periods and category filtering
+  - Budget progress bars with over-budget alerts
+
 - **Admin Panel**: System administration dashboard
   - User management with stats
   - Database information
@@ -489,10 +499,14 @@ For issues and questions:
 - Data visualization with Recharts
 - Excel/CSV import for historical data
 - GitHub Actions CI/CD pipeline with automated tests
-- Comprehensive unit and integration tests (594+ tests, 79% backend coverage)
+- Comprehensive unit and integration tests (647+ tests, 75% backend coverage)
 - Multi-language support (EN, FR, ES, DE, IT, PT)
 - Default aquarium images for each water type
 - Custom logo and branding
+- Finance module with spending analysis, budgets, and electricity cost tracking
+- User avatars with upload and management
+- Default tank preference with auto-selection across all modules
+- Compact card layouts for notes, maintenance, consumables, and livestock
 
 ### Roadmap
 
@@ -500,7 +514,6 @@ For issues and questions:
 - [ ] Mobile responsive design improvements
 - [ ] Dosing calculator
 - [ ] Water change calculator
-- [ ] Cost tracking and equipment expenses
 - [ ] Community features (share tanks publicly)
 - [ ] Integration with reef controllers (ReefPi, Neptune)
 - [ ] Mobile app (React Native)

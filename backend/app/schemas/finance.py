@@ -18,6 +18,7 @@ class TankSpending(BaseModel):
     consumables: float
     livestock: float
     icp_tests: float
+    electricity: float = 0.0
 
 
 class MonthlySpending(BaseModel):
@@ -29,6 +30,7 @@ class MonthlySpending(BaseModel):
     consumables: float
     livestock: float
     icp_tests: float
+    electricity: float = 0.0
     cumulative: float
 
 
@@ -38,6 +40,7 @@ class FinanceSummary(BaseModel):
     total_consumables: float
     total_livestock: float
     total_icp_tests: float
+    total_electricity: float = 0.0
     by_category: List[CategorySpending]
     by_tank: List[TankSpending]
     monthly: List[MonthlySpending]
