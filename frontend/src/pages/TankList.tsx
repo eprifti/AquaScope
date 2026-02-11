@@ -71,7 +71,7 @@ export default function TankList() {
   }
 
   const handleArchive = async (id: string) => {
-    if (!confirm(tc('confirmArchive'))) return
+    if (!confirm(tc('archiveConfirmation'))) return
     try {
       await tanksApi.archive(id)
       loadTanks()
@@ -136,7 +136,7 @@ export default function TankList() {
           onChange={(e) => setShowArchived(e.target.checked)}
           className="mr-2 rounded border-gray-300 text-ocean-600 focus:ring-ocean-500"
         />
-        {tc('showArchived')}
+        {tc('showArchivedItems')}
       </label>
 
       {/* Create Tank Form */}

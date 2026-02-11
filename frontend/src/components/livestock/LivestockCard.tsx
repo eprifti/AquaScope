@@ -238,7 +238,7 @@ export default function LivestockCard({
                 {getStatusBadge()}
                 {livestock.is_archived && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-700">
-                    {tc('archived')}
+                    {tc('archivedStatus')}
                   </span>
                 )}
               </div>

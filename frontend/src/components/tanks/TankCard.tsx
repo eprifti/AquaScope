@@ -114,7 +114,7 @@ export default function TankCard({ tank, onEdit, onDelete, onArchive, onUnarchiv
         {tank.is_archived && (
           <div className="absolute top-3 left-3">
             <span className="px-2 py-1 bg-gray-800 text-white text-xs font-medium rounded shadow-sm">
-              {tc('archived')}
+              {tc('archivedStatus')}
             </span>
           </div>
         )}

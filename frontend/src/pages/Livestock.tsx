@@ -95,7 +95,7 @@ export default function Livestock() {
   }
 
   const handleArchive = async (id: string) => {
-    if (!confirm(tc('confirmArchive'))) return
+    if (!confirm(tc('archiveConfirmation'))) return
     try {
       await livestockApi.archive(id)
       loadData()
@@ -240,7 +240,7 @@ export default function Livestock() {
           onChange={(e) => setShowArchived(e.target.checked)}
           className="mr-2 rounded border-gray-300 text-ocean-600 focus:ring-ocean-500"
         />
-        {tc('showArchived')}
+        {tc('showArchivedItems')}
       </label>
 
       {/* Stats Cards */}

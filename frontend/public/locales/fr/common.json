@@ -35,9 +35,9 @@
     "archive": "Archiver",
     "unarchive": "Désarchiver"
   },
-  "archived": "Archivé",
-  "showArchived": "Afficher les archivés",
-  "confirmArchive": "Archiver cet élément ? Il sera masqué des vues par défaut mais pas supprimé.",
+  "archivedStatus": "Archivé",
+  "showArchivedItems": "Afficher les éléments archivés",
+  "archiveConfirmation": "Archiver cet élément ? Il sera masqué des vues par défaut mais pas supprimé.",
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",

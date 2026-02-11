@@ -178,7 +178,7 @@ export default function EquipmentPage() {
   }
 
   const handleArchive = async (id: string) => {
-    if (!confirm(tc('confirmArchive'))) return
+    if (!confirm(tc('archiveConfirmation'))) return
     try {
       await equipmentApi.archive(id)
       loadData()
@@ -352,7 +352,7 @@ export default function EquipmentPage() {
           onChange={(e) => setShowArchived(e.target.checked)}
           className="mr-2 rounded border-gray-300 text-ocean-600 focus:ring-ocean-500"
         />
-        {tc('showArchived')}
+        {tc('showArchivedItems')}
       </label>
 
       {/* Equipment List */}
@@ -366,7 +366,7 @@ export default function EquipmentPage() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {item.name}
                   {item.is_archived && (
-                    <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 text-xs font-medium rounded">{tc('archived')}</span>
+                    <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 text-xs font-medium rounded">{tc('archivedStatus')}</span>
                   )}
                 </h3>
                 <p className="text-sm text-gray-600">{formatType(item.equipment_type)}</p>

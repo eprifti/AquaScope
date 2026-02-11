@@ -35,9 +35,9 @@
     "archive": "Archivia",
     "unarchive": "Ripristina"
   },
-  "archived": "Archiviato",
-  "showArchived": "Mostra archiviati",
-  "confirmArchive": "Archiviare questo elemento? Verrà nascosto dalle viste predefinite ma non eliminato.",
+  "archivedStatus": "Archiviato",
+  "showArchivedItems": "Mostra elementi archiviati",
+  "archiveConfirmation": "Archiviare questo elemento? Verrà nascosto dalle viste predefinite ma non eliminato.",
   "common": {
     "loading": "Caricamento...",
     "error": "Si è verificato un errore",

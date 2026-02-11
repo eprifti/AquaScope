@@ -35,9 +35,9 @@
     "archive": "Archive",
     "unarchive": "Unarchive"
   },
-  "archived": "Archived",
-  "showArchived": "Show archived",
-  "confirmArchive": "Archive this item? It will be hidden from default views but not deleted.",
+  "archivedStatus": "Archived",
+  "showArchivedItems": "Show archived items",
+  "archiveConfirmation": "Archive this item? It will be hidden from default views but not deleted.",
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
