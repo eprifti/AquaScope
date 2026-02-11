@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth'
+import { ModuleSettingsProvider } from './hooks/useModuleSettings'
 import { isLocalMode } from './platform'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Layout from './components/Layout'
@@ -30,6 +31,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <ModuleSettingsProvider>
         {!local && <OfflineBanner />}
         <Routes>
           {/* Public Routes — only in web mode */}
@@ -73,6 +75,7 @@ function App() {
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        </ModuleSettingsProvider>
       </AuthProvider>
     </Router>
   )

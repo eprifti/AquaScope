@@ -723,6 +723,20 @@ export interface TimelineEntry {
   metadata: Record<string, any>
 }
 
+// ============================================================================
+// Module Settings Types
+// ============================================================================
+
+export interface ModuleSettings {
+  photos: boolean
+  notes: boolean
+  livestock: boolean
+  equipment: boolean
+  consumables: boolean
+  maintenance: boolean
+  icp_tests: boolean
+}
+
 export interface StorageFile {
   name: string
   path: string

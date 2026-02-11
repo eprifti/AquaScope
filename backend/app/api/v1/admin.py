@@ -27,8 +27,9 @@ from app.models.maintenance import MaintenanceReminder
 from app.models.equipment import Equipment
 from app.models.icp_test import ICPTest
 from app.models.parameter_range import ParameterRange
+from app.models.app_settings import AppSettings
 from app.schemas.user import UserResponse, UserUpdate, UserWithStats, SystemStats
-from app.api.deps import get_current_admin_user
+from app.api.deps import get_current_admin_user, get_current_user
 
 router = APIRouter()
 
@@ -1151,3 +1152,61 @@ def download_all_files(
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="aquascope_backup_{timestamp}.zip"'},
     )
+
+
+# ============================================================================
+# Module Settings
+# ============================================================================
+
+# Default modules — Parameters and Tanks are always on (core)
+MODULE_KEYS = [
+    "modules.photos",
+    "modules.notes",
+    "modules.livestock",
+    "modules.equipment",
+    "modules.consumables",
+    "modules.maintenance",
+    "modules.icp_tests",
+]
+
+MODULE_DEFAULTS = {k: "true" for k in MODULE_KEYS}
+
+
+@router.get("/settings/modules")
+def get_module_settings(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get enabled/disabled state for all toggleable modules. Any authenticated user can read."""
+    rows = db.query(AppSettings).filter(AppSettings.key.in_(MODULE_KEYS)).all()
+    stored = {r.key: r.value for r in rows}
+
+    result = {}
+    for key in MODULE_KEYS:
+        name = key.split(".", 1)[1]  # e.g. "photos"
+        result[name] = (stored.get(key, MODULE_DEFAULTS[key])) == "true"
+    return result
+
+
+@router.put("/settings/modules")
+def update_module_settings(
+    modules: dict,
+    admin: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db),
+):
+    """Update module enabled/disabled state. Admin only."""
+    for name, enabled in modules.items():
+        key = f"modules.{name}"
+        if key not in MODULE_KEYS:
+            continue
+        value = "true" if enabled else "false"
+        existing = db.query(AppSettings).filter(AppSettings.key == key).first()
+        if existing:
+            existing.value = value
+        else:
+            db.add(AppSettings(key=key, value=value))
+
+    db.commit()
+
+    # Return updated state
+    return get_module_settings(current_user=admin, db=db)

@@ -6,14 +6,16 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import { useModuleSettings } from '../hooks/useModuleSettings'
 import { Navigate } from 'react-router-dom'
 import { adminApi } from '../api'
-import { User, UserWithStats, SystemStats, UserDataSummary, Tank, StorageStats, StorageFile } from '../types'
+import { User, UserWithStats, SystemStats, UserDataSummary, Tank, StorageStats, StorageFile, ModuleSettings } from '../types'
 
-type Tab = 'overview' | 'users' | 'database' | 'storage'
+type Tab = 'overview' | 'users' | 'database' | 'storage' | 'modules'
 
 export default function Admin() {
   const { user } = useAuth()
+  const { modules: globalModules, refresh: refreshModules } = useModuleSettings()
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [stats, setStats] = useState<SystemStats | null>(null)
   const [users, setUsers] = useState<UserWithStats[]>([])
@@ -36,6 +38,8 @@ export default function Admin() {
   const [storageFilter, setStorageFilter] = useState<string>('')
   const [isDeletingOrphans, setIsDeletingOrphans] = useState(false)
   const [isDownloadingAll, setIsDownloadingAll] = useState(false)
+  const [moduleToggles, setModuleToggles] = useState<ModuleSettings>({ ...globalModules })
+  const [savingModules, setSavingModules] = useState(false)
 
   // Redirect non-admin users
   if (!user?.is_admin) {
@@ -313,6 +317,16 @@ export default function Admin() {
             }`}
           >
             Storage
+          </button>
+          <button
+            onClick={() => { setModuleToggles({ ...globalModules }); setActiveTab('modules') }}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'modules'
+                ? 'border-ocean-500 text-ocean-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            Modules
           </button>
         </nav>
       </div>
@@ -1031,6 +1045,91 @@ export default function Admin() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modules Tab ─────────────────────────────────────────── */}
+      {activeTab === 'modules' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Active Modules</h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Enable or disable modules for all users. Disabled modules are hidden from the sidebar but their data is preserved.
+              Parameters and Tanks are core modules and cannot be disabled.
+            </p>
+
+            <div className="space-y-4">
+              {/* Core modules (always on) */}
+              {[
+                { key: 'parameters', label: 'Parameters', icon: '📊', core: true },
+                { key: 'tanks', label: 'Tanks', icon: '🐠', core: true },
+              ].map((mod) => (
+                <div key={mod.key} className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg opacity-60">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{mod.icon}</span>
+                    <div>
+                      <span className="font-medium text-gray-900">{mod.label}</span>
+                      <span className="ml-2 text-xs text-gray-500">(core — always on)</span>
+                    </div>
+                  </div>
+                  <div className="w-11 h-6 bg-ocean-600 rounded-full relative cursor-not-allowed">
+                    <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow" />
+                  </div>
+                </div>
+              ))}
+
+              {/* Toggleable modules */}
+              {([
+                { key: 'photos' as keyof ModuleSettings, label: 'Photos', icon: '📷' },
+                { key: 'notes' as keyof ModuleSettings, label: 'Notes', icon: '📝' },
+                { key: 'maintenance' as keyof ModuleSettings, label: 'Maintenance', icon: '🔧' },
+                { key: 'livestock' as keyof ModuleSettings, label: 'Livestock', icon: '🐟' },
+                { key: 'equipment' as keyof ModuleSettings, label: 'Equipment', icon: '⚙️' },
+                { key: 'consumables' as keyof ModuleSettings, label: 'Consumables', icon: '🧪' },
+                { key: 'icp_tests' as keyof ModuleSettings, label: 'ICP Tests', icon: '🔬' },
+              ]).map((mod) => (
+                <div key={mod.key} className="flex items-center justify-between py-3 px-4 bg-white border border-gray-200 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{mod.icon}</span>
+                    <span className="font-medium text-gray-900">{mod.label}</span>
+                  </div>
+                  <button
+                    onClick={() => setModuleToggles((prev) => ({ ...prev, [mod.key]: !prev[mod.key] }))}
+                    className={`w-11 h-6 rounded-full relative transition-colors ${
+                      moduleToggles[mod.key] ? 'bg-ocean-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                      moduleToggles[mod.key] ? 'right-0.5' : 'left-0.5'
+                    }`} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Save button */}
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={async () => {
+                  setSavingModules(true)
+                  try {
+                    await adminApi.updateModuleSettings({ ...moduleToggles })
+                    await refreshModules()
+                    alert('Module settings saved!')
+                  } catch (error) {
+                    console.error('Failed to save module settings:', error)
+                    alert('Failed to save settings')
+                  } finally {
+                    setSavingModules(false)
+                  }
+                }}
+                disabled={savingModules}
+                className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50"
+              >
+                {savingModules ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </div>

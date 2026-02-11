@@ -137,4 +137,17 @@ export const adminApi = {
   downloadAllFiles: async (): Promise<void> => {
     // Not applicable in local mode
   },
+
+  getModuleSettings: async (): Promise<Record<string, boolean>> => {
+    // In local mode, all modules are enabled by default
+    return {
+      photos: true, notes: true, livestock: true, equipment: true,
+      consumables: true, maintenance: true, icp_tests: true,
+    }
+  },
+
+  updateModuleSettings: async (modules: Record<string, boolean>): Promise<Record<string, boolean>> => {
+    // No-op in local mode
+    return modules
+  },
 }

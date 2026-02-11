@@ -10,7 +10,9 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
+import { useModuleSettings } from '../hooks/useModuleSettings'
 import { isLocalMode } from '../platform'
+import type { ModuleSettings } from '../types'
 import Footer from './Footer'
 import VersionBanner from './VersionBanner'
 import LanguageSelector from './LanguageSelector'
@@ -22,6 +24,7 @@ const local = isLocalMode()
 export default function Layout(): JSX.Element {
   const location = useLocation()
   const { user, logout } = useAuth()
+  const { isEnabled } = useModuleSettings()
   const { t } = useTranslation('common')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -30,25 +33,28 @@ export default function Layout(): JSX.Element {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  const navigation = [
-    { name: t('navigation.dashboard'), href: '/dashboard', icon: '🏠' },
-    { name: t('navigation.tanks'), href: '/tanks', icon: '🐠' },
-    { name: t('navigation.parameters'), href: '/parameters', icon: '📊' },
-    { name: t('navigation.icpTests'), href: '/icp-tests', icon: '🔬' },
-    { name: t('navigation.photos'), href: '/photos', icon: '📷' },
-    { name: t('navigation.notes'), href: '/notes', icon: '📝' },
-    { name: t('navigation.maintenance'), href: '/maintenance', icon: '🔧' },
-    { name: t('navigation.livestock'), href: '/livestock', icon: '🐟' },
-    { name: t('navigation.equipment'), href: '/equipment', icon: '⚙️' },
-    { name: t('navigation.consumables'), href: '/consumables', icon: '🧪' },
+  // Module key mapping — null means always visible (core)
+  const navigation: { name: string; href: string; icon: string; module: keyof ModuleSettings | null }[] = [
+    { name: t('navigation.dashboard'), href: '/dashboard', icon: '🏠', module: null },
+    { name: t('navigation.tanks'), href: '/tanks', icon: '🐠', module: null },
+    { name: t('navigation.parameters'), href: '/parameters', icon: '📊', module: null },
+    { name: t('navigation.icpTests'), href: '/icp-tests', icon: '🔬', module: 'icp_tests' },
+    { name: t('navigation.photos'), href: '/photos', icon: '📷', module: 'photos' },
+    { name: t('navigation.notes'), href: '/notes', icon: '📝', module: 'notes' },
+    { name: t('navigation.maintenance'), href: '/maintenance', icon: '🔧', module: 'maintenance' },
+    { name: t('navigation.livestock'), href: '/livestock', icon: '🐟', module: 'livestock' },
+    { name: t('navigation.equipment'), href: '/equipment', icon: '⚙️', module: 'equipment' },
+    { name: t('navigation.consumables'), href: '/consumables', icon: '🧪', module: 'consumables' },
   ]
+
+  const visibleNavigation = navigation.filter((item) => !item.module || isEnabled(item.module))
 
   const isActive = (path: string) => location.pathname.startsWith(path)
 
   const sidebarContent = (
     <>
       <nav className="space-y-1">
-        {navigation.map((item) => {
+        {visibleNavigation.map((item) => {
           const active = isActive(item.href)
           return (
             <Link

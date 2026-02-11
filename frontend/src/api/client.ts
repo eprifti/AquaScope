@@ -835,6 +835,16 @@ export const adminApi = {
     return response.data
   },
 
+  getModuleSettings: async (): Promise<Record<string, boolean>> => {
+    const response = await apiClient.get<Record<string, boolean>>('/admin/settings/modules')
+    return response.data
+  },
+
+  updateModuleSettings: async (modules: Record<string, boolean>): Promise<Record<string, boolean>> => {
+    const response = await apiClient.put<Record<string, boolean>>('/admin/settings/modules', modules)
+    return response.data
+  },
+
   downloadAllFiles: async (): Promise<void> => {
     const response = await apiClient.get('/admin/storage/download-all', {
       responseType: 'blob',
