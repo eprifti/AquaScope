@@ -43,7 +43,8 @@
     "edit": "Bearbeiten",
     "editTitle": "Ausgabe bearbeiten",
     "purchaseUrl": "Kauf-URL",
-    "noItems": "Keine Ausgaben gefunden"
+    "noItems": "Keine Ausgaben gefunden",
+    "confirmDelete": "Diese Ausgabe löschen? Dies kann nicht rückgängig gemacht werden."
   },
   "budget": {
     "create": "Budget erstellen",

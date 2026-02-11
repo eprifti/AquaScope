@@ -172,6 +172,18 @@ export default function Finances() {
     }
   }
 
+  const handleDeleteDetail = async () => {
+    if (!editingItem) return
+    if (!window.confirm(t('details.confirmDelete', { defaultValue: 'Delete this expense? This cannot be undone.' }))) return
+    try {
+      await financesApi.deleteExpenseDetail(editingItem.id, editingItem.category)
+      setEditingItem(null)
+      loadData()
+    } catch (err) {
+      console.error('Failed to delete expense:', err)
+    }
+  }
+
   const statCards = summary
     ? [
         { label: t('stats.totalSpent'), value: summary.total_spent, icon: '💰' },
@@ -554,19 +566,27 @@ export default function Finances() {
               )}
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-between pt-2">
                 <button
-                  onClick={() => setEditingItem(null)}
-                  className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                  onClick={handleDeleteDetail}
+                  className="px-4 py-2 text-sm text-red-600 border border-red-300 rounded-md hover:bg-red-50"
                 >
-                  {tc('actions.cancel')}
+                  {tc('actions.delete')}
                 </button>
-                <button
-                  onClick={handleSaveDetail}
-                  className="px-4 py-2 text-sm text-white bg-ocean-600 rounded-md hover:bg-ocean-700"
-                >
-                  {tc('actions.save')}
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setEditingItem(null)}
+                    className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                  >
+                    {tc('actions.cancel')}
+                  </button>
+                  <button
+                    onClick={handleSaveDetail}
+                    className="px-4 py-2 text-sm text-white bg-ocean-600 rounded-md hover:bg-ocean-700"
+                  >
+                    {tc('actions.save')}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

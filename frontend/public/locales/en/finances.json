@@ -43,7 +43,8 @@
     "edit": "Edit",
     "editTitle": "Edit Expense",
     "purchaseUrl": "Purchase URL",
-    "noItems": "No expenses found"
+    "noItems": "No expenses found",
+    "confirmDelete": "Delete this expense? This cannot be undone."
   },
   "budget": {
     "create": "Create Budget",

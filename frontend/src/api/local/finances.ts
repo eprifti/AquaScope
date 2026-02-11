@@ -55,4 +55,5 @@ export const financesApi = {
     total_pages: 0,
   }),
   updateExpenseDetail: async (_itemId: string, _category: string, _updates: Record<string, string | null>): Promise<void> => {},
+  deleteExpenseDetail: async (_itemId: string, _category: string): Promise<void> => {},
 }

@@ -43,7 +43,8 @@
     "edit": "Editar",
     "editTitle": "Editar gasto",
     "purchaseUrl": "URL de compra",
-    "noItems": "No se encontraron gastos"
+    "noItems": "No se encontraron gastos",
+    "confirmDelete": "¿Eliminar este gasto? Esta acción no se puede deshacer."
   },
   "budget": {
     "create": "Crear presupuesto",

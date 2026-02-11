@@ -977,6 +977,10 @@ export const financesApi = {
   updateExpenseDetail: async (itemId: string, category: string, updates: Record<string, string | null>): Promise<void> => {
     await apiClient.patch(`/finances/details/${itemId}`, updates, { params: { category } })
   },
+
+  deleteExpenseDetail: async (itemId: string, category: string): Promise<void> => {
+    await apiClient.delete(`/finances/details/${itemId}`, { params: { category } })
+  },
 }
 
 // ============================================================================

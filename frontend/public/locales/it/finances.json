@@ -43,7 +43,8 @@
     "edit": "Modifica",
     "editTitle": "Modifica spesa",
     "purchaseUrl": "URL d'acquisto",
-    "noItems": "Nessuna spesa trovata"
+    "noItems": "Nessuna spesa trovata",
+    "confirmDelete": "Eliminare questa spesa? Questa azione non può essere annullata."
   },
   "budget": {
     "create": "Crea budget",

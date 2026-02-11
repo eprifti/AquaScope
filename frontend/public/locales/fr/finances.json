@@ -43,7 +43,8 @@
     "edit": "Modifier",
     "editTitle": "Modifier la dépense",
     "purchaseUrl": "URL d'achat",
-    "noItems": "Aucune dépense trouvée"
+    "noItems": "Aucune dépense trouvée",
+    "confirmDelete": "Supprimer cette dépense ? Cette action est irréversible."
   },
   "budget": {
     "create": "Créer un budget",

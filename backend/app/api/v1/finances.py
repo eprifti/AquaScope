@@ -471,3 +471,28 @@ def update_expense_detail(
 
     db.commit()
     return {"ok": True, "id": str(item_id)}
+
+
+@router.delete("/details/{item_id}", status_code=204)
+def delete_expense_detail(
+    item_id: UUID,
+    category: str = Query(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Delete an individual expense item by category and ID."""
+    model_map = {
+        "equipment": Equipment, "consumables": Consumable,
+        "livestock": Livestock, "icp_tests": ICPTest,
+    }
+
+    if category not in model_map:
+        raise HTTPException(status_code=400, detail=f"Invalid category: {category}")
+
+    model_cls = model_map[category]
+    item = db.query(model_cls).filter(model_cls.id == item_id, model_cls.user_id == current_user.id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    db.delete(item)
+    db.commit()

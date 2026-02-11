@@ -43,7 +43,8 @@
     "edit": "Editar",
     "editTitle": "Editar despesa",
     "purchaseUrl": "URL de compra",
-    "noItems": "Nenhuma despesa encontrada"
+    "noItems": "Nenhuma despesa encontrada",
+    "confirmDelete": "Excluir esta despesa? Esta ação não pode ser desfeita."
   },
   "budget": {
     "create": "Criar orçamento",
