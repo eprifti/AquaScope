@@ -8,11 +8,14 @@ from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 
+from datetime import date
+
 from app.database import get_db
 from app.models.user import User
 from app.models.equipment import Equipment
 from app.models.consumable import Consumable
 from app.models.tank import Tank
+from app.models.maintenance import MaintenanceReminder
 from app.schemas.equipment import EquipmentCreate, EquipmentUpdate, EquipmentResponse
 from app.schemas.consumable import ConsumableResponse
 from app.api.deps import get_current_user
@@ -124,7 +127,7 @@ def update_equipment(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update equipment"""
+    """Update equipment. Auto-creates maintenance reminder when condition is needs_maintenance or failing."""
     equipment = db.query(Equipment).filter(
         Equipment.id == equipment_id,
         Equipment.user_id == current_user.id
@@ -136,10 +139,47 @@ def update_equipment(
             detail="Equipment not found"
         )
 
+    old_condition = equipment.condition
+
     # Update fields
     update_data = equipment_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(equipment, field, value)
+
+    new_condition = equipment.condition
+    needs_attention = new_condition in ("needs_maintenance", "failing")
+    was_fine = old_condition not in ("needs_maintenance", "failing")
+
+    # Auto-create maintenance reminder when condition degrades
+    if needs_attention and was_fine:
+        # Check if an active reminder already exists for this equipment
+        existing = db.query(MaintenanceReminder).filter(
+            MaintenanceReminder.equipment_id == equipment_id,
+            MaintenanceReminder.is_active == True,
+        ).first()
+
+        if not existing:
+            label = "Repair" if new_condition == "failing" else "Maintenance"
+            reminder = MaintenanceReminder(
+                tank_id=equipment.tank_id,
+                user_id=current_user.id,
+                equipment_id=equipment.id,
+                title=f"{label}: {equipment.name}",
+                description=f"Equipment condition changed to {new_condition.replace('_', ' ')}. Inspect and service.",
+                reminder_type="equipment_maintenance",
+                frequency_days=7,
+                next_due=date.today(),
+                is_active=True,
+            )
+            db.add(reminder)
+
+    # Deactivate auto-created reminder when condition improves
+    elif not needs_attention and not was_fine:
+        db.query(MaintenanceReminder).filter(
+            MaintenanceReminder.equipment_id == equipment_id,
+            MaintenanceReminder.reminder_type == "equipment_maintenance",
+            MaintenanceReminder.is_active == True,
+        ).update({"is_active": False})
 
     db.commit()
     db.refresh(equipment)
