@@ -36,6 +36,8 @@ export default function LivestockForm({
   const [quantity, setQuantity] = useState(1)
   const [addedDate, setAddedDate] = useState('')
   const [notes, setNotes] = useState('')
+  const [purchasePrice, setPurchasePrice] = useState('')
+  const [purchaseUrl, setPurchaseUrl] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Multi-source species search
@@ -59,6 +61,8 @@ export default function LivestockForm({
       setCachedPhotoUrl(livestock.cached_photo_url || '')
       setAddedDate(livestock.added_date || '')
       setNotes(livestock.notes || '')
+      setPurchasePrice(livestock.purchase_price || '')
+      setPurchaseUrl(livestock.purchase_url || '')
     } else {
       const today = new Date().toISOString().split('T')[0]
       setAddedDate(today)
@@ -208,6 +212,8 @@ export default function LivestockForm({
         cached_photo_url: cachedPhotoUrl || undefined,
         added_date: addedDate || undefined,
         notes: notes || undefined,
+        purchase_price: purchasePrice || undefined,
+        purchase_url: purchaseUrl || undefined,
       }
 
       await onSubmit(data)
@@ -225,6 +231,8 @@ export default function LivestockForm({
         const today = new Date().toISOString().split('T')[0]
         setAddedDate(today)
         setNotes('')
+        setPurchasePrice('')
+        setPurchaseUrl('')
       }
     } catch (error) {
       console.error('Error submitting livestock:', error)
@@ -557,6 +565,36 @@ export default function LivestockForm({
               id="addedDate"
               value={addedDate}
               onChange={(e) => setAddedDate(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            />
+          </div>
+
+          {/* Purchase Price */}
+          <div>
+            <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700 mb-2">
+              {t('form.purchasePrice')}
+            </label>
+            <input
+              type="text"
+              id="purchasePrice"
+              value={purchasePrice}
+              onChange={(e) => setPurchasePrice(e.target.value)}
+              placeholder='e.g., $29.99, €25'
+              className="w-48 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            />
+          </div>
+
+          {/* Purchase URL */}
+          <div>
+            <label htmlFor="purchaseUrl" className="block text-sm font-medium text-gray-700 mb-2">
+              {t('form.purchaseUrl')}
+            </label>
+            <input
+              type="url"
+              id="purchaseUrl"
+              value={purchaseUrl}
+              onChange={(e) => setPurchaseUrl(e.target.value)}
+              placeholder="https://..."
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
             />
           </div>

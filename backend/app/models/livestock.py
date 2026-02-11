@@ -60,6 +60,8 @@ class Livestock(Base):
     added_date = Column(Date, nullable=True)  # When added to tank
     removed_date = Column(Date, nullable=True)  # When removed/died
     notes = Column(Text, nullable=True)  # Observations, source, price, etc.
+    purchase_price = Column(String, nullable=True)  # e.g., "$50", "€30"
+    purchase_url = Column(String, nullable=True)  # URL where the item was purchased
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

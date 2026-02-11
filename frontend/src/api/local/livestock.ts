@@ -25,6 +25,8 @@ function rowToLivestock(row: any): Livestock {
     added_date: row.added_date || null,
     removed_date: row.removed_date || null,
     notes: row.notes || null,
+    purchase_price: row.purchase_price || null,
+    purchase_url: row.purchase_url || null,
     created_at: row.created_at,
     is_archived: !!row.is_archived,
   }
@@ -69,12 +71,13 @@ export const livestockApi = {
     await db.execute(
       `INSERT INTO livestock (id, tank_id, user_id, species_name, common_name, type,
        fishbase_species_id, worms_id, inaturalist_id, cached_photo_url,
-       quantity, status, added_date, notes, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       quantity, status, added_date, notes, purchase_price, purchase_url, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [id, data.tank_id, userId, data.species_name, data.common_name ?? null, data.type,
        data.fishbase_species_id ?? null, data.worms_id ?? null, data.inaturalist_id ?? null,
        data.cached_photo_url ?? null, data.quantity ?? 1, data.status ?? 'alive',
-       data.added_date ?? null, data.notes ?? null, timestamp]
+       data.added_date ?? null, data.notes ?? null,
+       data.purchase_price ?? null, data.purchase_url ?? null, timestamp]
     )
 
     return rowToLivestock({
@@ -94,7 +97,7 @@ export const livestockApi = {
     const fields = [
       'species_name', 'common_name', 'type', 'fishbase_species_id', 'worms_id',
       'inaturalist_id', 'cached_photo_url', 'quantity', 'status', 'added_date',
-      'removed_date', 'notes',
+      'removed_date', 'notes', 'purchase_price', 'purchase_url',
     ]
 
     const sets: string[] = []

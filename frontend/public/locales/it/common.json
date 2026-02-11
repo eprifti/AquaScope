@@ -13,7 +13,8 @@
     "livestock": "Animali",
     "equipment": "Attrezzatura",
     "icpTests": "Test ICP",
-    "consumables": "Consumabili"
+    "consumables": "Consumabili",
+    "finances": "Finanze"
   },
   "actions": {
     "add": "Aggiungi",

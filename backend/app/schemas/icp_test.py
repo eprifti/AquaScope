@@ -125,6 +125,7 @@ class ICPTestBase(BaseModel):
     pdf_filename: Optional[str] = None
     pdf_path: Optional[str] = None
     notes: Optional[str] = None
+    cost: Optional[str] = Field(None, max_length=50)
 
     class Config:
         populate_by_name = True  # Allow both 'as_element' and 'as'
@@ -144,7 +145,7 @@ class ICPTestUpdate(BaseModel):
     received_date: Optional[date] = None
     evaluated_date: Optional[date] = None
     notes: Optional[str] = None
-    # Add other fields as needed for updates
+    cost: Optional[str] = Field(None, max_length=50)
 
 
 class ICPTestResponse(ICPTestBase):

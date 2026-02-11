@@ -16,11 +16,12 @@ vi.mock('react-i18next', () => ({
 }))
 
 describe('TankStats Component', () => {
-  it('renders all 7 stat categories', () => {
+  it('renders all 8 stat categories', () => {
     const stats = {
       event_count: 5,
       equipment_count: 3,
       livestock_count: 12,
+      consumable_count: 6,
       photo_count: 8,
       note_count: 4,
       maintenance_count: 2,
@@ -32,6 +33,7 @@ describe('TankStats Component', () => {
     expect(screen.getByText('stats.eventCount')).toBeInTheDocument()
     expect(screen.getByText('stats.equipmentCount')).toBeInTheDocument()
     expect(screen.getByText('stats.livestockCount')).toBeInTheDocument()
+    expect(screen.getByText('stats.consumableCount')).toBeInTheDocument()
     expect(screen.getByText('stats.photoCount')).toBeInTheDocument()
     expect(screen.getByText('stats.noteCount')).toBeInTheDocument()
     expect(screen.getByText('stats.maintenanceCount')).toBeInTheDocument()
@@ -43,6 +45,7 @@ describe('TankStats Component', () => {
       event_count: 5,
       equipment_count: 3,
       livestock_count: 12,
+      consumable_count: 6,
       photo_count: 8,
       note_count: 4,
       maintenance_count: 2,
@@ -65,10 +68,11 @@ describe('TankStats Component', () => {
 
     renderWithProviders(<TankStats stats={stats} />)
 
-    // All 7 labels should still render
+    // All 8 labels should still render
     expect(screen.getByText('stats.eventCount')).toBeInTheDocument()
     expect(screen.getByText('stats.equipmentCount')).toBeInTheDocument()
     expect(screen.getByText('stats.livestockCount')).toBeInTheDocument()
+    expect(screen.getByText('stats.consumableCount')).toBeInTheDocument()
     expect(screen.getByText('stats.photoCount')).toBeInTheDocument()
     expect(screen.getByText('stats.noteCount')).toBeInTheDocument()
     expect(screen.getByText('stats.maintenanceCount')).toBeInTheDocument()
@@ -76,7 +80,7 @@ describe('TankStats Component', () => {
 
     // All values should default to 0
     const zeros = screen.getAllByText('0')
-    expect(zeros).toHaveLength(7)
+    expect(zeros).toHaveLength(8)
   })
 
   it('handles all zero stats', () => {
@@ -84,6 +88,7 @@ describe('TankStats Component', () => {
       event_count: 0,
       equipment_count: 0,
       livestock_count: 0,
+      consumable_count: 0,
       photo_count: 0,
       note_count: 0,
       maintenance_count: 0,
@@ -93,6 +98,6 @@ describe('TankStats Component', () => {
     renderWithProviders(<TankStats stats={stats} />)
 
     const zeros = screen.getAllByText('0')
-    expect(zeros).toHaveLength(7)
+    expect(zeros).toHaveLength(8)
   })
 })

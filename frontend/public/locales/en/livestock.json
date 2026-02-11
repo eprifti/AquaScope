@@ -38,7 +38,9 @@
     "addLivestock": "Add Livestock",
     "allSpecies": "All Species",
     "withPhotos": "With Photos",
-    "fishOnly": "Fish Only"
+    "fishOnly": "Fish Only",
+    "purchasePrice": "Purchase Price",
+    "purchaseUrl": "Purchase URL"
   },
   "search": {
     "search": "Search",
@@ -63,7 +65,11 @@
     "viewOnWorms": "View on WoRMS",
     "viewOnINaturalist": "View on iNaturalist",
     "viewOnFishBase": "View on FishBase",
-    "timeInTank": "Time in tank"
+    "timeInTank": "Time in tank",
+    "price": "Price",
+    "total": "total",
+    "purchaseUrl": "Store",
+    "viewStore": "View Store"
   },
   "pastLivestock": "Past Livestock",
   "deadOrRemoved": "Dead or removed from tank",

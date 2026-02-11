@@ -17,6 +17,7 @@ function rowToEquipment(row: any): Equipment {
     specs: parseJSON(row.specs),
     purchase_date: row.purchase_date || null,
     purchase_price: row.purchase_price || null,
+    purchase_url: row.purchase_url || null,
     condition: row.condition || null,
     status: row.status,
     notes: row.notes || null,
@@ -57,12 +58,13 @@ export const equipmentApi = {
 
     await db.execute(
       `INSERT INTO equipment (id, tank_id, user_id, name, equipment_type, manufacturer, model,
-       specs, purchase_date, purchase_price, condition, status, notes, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       specs, purchase_date, purchase_price, purchase_url, condition, status, notes, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [id, data.tank_id, userId, data.name, data.equipment_type,
        data.manufacturer ?? null, data.model ?? null,
        data.specs ? JSON.stringify(data.specs) : null,
        data.purchase_date ?? null, data.purchase_price ?? null,
+       data.purchase_url ?? null,
        data.condition ?? null, data.status ?? 'active',
        data.notes ?? null, timestamp, timestamp]
     )
@@ -72,7 +74,7 @@ export const equipmentApi = {
       equipment_type: data.equipment_type, manufacturer: data.manufacturer,
       model: data.model, specs: data.specs ? JSON.stringify(data.specs) : null,
       purchase_date: data.purchase_date, purchase_price: data.purchase_price,
-      condition: data.condition, status: data.status ?? 'active',
+      purchase_url: data.purchase_url, condition: data.condition, status: data.status ?? 'active',
       notes: data.notes, created_at: timestamp, updated_at: timestamp,
     })
   },
@@ -82,7 +84,7 @@ export const equipmentApi = {
     if (!existing) throw new Error('Equipment not found')
 
     const fields = ['name', 'equipment_type', 'manufacturer', 'model', 'purchase_date',
-      'purchase_price', 'condition', 'status', 'notes']
+      'purchase_price', 'purchase_url', 'condition', 'status', 'notes']
     const sets: string[] = []
     const values: any[] = []
 

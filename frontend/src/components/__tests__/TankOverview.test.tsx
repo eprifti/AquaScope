@@ -5,7 +5,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithProviders } from '../../test/test-utils'
 import TankOverview from '../tanks/TankOverview'
-import type { Tank, TankEvent, Equipment, Livestock, Photo, Note, ICPTestSummary } from '../../types'
+import type { Tank, TankEvent, Equipment, Livestock, Consumable, Photo, Note, ICPTestSummary } from '../../types'
 import { buildTimelineEntries } from '../../utils/timeline'
 
 vi.mock('react-i18next', () => ({
@@ -77,6 +77,7 @@ const makeEquipment = (overrides: Partial<Equipment> = {}): Equipment => ({
   specs: null,
   purchase_date: null,
   purchase_price: null,
+  purchase_url: null,
   condition: null,
   status: 'active',
   notes: null,
@@ -100,6 +101,8 @@ const makeLivestock = (overrides: Partial<Livestock> = {}): Livestock => ({
   status: 'alive',
   added_date: null,
   removed_date: null,
+  purchase_price: null,
+  purchase_url: null,
   notes: null,
   created_at: '2024-01-01T00:00:00Z',
   ...overrides,
@@ -148,6 +151,7 @@ const emptyProps = {
   events: [] as TankEvent[],
   equipment: [] as Equipment[],
   livestock: [] as Livestock[],
+  consumables: [] as Consumable[],
   photos: [] as Photo[],
   notes: [] as Note[],
   icpTests: [] as ICPTestSummary[],
@@ -160,6 +164,7 @@ describe('TankOverview Component', () => {
       events: [makeEvent()],
       equipment: [makeEquipment(), makeEquipment({ id: 'equip-2', name: 'Heater' })],
       livestock: [makeLivestock(), makeLivestock({ id: 'live-2', species_name: 'Zebrasoma flavescens' })],
+      consumables: [] as Consumable[],
       photos: [makePhoto()],
       notes: [makeNote(), makeNote({ id: 'note-2', content: 'Second note' }), makeNote({ id: 'note-3', content: 'Third note' })],
       icpTests: [] as ICPTestSummary[],
@@ -167,13 +172,14 @@ describe('TankOverview Component', () => {
 
     renderWithProviders(<TankOverview {...props} />)
 
-    // The quick stats grid shows livestock, equipment, photos, notes counts
+    // The quick stats grid shows livestock, equipment, consumables, photos, notes counts
     expect(screen.getByText('stats.livestockCount')).toBeInTheDocument()
     expect(screen.getByText('stats.equipmentCount')).toBeInTheDocument()
+    expect(screen.getByText('stats.consumableCount')).toBeInTheDocument()
     expect(screen.getByText('stats.photoCount')).toBeInTheDocument()
     expect(screen.getByText('stats.noteCount')).toBeInTheDocument()
 
-    // Check the count values: livestock=2, equipment=2, photos=1, notes=3
+    // Check the count values: livestock=2, equipment=2, consumables=0, photos=1, notes=3
     const twos = screen.getAllByText('2')
     expect(twos).toHaveLength(2) // livestock and equipment both have count 2
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -249,8 +255,8 @@ describe('TankOverview Component', () => {
   it('shows zero counts in quick stats when arrays are empty', () => {
     renderWithProviders(<TankOverview {...emptyProps} />)
 
-    // All four quick stat counts should be 0
+    // All five quick stat counts should be 0
     const zeros = screen.getAllByText('0')
-    expect(zeros).toHaveLength(4)
+    expect(zeros).toHaveLength(5)
   })
 })

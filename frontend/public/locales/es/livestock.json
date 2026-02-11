@@ -38,7 +38,9 @@
     "addLivestock": "Agregar animal",
     "allSpecies": "Todas las especies",
     "withPhotos": "Con fotos",
-    "fishOnly": "Solo peces"
+    "fishOnly": "Solo peces",
+    "purchasePrice": "Precio de compra",
+    "purchaseUrl": "URL de compra"
   },
   "search": {
     "search": "Buscar",
@@ -63,7 +65,11 @@
     "viewOnWorms": "Ver en WoRMS",
     "viewOnINaturalist": "Ver en iNaturalist",
     "viewOnFishBase": "Ver en FishBase",
-    "timeInTank": "Tiempo en acuario"
+    "timeInTank": "Tiempo en acuario",
+    "price": "Precio",
+    "total": "total",
+    "purchaseUrl": "Tienda",
+    "viewStore": "Ver tienda"
   },
   "pastLivestock": "Animales anteriores",
   "deadOrRemoved": "Muertos o retirados del acuario",

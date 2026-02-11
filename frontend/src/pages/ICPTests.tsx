@@ -495,11 +495,21 @@ export default function ICPTestsPage() {
                 ])}
               </div>
 
-              {/* Notes */}
-              {selectedTest.notes && (
-                <div className="mt-6 p-4 bg-gray-50 rounded">
-                  <h4 className="font-semibold text-gray-700 mb-2">{t('notes')}</h4>
-                  <p className="text-gray-700 whitespace-pre-wrap">{selectedTest.notes}</p>
+              {/* Cost & Notes */}
+              {(selectedTest.cost || selectedTest.notes) && (
+                <div className="mt-6 p-4 bg-gray-50 rounded space-y-3">
+                  {selectedTest.cost && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700 mb-1">{t('cost')}</h4>
+                      <p className="text-gray-700">{selectedTest.cost}</p>
+                    </div>
+                  )}
+                  {selectedTest.notes && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700 mb-1">{t('notes')}</h4>
+                      <p className="text-gray-700 whitespace-pre-wrap">{selectedTest.notes}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

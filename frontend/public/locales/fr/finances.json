@@ -1,0 +1,56 @@
+{
+  "title": "Finances",
+  "subtitle": "Suivez vos dépenses et gérez vos budgets pour vos aquariums",
+  "allTanks": "Tous les aquariums",
+  "noData": "Aucune donnée de dépenses",
+  "cumulative": "Cumulatif",
+  "tabs": {
+    "summary": "Résumé",
+    "details": "Détails",
+    "budgets": "Budgets"
+  },
+  "stats": {
+    "totalSpent": "Total dépensé",
+    "equipment": "Équipement",
+    "consumables": "Consommables",
+    "livestock": "Vivant",
+    "icpTests": "Tests ICP"
+  },
+  "categories": {
+    "equipment": "Équipement",
+    "consumables": "Consommables",
+    "livestock": "Vivant",
+    "icp_tests": "Tests ICP"
+  },
+  "charts": {
+    "categoryBreakdown": "Dépenses par catégorie",
+    "monthlySpending": "Dépenses mensuelles",
+    "byTank": "Dépenses par aquarium"
+  },
+  "table": {
+    "tank": "Aquarium",
+    "total": "Total"
+  },
+  "budget": {
+    "create": "Créer un budget",
+    "edit": "Modifier le budget",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "name": "Nom du budget",
+    "amount": "Montant",
+    "currency": "Devise",
+    "period": "Période",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "category": "Catégorie",
+    "tank": "Aquarium",
+    "notes": "Notes",
+    "allCategories": "Toutes les catégories",
+    "allTanks": "Tous les aquariums",
+    "noBudgets": "Aucun budget créé",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce budget ?",
+    "remaining": "{{amount}} restant",
+    "overBy": "Dépassé de {{amount}}"
+  }
+}

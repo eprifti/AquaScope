@@ -34,5 +34,6 @@
     "minor": "Minori",
     "pollutants": "Inquinanti"
   },
-  "notes": "Note"
+  "notes": "Note",
+  "cost": "Costo del test"
 }

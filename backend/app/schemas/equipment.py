@@ -14,6 +14,7 @@ class EquipmentBase(BaseModel):
     specs: Optional[Dict[str, Any]] = None
     purchase_date: Optional[date] = None
     purchase_price: Optional[str] = Field(None, max_length=50)
+    purchase_url: Optional[str] = Field(None, max_length=500)
     condition: Optional[str] = Field(None, max_length=100)
     status: str = Field(default="active", description="active (in use) or stock (available)")
     notes: Optional[str] = None
@@ -33,6 +34,7 @@ class EquipmentUpdate(BaseModel):
     specs: Optional[Dict[str, Any]] = None
     purchase_date: Optional[date] = None
     purchase_price: Optional[str] = Field(None, max_length=50)
+    purchase_url: Optional[str] = Field(None, max_length=500)
     condition: Optional[str] = Field(None, max_length=100)
     status: Optional[str] = Field(None, description="active or stock")
     notes: Optional[str] = None

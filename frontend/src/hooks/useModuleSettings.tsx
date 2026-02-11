@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS: ModuleSettings = {
   consumables: true,
   maintenance: true,
   icp_tests: true,
+  finances: true,
 }
 
 interface ModuleSettingsContextValue {
@@ -38,11 +39,18 @@ export function ModuleSettingsProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   const refresh = useCallback(async () => {
+    // Skip API call on public pages or when not authenticated — avoids 401 loop
+    const path = window.location.pathname
+    const token = localStorage.getItem('aquascope_token')
+    if (!token || path === '/login' || path === '/register') {
+      setIsLoaded(true)
+      return
+    }
     try {
       const data = await adminApi.getModuleSettings()
       setModules({ ...DEFAULT_SETTINGS, ...data } as ModuleSettings)
     } catch {
-      // If the endpoint fails (e.g. not logged in yet), keep defaults
+      // If the endpoint fails, keep defaults
     }
     setIsLoaded(true)
   }, [])

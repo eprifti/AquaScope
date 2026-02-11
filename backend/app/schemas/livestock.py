@@ -11,6 +11,8 @@ class LivestockBase(BaseModel):
     common_name: Optional[str] = Field(None, max_length=200)
     type: str = Field(..., description="fish, coral, invertebrate")
     notes: Optional[str] = Field(None, max_length=2000)
+    purchase_price: Optional[str] = Field(None, max_length=50)
+    purchase_url: Optional[str] = Field(None, max_length=500)
 
 
 class LivestockCreate(LivestockBase):
@@ -39,6 +41,8 @@ class LivestockUpdate(BaseModel):
     added_date: Optional[date] = None
     removed_date: Optional[date] = None
     notes: Optional[str] = Field(None, max_length=2000)
+    purchase_price: Optional[str] = Field(None, max_length=50)
+    purchase_url: Optional[str] = Field(None, max_length=500)
 
 
 class LivestockResponse(LivestockBase):

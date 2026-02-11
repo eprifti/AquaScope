@@ -13,7 +13,8 @@
     "livestock": "Livestock",
     "equipment": "Equipment",
     "icpTests": "ICP Tests",
-    "consumables": "Consumables"
+    "consumables": "Consumables",
+    "finances": "Finances"
   },
   "actions": {
     "add": "Add",

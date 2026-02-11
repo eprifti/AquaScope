@@ -13,7 +13,8 @@
     "livestock": "Tierbestand",
     "equipment": "Ausrüstung",
     "icpTests": "ICP-Tests",
-    "consumables": "Verbrauchsmaterial"
+    "consumables": "Verbrauchsmaterial",
+    "finances": "Finanzen"
   },
   "actions": {
     "add": "Hinzufügen",

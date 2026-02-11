@@ -1,0 +1,56 @@
+{
+  "title": "Finanças",
+  "subtitle": "Acompanhe gastos e gerencie orçamentos dos seus aquários",
+  "allTanks": "Todos os aquários",
+  "noData": "Sem dados de gastos ainda",
+  "cumulative": "Acumulado",
+  "tabs": {
+    "summary": "Resumo",
+    "details": "Detalhes",
+    "budgets": "Orçamentos"
+  },
+  "stats": {
+    "totalSpent": "Total gasto",
+    "equipment": "Equipamento",
+    "consumables": "Consumíveis",
+    "livestock": "Animais",
+    "icpTests": "Testes ICP"
+  },
+  "categories": {
+    "equipment": "Equipamento",
+    "consumables": "Consumíveis",
+    "livestock": "Animais",
+    "icp_tests": "Testes ICP"
+  },
+  "charts": {
+    "categoryBreakdown": "Gastos por categoria",
+    "monthlySpending": "Gastos mensais",
+    "byTank": "Gastos por aquário"
+  },
+  "table": {
+    "tank": "Aquário",
+    "total": "Total"
+  },
+  "budget": {
+    "create": "Criar orçamento",
+    "edit": "Editar orçamento",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "name": "Nome do orçamento",
+    "amount": "Valor",
+    "currency": "Moeda",
+    "period": "Período",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "category": "Categoria",
+    "tank": "Aquário",
+    "notes": "Notas",
+    "allCategories": "Todas as categorias",
+    "allTanks": "Todos os aquários",
+    "noBudgets": "Nenhum orçamento criado ainda",
+    "confirmDelete": "Tem certeza de que deseja excluir este orçamento?",
+    "remaining": "{{amount}} restante",
+    "overBy": "Excedido em {{amount}}"
+  }
+}

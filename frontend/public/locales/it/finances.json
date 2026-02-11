@@ -1,0 +1,56 @@
+{
+  "title": "Finanze",
+  "subtitle": "Monitora le spese e gestisci i budget per i tuoi acquari",
+  "allTanks": "Tutti gli acquari",
+  "noData": "Nessun dato di spesa ancora",
+  "cumulative": "Cumulativo",
+  "tabs": {
+    "summary": "Riepilogo",
+    "details": "Dettagli",
+    "budgets": "Budget"
+  },
+  "stats": {
+    "totalSpent": "Totale speso",
+    "equipment": "Attrezzatura",
+    "consumables": "Consumabili",
+    "livestock": "Animali",
+    "icpTests": "Test ICP"
+  },
+  "categories": {
+    "equipment": "Attrezzatura",
+    "consumables": "Consumabili",
+    "livestock": "Animali",
+    "icp_tests": "Test ICP"
+  },
+  "charts": {
+    "categoryBreakdown": "Spese per categoria",
+    "monthlySpending": "Spese mensili",
+    "byTank": "Spese per acquario"
+  },
+  "table": {
+    "tank": "Acquario",
+    "total": "Totale"
+  },
+  "budget": {
+    "create": "Crea budget",
+    "edit": "Modifica budget",
+    "delete": "Elimina",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "name": "Nome del budget",
+    "amount": "Importo",
+    "currency": "Valuta",
+    "period": "Periodo",
+    "monthly": "Mensile",
+    "yearly": "Annuale",
+    "category": "Categoria",
+    "tank": "Acquario",
+    "notes": "Note",
+    "allCategories": "Tutte le categorie",
+    "allTanks": "Tutti gli acquari",
+    "noBudgets": "Nessun budget creato ancora",
+    "confirmDelete": "Sei sicuro di voler eliminare questo budget?",
+    "remaining": "{{amount}} rimanente",
+    "overBy": "Superato di {{amount}}"
+  }
+}

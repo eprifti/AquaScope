@@ -22,6 +22,7 @@ import ICPTests from './pages/ICPTests'
 import Photos from './pages/Photos'
 import Notes from './pages/Notes'
 import Admin from './pages/Admin'
+import Finances from './pages/Finances'
 
 const Welcome = lazy(() => import('./pages/Welcome'))
 
@@ -69,6 +70,7 @@ function App() {
             <Route path="icp-tests" element={<ICPTests />} />
             <Route path="photos" element={<Photos />} />
             <Route path="notes" element={<Notes />} />
+            <Route path="finances" element={<Finances />} />
             {!local && <Route path="admin" element={<Admin />} />}
           </Route>
 

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { Livestock, Tank } from '../../types'
 import { formatDistanceToNow, formatDistance } from 'date-fns'
 import { livestockApi } from '../../api'
+import { parsePrice } from '../../utils/price'
 
 interface LivestockCardProps {
   livestock: Livestock
@@ -327,6 +328,38 @@ export default function LivestockCard({
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600">{t('card.quantity')}</span>
             <span className="font-medium text-gray-900">{livestock.quantity}</span>
+          </div>
+        )}
+
+        {/* Price */}
+        {livestock.purchase_price && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">{t('card.price')}</span>
+            <span className="font-medium text-gray-900">
+              {livestock.purchase_price}
+              {livestock.quantity > 1 && (() => {
+                const unitPrice = parsePrice(livestock.purchase_price)
+                if (unitPrice) {
+                  return <span className="text-gray-500 ml-1">({t('card.total')}: {(unitPrice * livestock.quantity).toFixed(2)})</span>
+                }
+                return null
+              })()}
+            </span>
+          </div>
+        )}
+
+        {/* Purchase URL */}
+        {livestock.purchase_url && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">{t('card.purchaseUrl')}</span>
+            <a
+              href={livestock.purchase_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ocean-600 hover:text-ocean-700 underline truncate max-w-[200px]"
+            >
+              {t('card.viewStore')}
+            </a>
           </div>
         )}
 

@@ -48,6 +48,7 @@ function rowToICPTest(row: any): ICPTest {
     pdf_filename: row.pdf_filename || null,
     pdf_path: row.pdf_path || null,
     notes: row.notes || null,
+    cost: row.cost || null,
     created_at: row.created_at,
     updated_at: row.updated_at,
   }

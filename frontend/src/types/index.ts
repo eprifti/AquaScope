@@ -307,6 +307,8 @@ export interface Livestock {
   added_date: string | null
   removed_date: string | null
   notes: string | null
+  purchase_price: string | null
+  purchase_url: string | null
   is_archived: boolean
   created_at: string
 }
@@ -324,6 +326,8 @@ export interface LivestockCreate {
   status?: LivestockStatus
   added_date?: string | null
   notes?: string | null
+  purchase_price?: string | null
+  purchase_url?: string | null
 }
 
 export interface LivestockUpdate {
@@ -339,6 +343,8 @@ export interface LivestockUpdate {
   added_date?: string | null
   removed_date?: string | null
   notes?: string | null
+  purchase_price?: string | null
+  purchase_url?: string | null
 }
 
 export interface LivestockSplitRequest {
@@ -366,6 +372,7 @@ export interface Equipment {
   specs: Record<string, any> | null
   purchase_date: string | null
   purchase_price: string | null
+  purchase_url: string | null
   condition: string | null
   status: string
   notes: string | null
@@ -383,6 +390,7 @@ export interface EquipmentCreate {
   specs?: Record<string, any> | null
   purchase_date?: string | null
   purchase_price?: string | null
+  purchase_url?: string | null
   condition?: string | null
   status?: string
   notes?: string | null
@@ -396,6 +404,7 @@ export interface EquipmentUpdate {
   specs?: Record<string, any> | null
   purchase_date?: string | null
   purchase_price?: string | null
+  purchase_url?: string | null
   condition?: string | null
   status?: string
   notes?: string | null
@@ -603,6 +612,7 @@ export interface ICPTest {
   pdf_filename: string | null
   pdf_path: string | null
   notes: string | null
+  cost: string | null
 
   created_at: string
   updated_at: string
@@ -739,6 +749,7 @@ export interface ModuleSettings {
   consumables: boolean
   maintenance: boolean
   icp_tests: boolean
+  finances: boolean
 }
 
 export interface StorageFile {
@@ -752,4 +763,112 @@ export interface StorageFile {
   tank_name: string | null
   is_orphan: boolean
   is_missing: boolean
+}
+
+// ============================================================================
+// Finance Types
+// ============================================================================
+
+export interface CategorySpending {
+  category: string
+  total: number
+  count: number
+}
+
+export interface TankSpending {
+  tank_id: string
+  tank_name: string
+  total: number
+  equipment: number
+  consumables: number
+  livestock: number
+  icp_tests: number
+}
+
+export interface MonthlySpending {
+  year: number
+  month: number
+  label: string
+  total: number
+  equipment: number
+  consumables: number
+  livestock: number
+  icp_tests: number
+  cumulative: number
+}
+
+export interface FinanceSummary {
+  total_spent: number
+  total_equipment: number
+  total_consumables: number
+  total_livestock: number
+  total_icp_tests: number
+  by_category: CategorySpending[]
+  by_tank: TankSpending[]
+  monthly: MonthlySpending[]
+}
+
+export interface Budget {
+  id: string
+  user_id: string
+  tank_id: string | null
+  name: string
+  amount: number
+  currency: string
+  period: string
+  category: string | null
+  is_active: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface BudgetCreate {
+  name: string
+  amount: number
+  currency?: string
+  period?: string
+  category?: string | null
+  tank_id?: string | null
+  is_active?: boolean
+  notes?: string | null
+}
+
+export interface BudgetUpdate {
+  name?: string
+  amount?: number
+  currency?: string
+  period?: string
+  category?: string | null
+  tank_id?: string | null
+  is_active?: boolean
+  notes?: string | null
+}
+
+export interface BudgetStatus {
+  budget: Budget
+  spent: number
+  remaining: number
+  percentage_used: number
+  is_over_budget: boolean
+}
+
+export interface ExpenseDetail {
+  id: string
+  name: string
+  category: string
+  tank_id: string
+  tank_name: string
+  date: string | null
+  price: number | null
+  price_raw: string | null
+  purchase_url: string | null
+}
+
+export interface ExpenseDetailList {
+  items: ExpenseDetail[]
+  total: number
+  page: number
+  page_size: number
+  total_pages: number
 }

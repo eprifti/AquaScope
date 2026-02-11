@@ -34,5 +34,6 @@
     "minor": "Mineurs",
     "pollutants": "Polluants"
   },
-  "notes": "Notes"
+  "notes": "Notes",
+  "cost": "Coût du test"
 }

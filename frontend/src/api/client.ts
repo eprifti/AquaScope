@@ -56,6 +56,13 @@ import type {
   ICPTestSummary,
   StorageStats,
   StorageFile,
+  FinanceSummary,
+  MonthlySpending,
+  Budget,
+  BudgetCreate,
+  BudgetUpdate,
+  BudgetStatus,
+  ExpenseDetailList,
   ApiError,
 } from '../types'
 
@@ -102,9 +109,13 @@ apiClient.interceptors.response.use(
   async (error: AxiosError<ApiError>) => {
     if (error.response?.status === 401) {
       // Token expired or invalid - clear auth and redirect to login
+      // But don't redirect if already on login/register page (avoids infinite loop)
       localStorage.removeItem('aquascope_token')
       localStorage.removeItem('aquascope_user')
-      window.location.href = '/login'
+      const path = window.location.pathname
+      if (path !== '/login' && path !== '/register') {
+        window.location.href = '/login'
+      }
       return Promise.reject(error)
     }
 
@@ -902,6 +913,59 @@ export const adminApi = {
     link.click()
     link.remove()
     window.URL.revokeObjectURL(url)
+  },
+}
+
+// ============================================================================
+// Finances API
+// ============================================================================
+
+export const financesApi = {
+  getSummary: async (tankId?: string): Promise<FinanceSummary> => {
+    const response = await apiClient.get<FinanceSummary>('/finances/summary', {
+      params: tankId ? { tank_id: tankId } : undefined,
+    })
+    return response.data
+  },
+
+  getMonthly: async (params?: { tank_id?: string; year?: number }): Promise<MonthlySpending[]> => {
+    const response = await apiClient.get<MonthlySpending[]>('/finances/monthly', { params })
+    return response.data
+  },
+
+  listBudgets: async (params?: { tank_id?: string; active_only?: boolean }): Promise<Budget[]> => {
+    const response = await apiClient.get<Budget[]>('/finances/budgets', { params })
+    return response.data
+  },
+
+  createBudget: async (data: BudgetCreate): Promise<Budget> => {
+    const response = await apiClient.post<Budget>('/finances/budgets', data)
+    return response.data
+  },
+
+  updateBudget: async (id: string, data: BudgetUpdate): Promise<Budget> => {
+    const response = await apiClient.put<Budget>(`/finances/budgets/${id}`, data)
+    return response.data
+  },
+
+  deleteBudget: async (id: string): Promise<void> => {
+    await apiClient.delete(`/finances/budgets/${id}`)
+  },
+
+  getBudgetStatuses: async (tankId?: string): Promise<BudgetStatus[]> => {
+    const response = await apiClient.get<BudgetStatus[]>('/finances/budgets/status', {
+      params: tankId ? { tank_id: tankId } : undefined,
+    })
+    return response.data
+  },
+
+  getDetails: async (params?: { tank_id?: string; category?: string; page?: number; page_size?: number }): Promise<ExpenseDetailList> => {
+    const response = await apiClient.get<ExpenseDetailList>('/finances/details', { params })
+    return response.data
+  },
+
+  updateExpensePrice: async (itemId: string, category: string, price: string): Promise<void> => {
+    await apiClient.patch(`/finances/details/${itemId}/price`, { price }, { params: { category } })
   },
 }
 

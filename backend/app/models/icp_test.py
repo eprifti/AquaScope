@@ -155,6 +155,7 @@ class ICPTest(Base):
 
     # Additional notes
     notes = Column(Text, nullable=True)
+    cost = Column(String, nullable=True)  # Test cost, e.g., "$60", "€45"
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
