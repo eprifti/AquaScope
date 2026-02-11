@@ -4,6 +4,8 @@
  * Shows a standard <select> for tank choice plus a small thumbnail
  * of the selected tank's image next to it. When no custom image exists,
  * uses the default water-type image as fallback.
+ *
+ * When only one tank exists, auto-selects it and hides the "All" option.
  */
 
 import { useState, useEffect } from 'react'
@@ -17,7 +19,7 @@ interface TankSelectorProps {
   allLabel: string         // e.g. "All Tanks" — translated by the caller
   label?: string           // e.g. "Filter by tank" — optional label above
   className?: string       // extra wrapper classes
-  showAllOption?: boolean  // default true — show "All Tanks" option
+  showAllOption?: boolean  // default true — show "All Tanks" option (hidden when only 1 tank)
 }
 
 const DEFAULT_IMAGES: Record<string, string> = {
@@ -36,6 +38,17 @@ export default function TankSelector({
   showAllOption = true,
 }: TankSelectorProps) {
   const [thumbUrl, setThumbUrl] = useState<string | null>(null)
+
+  // Auto-select when there's only one tank and nothing is selected
+  const singleTank = tanks.length === 1
+  useEffect(() => {
+    if (singleTank && (!value || value === 'all')) {
+      onChange(tanks[0].id)
+    }
+  }, [singleTank, tanks, value, onChange])
+
+  // Only show "All Tanks" when there are multiple tanks
+  const displayAllOption = showAllOption && tanks.length > 1
 
   // Resolve which tank is currently selected (ignoring 'all' / '')
   const selectedTank = tanks.find(t => t.id === value) || null
@@ -87,7 +100,7 @@ export default function TankSelector({
           onChange={e => onChange(e.target.value)}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
         >
-          {showAllOption && <option value="">{allLabel}</option>}
+          {displayAllOption && <option value="">{allLabel}</option>}
           {tanks.map(tank => (
             <option key={tank.id} value={tank.id}>
               {tank.name}{tank.total_volume_liters > 0 ? ` (${tank.total_volume_liters}L)` : ''}

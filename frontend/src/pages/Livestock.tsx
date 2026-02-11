@@ -240,39 +240,6 @@ export default function Livestock() {
         {tc('showArchivedItems')}
       </label>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-blue-600 font-medium">{t('types.fish')}</p>
-              <p className="text-2xl font-bold text-blue-900">{totalFish}</p>
-            </div>
-            <span className="text-4xl animate-emoji-swim">🐠</span>
-          </div>
-        </div>
-
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-purple-600 font-medium">{t('types.corals')}</p>
-              <p className="text-2xl font-bold text-purple-900">{totalCorals}</p>
-            </div>
-            <span className="text-4xl animate-emoji-sway">🪸</span>
-          </div>
-        </div>
-
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-orange-600 font-medium">{t('types.invertebrates')}</p>
-              <p className="text-2xl font-bold text-orange-900">{totalInverts}</p>
-            </div>
-            <span className="text-4xl animate-emoji-wiggle">🦐</span>
-          </div>
-        </div>
-      </div>
-
       {/* Active Livestock Lists */}
       {alive.length === 0 && past.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">

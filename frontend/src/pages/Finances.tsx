@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { financesApi, tanksApi } from '../api'
 import type {
@@ -29,6 +30,7 @@ import SpendingPieChart from '../components/finances/SpendingPieChart'
 import MonthlyBarChart from '../components/finances/MonthlyBarChart'
 import BudgetProgressBar from '../components/finances/BudgetProgressBar'
 import BudgetForm from '../components/finances/BudgetForm'
+import TankSelector from '../components/common/TankSelector'
 import Pagination from '../components/common/Pagination'
 
 type Tab = 'summary' | 'details' | 'budgets'
@@ -48,9 +50,10 @@ export default function Finances() {
   const { currency } = useCurrency()
   const fp = (amount: number) => formatPrice(amount, currency)
 
+  const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<Tab>('summary')
   const [tanks, setTanks] = useState<Tank[]>([])
-  const [selectedTank, setSelectedTank] = useState<string>('')
+  const [selectedTank, setSelectedTank] = useState<string>(searchParams.get('tank') || '')
   const [isLoading, setIsLoading] = useState(true)
 
   // Summary data
@@ -204,18 +207,12 @@ export default function Finances() {
         </div>
 
         {/* Tank filter */}
-        <select
+        <TankSelector
+          tanks={tanks}
           value={selectedTank}
-          onChange={(e) => setSelectedTank(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm"
-        >
-          <option value="">{t('allTanks')}</option>
-          {tanks.map((tank) => (
-            <option key={tank.id} value={tank.id}>
-              {tank.name}
-            </option>
-          ))}
-        </select>
+          onChange={setSelectedTank}
+          allLabel={t('allTanks')}
+        />
       </div>
 
       {/* Tab bar */}
