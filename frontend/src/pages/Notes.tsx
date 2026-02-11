@@ -198,7 +198,7 @@ export default function Notes() {
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {notes.map((note) => (
             <div key={note.id} id={`card-${note.id}`}>
               <NoteCard

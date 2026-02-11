@@ -245,7 +245,7 @@ export default function Maintenance() {
                 <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                 {t('overdue')} ({overdueReminders.length})
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {overdueReminders.map((reminder) => (
                   <div key={reminder.id} id={`card-${reminder.id}`}>
                     <ReminderCard
@@ -268,7 +268,7 @@ export default function Maintenance() {
                 <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
                 {t('dueSoon')} ({dueSoonReminders.length})
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {dueSoonReminders.map((reminder) => (
                   <div key={reminder.id} id={`card-${reminder.id}`}>
                     <ReminderCard
@@ -291,7 +291,7 @@ export default function Maintenance() {
                 <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                 {t('upcoming')} ({upcomingReminders.length})
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {upcomingReminders.map((reminder) => (
                   <div key={reminder.id} id={`card-${reminder.id}`}>
                     <ReminderCard
@@ -314,7 +314,7 @@ export default function Maintenance() {
                 <span className="w-3 h-3 bg-gray-400 rounded-full mr-2"></span>
                 {t('inactive')} ({inactiveReminders.length})
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {inactiveReminders.map((reminder) => (
                   <div key={reminder.id} id={`card-${reminder.id}`}>
                     <ReminderCard
