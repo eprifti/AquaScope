@@ -34,13 +34,12 @@ export default function Livestock() {
 
   useEffect(() => {
     loadData()
-  }, [filterType, selectedTank, showArchived])
+  }, [selectedTank, showArchived])
 
   const loadData = async () => {
     setIsLoading(true)
     try {
       const params: any = {}
-      if (filterType !== 'all') params.type = filterType
       if (selectedTank !== 'all') params.tank_id = selectedTank
       if (showArchived) params.include_archived = true
 
