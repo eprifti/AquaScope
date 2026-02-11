@@ -35,5 +35,23 @@
   "view": "Ver \u2192",
   "noMaintenance": "Nenhuma manutenção atrasada",
   "noTanks": "Nenhum aquário",
-  "getStarted": "Comece criando seu primeiro aquário"
+  "getStarted": "Comece criando seu primeiro aquário",
+  "bannerEditor": {
+    "title": "Escolher banner do painel",
+    "reef": "Recife",
+    "reefDesc": "Recife de coral animado com peixes tropicais",
+    "planted": "Plantado",
+    "plantedDesc": "Aquário plantado de água doce",
+    "custom": "Imagem personalizada",
+    "customDesc": "Envie seu próprio banner",
+    "uploadPrompt": "Clique ou arraste e solte",
+    "uploadHint": "JPG, PNG, WebP — máx. 10 MB",
+    "cropTitle": "Recortar e posicionar",
+    "zoom": "Zoom",
+    "saving": "Salvando...",
+    "saveTheme": "Salvar tema",
+    "saveBanner": "Salvar banner",
+    "back": "Voltar",
+    "editBanner": "Editar banner"
+  }
 }

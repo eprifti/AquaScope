@@ -8,20 +8,25 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 import { adminApi } from '../api'
 
+export type BannerTheme = 'reef' | 'planted' | 'custom'
+
 interface CurrencyContextValue {
   currency: string
+  bannerTheme: BannerTheme
   isLoaded: boolean
   refresh: () => Promise<void>
 }
 
 const CurrencyContext = createContext<CurrencyContextValue>({
   currency: 'EUR',
+  bannerTheme: 'reef',
   isLoaded: false,
   refresh: async () => {},
 })
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrency] = useState('EUR')
+  const [bannerTheme, setBannerTheme] = useState<BannerTheme>('reef')
   const [isLoaded, setIsLoaded] = useState(false)
 
   const refresh = useCallback(async () => {
@@ -36,8 +41,11 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       if (data.default_currency) {
         setCurrency(data.default_currency)
       }
+      if (data.banner_theme) {
+        setBannerTheme(data.banner_theme as BannerTheme)
+      }
     } catch {
-      // Keep default
+      // Keep defaults
     }
     setIsLoaded(true)
   }, [])
@@ -47,7 +55,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   }, [refresh])
 
   return (
-    <CurrencyContext.Provider value={{ currency, isLoaded, refresh }}>
+    <CurrencyContext.Provider value={{ currency, bannerTheme, isLoaded, refresh }}>
       {children}
     </CurrencyContext.Provider>
   )

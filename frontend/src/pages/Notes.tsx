@@ -16,7 +16,7 @@ import { useAuth } from '../hooks/useAuth'
 import NoteCard from '../components/notes/NoteCard'
 import NoteEditor from '../components/notes/NoteEditor'
 
-const NOTES_PER_PAGE = 20
+const NOTES_PER_PAGE = 10
 
 export default function Notes() {
   const { t } = useTranslation('notes')
@@ -204,7 +204,7 @@ export default function Notes() {
         </div>
       ) : (
         <>
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {notes
               .slice((currentPage - 1) * NOTES_PER_PAGE, currentPage * NOTES_PER_PAGE)
               .map((note) => (

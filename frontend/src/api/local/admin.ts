@@ -158,4 +158,12 @@ export const adminApi = {
   updateGeneralSettings: async (settings: Record<string, string>): Promise<Record<string, string>> => {
     return settings
   },
+
+  uploadBannerImage: async (_file: File): Promise<{ banner_image: string; banner_theme: string }> => {
+    return { banner_image: '', banner_theme: 'reef' }
+  },
+
+  getBannerImageBlobUrl: async (): Promise<string> => {
+    return ''
+  },
 }

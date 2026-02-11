@@ -35,5 +35,23 @@
   "view": "Ansehen \u2192",
   "noMaintenance": "Keine überfällige Wartung",
   "noTanks": "Noch keine Aquarien",
-  "getStarted": "Erstellen Sie Ihr erstes Aquarium, um zu beginnen"
+  "getStarted": "Erstellen Sie Ihr erstes Aquarium, um zu beginnen",
+  "bannerEditor": {
+    "title": "Dashboard-Banner wählen",
+    "reef": "Riff",
+    "reefDesc": "Animiertes Korallenriff mit tropischen Fischen",
+    "planted": "Bepflanzt",
+    "plantedDesc": "Bepflanztes Süßwasseraquarium",
+    "custom": "Eigenes Bild",
+    "customDesc": "Eigenes Banner hochladen",
+    "uploadPrompt": "Klicken oder per Drag & Drop",
+    "uploadHint": "JPG, PNG, WebP — max. 10 MB",
+    "cropTitle": "Zuschneiden & Positionieren",
+    "zoom": "Zoom",
+    "saving": "Speichern...",
+    "saveTheme": "Thema speichern",
+    "saveBanner": "Banner speichern",
+    "back": "Zurück",
+    "editBanner": "Banner bearbeiten"
+  }
 }

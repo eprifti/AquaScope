@@ -5,6 +5,40 @@ All notable changes to ReefLab will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-02-11
+
+### Added
+
+#### Animated Dashboard Banners
+- **ReefBanner.tsx**: Dense animated reef SVG with ~15 corals (Acropora, Montipora, brain corals, sea fans, mushrooms, torch corals, zoanthid clusters), 8 fish, anemone with clownfish, cleaner shrimp — all SMIL-animated
+- **PlantedBanner.tsx**: Freshwater planted aquarium SVG with Vallisneria, Amazon Swords, Anubias on driftwood, Cardinal Tetras school, Corydoras, CO2 bubbles — green/amber tones
+- **Banner theme system**: Choose between Reef, Planted, or custom uploaded image via `banner_theme` setting in AppSettings
+
+#### Banner Editor with Image Cropping
+- **BannerEditor.tsx**: Modal component accessible from Dashboard via admin-only pencil button (appears on hover)
+  - 3-column theme picker: Reef, Planted, Custom Image with scaled-down SVG previews
+  - Image crop & position interface using `react-easy-crop` (zoom 1x–3x, aspect 1200:280)
+  - Client-side canvas cropping produces optimized 1200x280 JPEG before upload
+  - Drag-and-drop file upload with 10MB validation
+- **cropImage.ts**: Canvas-based utility for cropping images to exact banner dimensions
+- **Backend endpoints**: `POST /admin/settings/banner-image` (upload), `GET /admin/settings/banner-image` (serve)
+
+#### Custom Banner Image Upload
+- Admin can upload custom banner images (JPG, PNG, WebP, GIF up to 10MB)
+- Images stored in `/uploads/banners/` with UUID filenames
+- Old banner auto-deleted on new upload
+- Blob URL serving for authenticated access
+
+### Changed
+- **Dashboard layout**: Consolidated welcome header + quick stats into a single compact row; reduced tank stat tile sizes (smaller icons, tighter padding, 3-col mobile / 6-col desktop grid)
+- **Dashboard banner**: Added `relative group` container with admin-only edit button overlay
+- **useCurrency hook**: Extended to also return `bannerTheme` from general settings API response
+- **Layout.tsx**: Removed `AquariumScene` component (replaced by banner system)
+- **Admin.tsx**: Removed Appearance section (banner editing moved to Dashboard)
+
+### Added (i18n)
+- `bannerEditor` translation keys in all 6 locales (EN, FR, DE, ES, IT, PT): title, theme names, crop UI labels
+
 ## [1.7.0] - 2026-02-10
 
 ### Added

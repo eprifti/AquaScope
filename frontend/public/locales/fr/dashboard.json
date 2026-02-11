@@ -35,5 +35,23 @@
   "view": "Voir \u2192",
   "noMaintenance": "Aucune maintenance en retard",
   "noTanks": "Aucun aquarium",
-  "getStarted": "Commencez par créer votre premier aquarium"
+  "getStarted": "Commencez par créer votre premier aquarium",
+  "bannerEditor": {
+    "title": "Choisir la bannière",
+    "reef": "Récif",
+    "reefDesc": "Récif corallien animé avec poissons tropicaux",
+    "planted": "Planté",
+    "plantedDesc": "Aquarium d'eau douce planté",
+    "custom": "Image personnalisée",
+    "customDesc": "Téléchargez votre propre bannière",
+    "uploadPrompt": "Cliquez ou glissez-déposez",
+    "uploadHint": "JPG, PNG, WebP — max 10 Mo",
+    "cropTitle": "Recadrer et positionner",
+    "zoom": "Zoom",
+    "saving": "Enregistrement...",
+    "saveTheme": "Enregistrer le thème",
+    "saveBanner": "Enregistrer la bannière",
+    "back": "Retour",
+    "editBanner": "Modifier la bannière"
+  }
 }

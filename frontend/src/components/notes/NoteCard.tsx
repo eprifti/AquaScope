@@ -29,12 +29,15 @@ export default function NoteCard({ note, tanks, onEdit, onDelete }: NoteCardProp
     >
       <div className="p-3 flex items-start gap-3">
         {/* Left: date badge */}
-        <div className="flex-shrink-0 text-center w-10">
+        <div className="flex-shrink-0 text-center w-12">
           <div className="text-lg font-bold text-ocean-700 leading-tight">
             {format(new Date(note.created_at), 'd')}
           </div>
           <div className="text-[10px] text-gray-500 uppercase leading-tight">
-            {format(new Date(note.created_at), 'MMM yy')}
+            {format(new Date(note.created_at), 'MMM')}
+          </div>
+          <div className="text-[10px] text-gray-400 leading-tight">
+            {format(new Date(note.created_at), 'yyyy')}
           </div>
         </div>
 

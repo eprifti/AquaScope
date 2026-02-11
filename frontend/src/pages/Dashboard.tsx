@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
-import { tanksApi, maintenanceApi, equipmentApi, livestockApi, photosApi, notesApi, consumablesApi } from '../api'
+import { useCurrency } from '../hooks/useCurrency'
+import { tanksApi, maintenanceApi, equipmentApi, livestockApi, photosApi, notesApi, consumablesApi, adminApi } from '../api'
+import { banners } from '../components/banners'
+import BannerEditor from '../components/banners/BannerEditor'
 import type { Tank, MaintenanceReminder } from '../types'
 
 interface TankSummary {
@@ -19,15 +22,25 @@ interface TankSummary {
 
 export default function Dashboard() {
   const { user, refreshUser } = useAuth()
+  const { bannerTheme } = useCurrency()
   const { t } = useTranslation('dashboard')
   const navigate = useNavigate()
+  const BannerComponent = banners[bannerTheme] || banners.reef
   const [tankSummaries, setTankSummaries] = useState<TankSummary[]>([])
   const [overdueReminders, setOverdueReminders] = useState<MaintenanceReminder[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [customBannerUrl, setCustomBannerUrl] = useState<string | null>(null)
+  const [showBannerEditor, setShowBannerEditor] = useState(false)
 
   useEffect(() => {
     loadDashboardData()
   }, [])
+
+  useEffect(() => {
+    if (bannerTheme === 'custom') {
+      adminApi.getBannerImageBlobUrl().then(setCustomBannerUrl).catch(() => setCustomBannerUrl(null))
+    }
+  }, [bannerTheme])
 
   const calculateDaysUp = (setupDate: string | null): number | null => {
     if (!setupDate) return null
@@ -104,52 +117,57 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          {t('welcome', { name: user?.username })}
-        </h1>
-        <p className="text-gray-600 mt-1">
-          {t('subtitle')}
-        </p>
+      {/* Banner */}
+      <div className="rounded-xl overflow-hidden shadow-lg relative group">
+        {bannerTheme === 'custom' && customBannerUrl ? (
+          <img
+            src={customBannerUrl}
+            alt="Banner"
+            className="w-full h-[200px] object-cover"
+          />
+        ) : BannerComponent ? (
+          <BannerComponent />
+        ) : null}
+
+        {/* Admin-only edit button */}
+        {user?.is_admin && (
+          <button
+            onClick={() => setShowBannerEditor(true)}
+            className="absolute top-3 right-3 p-2 bg-black/40 hover:bg-black/60 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+            title={t('bannerEditor.editBanner')}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </button>
+        )}
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm font-medium text-gray-600">{t('stats.totalTanks')}</div>
-          <div className="text-3xl font-bold text-ocean-600 mt-2">
-            {tankSummaries.length}
-          </div>
+      {/* Welcome + Quick Stats row */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {t('welcome', { name: user?.username })}
+          </h1>
+          <p className="text-gray-500 text-sm">{t('subtitle')}</p>
         </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm font-medium text-gray-600">
-            {t('stats.overdueMaintenance')}
+        <div className="flex items-center gap-4">
+          <div className="bg-white rounded-lg shadow px-4 py-2 flex items-center gap-2">
+            <span className="text-sm text-gray-500">{t('stats.totalTanks')}</span>
+            <span className="text-xl font-bold text-ocean-600">{tankSummaries.length}</span>
           </div>
-          <div className="text-3xl font-bold text-coral-600 mt-2">
-            {overdueReminders.length}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm font-medium text-gray-600">
-            {t('quickActions')}
-          </div>
-          <div className="mt-3 space-y-2">
-            <Link
-              to="/parameters"
-              className="block text-sm text-ocean-600 hover:text-ocean-700"
-            >
-              {t('quickActions.logParameters')}
-            </Link>
-            <Link
-              to="/tanks"
-              className="block text-sm text-ocean-600 hover:text-ocean-700"
-            >
-              {t('quickActions.manageTanks')}
-            </Link>
-          </div>
+          {overdueReminders.length > 0 && (
+            <div className="bg-coral-50 border border-coral-200 rounded-lg px-4 py-2 flex items-center gap-2">
+              <span className="text-sm text-coral-700">{t('stats.overdueMaintenance')}</span>
+              <span className="text-xl font-bold text-coral-600">{overdueReminders.length}</span>
+            </div>
+          )}
+          <Link
+            to="/parameters"
+            className="hidden md:inline-flex items-center px-3 py-2 text-sm bg-ocean-600 text-white rounded-lg hover:bg-ocean-700"
+          >
+            {t('quickActions.logParameters')}
+          </Link>
         </div>
       </div>
 
@@ -267,79 +285,32 @@ export default function Dashboard() {
                     </div>
 
                     {/* Right Section - Stats Grid */}
-                    <div className="flex-1 p-6">
-                      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-                        {/* Equipment */}
-                        <Link
-                          to={`/equipment?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-ocean-400 hover:bg-ocean-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">⚙️</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-ocean-600">
-                            {equipmentCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('equipment')}</div>
-                        </Link>
-
-                        {/* Livestock */}
-                        <Link
-                          to={`/livestock?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-ocean-400 hover:bg-ocean-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">🐟</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-ocean-600">
-                            {livestockCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('livestock')}</div>
-                        </Link>
-
-                        {/* Consumables */}
-                        <Link
-                          to={`/consumables?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-ocean-400 hover:bg-ocean-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">🧪</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-ocean-600">
-                            {consumablesCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('consumables')}</div>
-                        </Link>
-
-                        {/* Photos */}
-                        <Link
-                          to={`/photos?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-ocean-400 hover:bg-ocean-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">📷</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-ocean-600">
-                            {photosCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('photos')}</div>
-                        </Link>
-
-                        {/* Notes */}
-                        <Link
-                          to={`/notes?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-ocean-400 hover:bg-ocean-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">📝</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-ocean-600">
-                            {notesCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('notes')}</div>
-                        </Link>
-
-                        {/* Maintenance */}
-                        <Link
-                          to={`/maintenance?tank=${tank.id}`}
-                          className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 hover:border-coral-400 hover:bg-coral-50 transition-all group"
-                        >
-                          <span className="text-3xl mb-2">🔧</span>
-                          <div className="text-2xl font-bold text-gray-900 group-hover:text-coral-600">
-                            {maintenanceCount}
-                          </div>
-                          <div className="text-xs text-gray-600 mt-1 font-medium">{t('maintenance')}</div>
-                        </Link>
+                    <div className="flex-1 p-4">
+                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                        {[
+                          { to: `/equipment?tank=${tank.id}`, icon: '⚙️', count: equipmentCount, label: t('equipment') },
+                          { to: `/livestock?tank=${tank.id}`, icon: '🐟', count: livestockCount, label: t('livestock') },
+                          { to: `/consumables?tank=${tank.id}`, icon: '🧪', count: consumablesCount, label: t('consumables') },
+                          { to: `/photos?tank=${tank.id}`, icon: '📷', count: photosCount, label: t('photos') },
+                          { to: `/notes?tank=${tank.id}`, icon: '📝', count: notesCount, label: t('notes') },
+                          { to: `/maintenance?tank=${tank.id}`, icon: '🔧', count: maintenanceCount, label: t('maintenance'), coral: true },
+                        ].map((stat) => (
+                          <Link
+                            key={stat.to}
+                            to={stat.to}
+                            className={`flex flex-col items-center justify-center p-2 rounded-lg border border-gray-200 transition-all group ${
+                              stat.coral
+                                ? 'hover:border-coral-400 hover:bg-coral-50'
+                                : 'hover:border-ocean-400 hover:bg-ocean-50'
+                            }`}
+                          >
+                            <span className="text-xl">{stat.icon}</span>
+                            <div className={`text-lg font-bold text-gray-900 ${stat.coral ? 'group-hover:text-coral-600' : 'group-hover:text-ocean-600'}`}>
+                              {stat.count}
+                            </div>
+                            <div className="text-[10px] text-gray-500 font-medium leading-tight">{stat.label}</div>
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -387,6 +358,20 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+      )}
+
+      {/* Banner Editor Modal */}
+      {showBannerEditor && (
+        <BannerEditor
+          isOpen={showBannerEditor}
+          onClose={() => {
+            setShowBannerEditor(false)
+            if (bannerTheme === 'custom') {
+              adminApi.getBannerImageBlobUrl().then(setCustomBannerUrl).catch(() => setCustomBannerUrl(null))
+            }
+          }}
+          currentTheme={bannerTheme}
+        />
       )}
     </div>
   )

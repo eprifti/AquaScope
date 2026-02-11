@@ -938,6 +938,24 @@ export const adminApi = {
     return response.data
   },
 
+  uploadBannerImage: async (file: File): Promise<{ banner_image: string; banner_theme: string }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await apiClient.post<{ banner_image: string; banner_theme: string }>(
+      '/admin/settings/banner-image',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    )
+    return response.data
+  },
+
+  getBannerImageBlobUrl: async (): Promise<string> => {
+    const response = await apiClient.get('/admin/settings/banner-image', {
+      responseType: 'blob',
+    })
+    return URL.createObjectURL(response.data)
+  },
+
   downloadAllFiles: async (): Promise<void> => {
     const response = await apiClient.get('/admin/storage/download-all', {
       responseType: 'blob',

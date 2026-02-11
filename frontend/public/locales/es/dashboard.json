@@ -35,5 +35,23 @@
   "view": "Ver \u2192",
   "noMaintenance": "Sin mantenimiento vencido",
   "noTanks": "Sin acuarios",
-  "getStarted": "Comienza creando tu primer acuario"
+  "getStarted": "Comienza creando tu primer acuario",
+  "bannerEditor": {
+    "title": "Elegir banner del panel",
+    "reef": "Arrecife",
+    "reefDesc": "Arrecife de coral animado con peces tropicales",
+    "planted": "Plantado",
+    "plantedDesc": "Acuario plantado de agua dulce",
+    "custom": "Imagen personalizada",
+    "customDesc": "Sube tu propio banner",
+    "uploadPrompt": "Haz clic o arrastra y suelta",
+    "uploadHint": "JPG, PNG, WebP — máx. 10 MB",
+    "cropTitle": "Recortar y posicionar",
+    "zoom": "Zoom",
+    "saving": "Guardando...",
+    "saveTheme": "Guardar tema",
+    "saveBanner": "Guardar banner",
+    "back": "Volver",
+    "editBanner": "Editar banner"
+  }
 }

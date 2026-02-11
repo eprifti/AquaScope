@@ -35,5 +35,23 @@
   "view": "View \u2192",
   "noMaintenance": "No overdue maintenance",
   "noTanks": "No tanks yet",
-  "getStarted": "Get started by creating your first tank"
+  "getStarted": "Get started by creating your first tank",
+  "bannerEditor": {
+    "title": "Choose Dashboard Banner",
+    "reef": "Reef",
+    "reefDesc": "Animated coral reef with tropical fish",
+    "planted": "Planted",
+    "plantedDesc": "Freshwater planted aquarium",
+    "custom": "Custom Image",
+    "customDesc": "Upload your own banner",
+    "uploadPrompt": "Click to upload or drag and drop",
+    "uploadHint": "JPG, PNG, WebP — max 10MB",
+    "cropTitle": "Crop & Position",
+    "zoom": "Zoom",
+    "saving": "Saving...",
+    "saveTheme": "Save Theme",
+    "saveBanner": "Save Banner",
+    "back": "Back",
+    "editBanner": "Edit banner"
+  }
 }

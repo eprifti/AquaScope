@@ -10,7 +10,7 @@ from typing import List, Optional
 from uuid import UUID
 from pathlib import Path
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File
 from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
@@ -1218,6 +1218,8 @@ def update_module_settings(
 
 GENERAL_SETTINGS_DEFAULTS = {
     "default_currency": "EUR",
+    "banner_theme": "reef",
+    "banner_image": "",
 }
 
 
@@ -1255,3 +1257,72 @@ def update_general_settings(
 
     db.commit()
     return get_general_settings(current_user=admin, db=db)
+
+
+@router.post("/settings/banner-image")
+async def upload_banner_image(
+    file: UploadFile = File(...),
+    admin: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db),
+):
+    """Upload a custom banner image. Admin only."""
+    from uuid import uuid4
+
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename provided")
+
+    file_ext = Path(file.filename).suffix.lower()
+    if file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail="File type not allowed")
+
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File size exceeds 10MB limit")
+
+    upload_dir = Path("/app/uploads/banners")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+
+    unique_filename = f"banner-{uuid4()}{file_ext}"
+    file_path = upload_dir / unique_filename
+    with open(file_path, "wb") as f:
+        f.write(content)
+
+    # Store path in settings
+    image_url = f"/uploads/banners/{unique_filename}"
+    existing = db.query(AppSettings).filter(AppSettings.key == "banner_image").first()
+    if existing:
+        # Delete old file if it exists
+        old_path = Path("/app") / existing.value.lstrip("/")
+        if old_path.exists():
+            old_path.unlink(missing_ok=True)
+        existing.value = image_url
+    else:
+        db.add(AppSettings(key="banner_image", value=image_url))
+
+    # Also set theme to custom
+    theme_row = db.query(AppSettings).filter(AppSettings.key == "banner_theme").first()
+    if theme_row:
+        theme_row.value = "custom"
+    else:
+        db.add(AppSettings(key="banner_theme", value="custom"))
+
+    db.commit()
+    return {"banner_image": image_url, "banner_theme": "custom"}
+
+
+@router.get("/settings/banner-image")
+def get_banner_image(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Serve the custom banner image."""
+    row = db.query(AppSettings).filter(AppSettings.key == "banner_image").first()
+    if not row or not row.value:
+        raise HTTPException(status_code=404, detail="No custom banner image")
+
+    file_path = Path("/app") / row.value.lstrip("/")
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Banner image file not found")
+
+    return FileResponse(file_path)

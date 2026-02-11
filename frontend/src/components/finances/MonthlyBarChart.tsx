@@ -94,7 +94,8 @@ export default function MonthlyBarChart({ data, currency = 'EUR' }: Props) {
             textAnchor="end"
             height={50}
           />
-          <YAxis tick={{ fontSize: 11 }} />
+          <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
+          <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} stroke="#9ca3af" />
           <Tooltip
             formatter={(value: number, name: string) => [
               formatPrice(value, currency),
@@ -104,41 +105,48 @@ export default function MonthlyBarChart({ data, currency = 'EUR' }: Props) {
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar
+            yAxisId="left"
             dataKey="equipment"
             name={t('categories.equipment')}
             stackId="a"
             fill="#3b82f6"
           />
           <Bar
+            yAxisId="left"
             dataKey="consumables"
             name={t('categories.consumables')}
             stackId="a"
             fill="#10b981"
           />
           <Bar
+            yAxisId="left"
             dataKey="livestock"
             name={t('categories.livestock')}
             stackId="a"
             fill="#f59e0b"
           />
           <Bar
+            yAxisId="left"
             dataKey="icp_tests"
             name={t('categories.icp_tests')}
             stackId="a"
             fill="#8b5cf6"
           />
           <Bar
+            yAxisId="left"
             dataKey="electricity"
             name={t('categories.electricity')}
             stackId="a"
             fill="#ef4444"
           />
           <Line
+            yAxisId="right"
             type="monotone"
             dataKey="cumulative"
             name={t('cumulative')}
-            stroke="#ef4444"
+            stroke="#6b7280"
             strokeWidth={2}
+            strokeDasharray="5 3"
             dot={false}
           />
           {/* Zoom brush */}

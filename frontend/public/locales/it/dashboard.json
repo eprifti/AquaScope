@@ -35,5 +35,23 @@
   "view": "Vedi \u2192",
   "noMaintenance": "Nessuna manutenzione in ritardo",
   "noTanks": "Nessuna vasca",
-  "getStarted": "Inizia creando la tua prima vasca"
+  "getStarted": "Inizia creando la tua prima vasca",
+  "bannerEditor": {
+    "title": "Scegli il banner della dashboard",
+    "reef": "Reef",
+    "reefDesc": "Barriera corallina animata con pesci tropicali",
+    "planted": "Piantumato",
+    "plantedDesc": "Acquario d'acqua dolce piantumato",
+    "custom": "Immagine personalizzata",
+    "customDesc": "Carica il tuo banner",
+    "uploadPrompt": "Clicca o trascina qui",
+    "uploadHint": "JPG, PNG, WebP — max 10 MB",
+    "cropTitle": "Ritaglia e posiziona",
+    "zoom": "Zoom",
+    "saving": "Salvataggio...",
+    "saveTheme": "Salva tema",
+    "saveBanner": "Salva banner",
+    "back": "Indietro",
+    "editBanner": "Modifica banner"
+  }
 }

@@ -50,7 +50,8 @@ SALT_TANK=$(post "$API/tanks/" '{
   "display_volume_liters": 400,
   "sump_volume_liters": 100,
   "description": "SPS dominant reef with Acropora, Montipora, and Pocillopora colonies. Triton method dosing, Radion G6 Pro lighting, Ecotech Vectra M2 return pump.",
-  "setup_date": "2024-03-15"
+  "setup_date": "2024-03-15",
+  "electricity_cost_per_day": 1.20
 }')
 echo "  Saltwater tank: $SALT_TANK"
 
@@ -61,7 +62,8 @@ FRESH_TANK=$(post "$API/tanks/" '{
   "display_volume_liters": 240,
   "sump_volume_liters": 60,
   "description": "Amazonian blackwater biotope with driftwood, Indian almond leaves, and Amazon Swords. Soft acidic water with tannins.",
-  "setup_date": "2024-09-01"
+  "setup_date": "2024-09-01",
+  "electricity_cost_per_day": 0.80
 }')
 echo "  Freshwater tank: $FRESH_TANK"
 

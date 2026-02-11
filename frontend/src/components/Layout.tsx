@@ -17,7 +17,6 @@ import type { ModuleSettings } from '../types'
 import Footer from './Footer'
 import VersionBanner from './VersionBanner'
 import LanguageSelector from './LanguageSelector'
-import AquariumScene from './AquariumScene'
 import InstallPrompt from './InstallPrompt'
 
 const local = isLocalMode()
@@ -292,7 +291,6 @@ export default function Layout(): JSX.Element {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             {!local && <InstallPrompt />}
-            <AquariumScene />
             <div className="mt-6">
               <Outlet />
             </div>
