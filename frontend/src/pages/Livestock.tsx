@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { livestockApi, tanksApi } from '../api'
 import type { Livestock as LivestockType, Tank } from '../types'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import LivestockCard from '../components/livestock/LivestockCard'
 import LivestockForm from '../components/livestock/LivestockForm'
 
@@ -26,6 +27,7 @@ export default function Livestock() {
   const [selectedTank, setSelectedTank] = useState<string>(searchParams.get('tank') || 'all')
   const [showPast, setShowPast] = useState(false)
   const [showArchived, setShowArchived] = useState(false)
+  useScrollToItem(livestock)
 
   useEffect(() => {
     loadData()
@@ -310,16 +312,17 @@ export default function Livestock() {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {aliveFish.map((item) => (
-                      <LivestockCard
-                        key={item.id}
-                        livestock={item}
-                        tanks={tanks}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onSplit={handleSplit}
-                        onArchive={handleArchive}
-                        onUnarchive={handleUnarchive}
-                      />
+                      <div key={item.id} id={`card-${item.id}`}>
+                        <LivestockCard
+                          livestock={item}
+                          tanks={tanks}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onSplit={handleSplit}
+                          onArchive={handleArchive}
+                          onUnarchive={handleUnarchive}
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -334,16 +337,17 @@ export default function Livestock() {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {aliveCorals.map((item) => (
-                      <LivestockCard
-                        key={item.id}
-                        livestock={item}
-                        tanks={tanks}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onSplit={handleSplit}
-                        onArchive={handleArchive}
-                        onUnarchive={handleUnarchive}
-                      />
+                      <div key={item.id} id={`card-${item.id}`}>
+                        <LivestockCard
+                          livestock={item}
+                          tanks={tanks}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onSplit={handleSplit}
+                          onArchive={handleArchive}
+                          onUnarchive={handleUnarchive}
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -358,16 +362,17 @@ export default function Livestock() {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {aliveInverts.map((item) => (
-                      <LivestockCard
-                        key={item.id}
-                        livestock={item}
-                        tanks={tanks}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onSplit={handleSplit}
-                        onArchive={handleArchive}
-                        onUnarchive={handleUnarchive}
-                      />
+                      <div key={item.id} id={`card-${item.id}`}>
+                        <LivestockCard
+                          livestock={item}
+                          tanks={tanks}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onSplit={handleSplit}
+                          onArchive={handleArchive}
+                          onUnarchive={handleUnarchive}
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -401,16 +406,17 @@ export default function Livestock() {
               {showPast && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {past.map((item) => (
-                    <LivestockCard
-                      key={item.id}
-                      livestock={item}
-                      tanks={tanks}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                      onSplit={handleSplit}
+                    <div key={item.id} id={`card-${item.id}`}>
+                      <LivestockCard
+                        livestock={item}
+                        tanks={tanks}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onSplit={handleSplit}
                         onArchive={handleArchive}
                         onUnarchive={handleUnarchive}
-                    />
+                      />
+                    </div>
                   ))}
                 </div>
               )}

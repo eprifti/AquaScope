@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Note, Tank } from '../types'
 import { notesApi, tanksApi } from '../api'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import NoteCard from '../components/notes/NoteCard'
 import NoteEditor from '../components/notes/NoteEditor'
 
@@ -21,6 +22,7 @@ export default function Notes() {
   const [editingNote, setEditingNote] = useState<Note | null>(null)
   const [searchParams] = useSearchParams()
   const [selectedTankId, setSelectedTankId] = useState<string>(searchParams.get('tank') || '')
+  useScrollToItem(notes)
 
   useEffect(() => {
     loadData()
@@ -203,13 +205,14 @@ export default function Notes() {
       ) : (
         <div className="space-y-4">
           {notes.map((note) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              tanks={tanks}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <div key={note.id} id={`card-${note.id}`}>
+              <NoteCard
+                note={note}
+                tanks={tanks}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </div>
           ))}
         </div>
       )}

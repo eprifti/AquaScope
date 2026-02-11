@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { consumablesApi, tanksApi } from '../api'
 import { parsePrice, formatPrice } from '../utils/price'
 import { useCurrency } from '../hooks/useCurrency'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import Pagination from '../components/common/Pagination'
 import type { Consumable, ConsumableCreate, Tank, ConsumableUsage } from '../types'
 
@@ -51,6 +52,7 @@ export default function ConsumablesPage() {
   const [showArchived, setShowArchived] = useState(false)
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set())
   const [currentPage, setCurrentPage] = useState(1)
+  useScrollToItem(consumables, ITEMS_PER_PAGE, setCurrentPage)
 
   // Usage log state
   const [loggingUsageId, setLoggingUsageId] = useState<string | null>(null)
@@ -403,7 +405,7 @@ export default function ConsumablesPage() {
         {paged.map((item) => {
           const expInfo = getExpirationInfo(item.expiration_date)
           return (
-            <div key={item.id} className={`bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow overflow-hidden ${item.is_archived ? 'opacity-60' : ''}`}>
+            <div key={item.id} id={`card-${item.id}`} className={`bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow overflow-hidden ${item.is_archived ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-semibold text-gray-900 truncate">

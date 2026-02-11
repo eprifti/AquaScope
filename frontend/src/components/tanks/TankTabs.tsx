@@ -115,6 +115,7 @@ export default function TankTabs({
     icp: `/icp-tests${tankParam}`,
     maintenance: `/maintenance${tankParam}`,
   }
+  const itemRoute = (tabId: TabId, itemId: string) => `${TAB_ROUTES[tabId]}&item=${itemId}`
 
   // Load photo thumbnails when photos change
   useEffect(() => {
@@ -296,7 +297,7 @@ export default function TankTabs({
                   <div
                     key={item.id}
                     className={ROW_CLASS}
-                    onClick={() => navigate(TAB_ROUTES.equipment!)}
+                    onClick={() => navigate(itemRoute('equipment', item.id))}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xl flex-shrink-0">⚙️</span>
@@ -376,7 +377,7 @@ export default function TankTabs({
                   <div
                     key={item.id}
                     className={ROW_CLASS}
-                    onClick={() => navigate(TAB_ROUTES.livestock!)}
+                    onClick={() => navigate(itemRoute('livestock', item.id))}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xl flex-shrink-0">{getTypeIcon(item.type)}</span>
@@ -426,7 +427,7 @@ export default function TankTabs({
                   <div
                     key={photo.id}
                     className="aspect-square bg-ocean-100 rounded-lg overflow-hidden group relative flex items-center justify-center cursor-pointer"
-                    onClick={() => navigate(TAB_ROUTES.photos!)}
+                    onClick={() => navigate(itemRoute('photos', photo.id))}
                   >
                     {photoUrls[photo.id] ? (
                       <>
@@ -470,7 +471,7 @@ export default function TankTabs({
                   <div
                     key={note.id}
                     className={ROW_CLASS}
-                    onClick={() => navigate(TAB_ROUTES.notes!)}
+                    onClick={() => navigate(itemRoute('notes', note.id))}
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <span className="text-xl flex-shrink-0">📝</span>
@@ -508,7 +509,7 @@ export default function TankTabs({
                   <div
                     key={test.id}
                     className={ROW_CLASS}
-                    onClick={() => navigate(TAB_ROUTES.icp!)}
+                    onClick={() => navigate(itemRoute('icp', test.id))}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xl flex-shrink-0">🔬</span>
@@ -558,7 +559,7 @@ export default function TankTabs({
                           ? 'bg-red-50 hover:bg-red-100 border border-red-200'
                           : 'bg-gray-50 hover:bg-gray-100'
                       }`}
-                      onClick={() => navigate(TAB_ROUTES.maintenance!)}
+                      onClick={() => navigate(itemRoute('maintenance', reminder.id))}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="text-xl flex-shrink-0">{isOverdue ? '⚠️' : '🔧'}</span>

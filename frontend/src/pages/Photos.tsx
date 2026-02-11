@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Photo, Tank } from '../types'
 import { photosApi, tanksApi } from '../api'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import PhotoGallery from '../components/photos/PhotoGallery'
 import PhotoUpload from '../components/photos/PhotoUpload'
 
@@ -20,6 +21,7 @@ export default function Photos() {
   const [showUpload, setShowUpload] = useState(false)
   const [searchParams] = useSearchParams()
   const [selectedTankId, setSelectedTankId] = useState<string>(searchParams.get('tank') || '')
+  useScrollToItem(photos)
 
   useEffect(() => {
     loadData()

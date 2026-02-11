@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { equipmentApi, tanksApi } from '../api'
 import { parsePrice, formatPrice } from '../utils/price'
 import { useCurrency } from '../hooks/useCurrency'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import Pagination from '../components/common/Pagination'
 import type { Equipment, EquipmentCreate, Tank } from '../types'
 
@@ -69,6 +70,7 @@ export default function EquipmentPage() {
   const [showArchived, setShowArchived] = useState(false)
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set())
   const [currentPage, setCurrentPage] = useState(1)
+  useScrollToItem(equipment, ITEMS_PER_PAGE, setCurrentPage)
 
   // Form state
   const [formData, setFormData] = useState<EquipmentCreate>({
@@ -392,7 +394,7 @@ export default function EquipmentPage() {
         return (<>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {paged.map((item) => (
-          <div key={item.id} className={`rounded-lg shadow p-4 hover:shadow-lg transition-shadow overflow-hidden ${getConditionCardStyle(item.condition)} ${item.is_archived ? 'opacity-60' : ''}`}>
+          <div key={item.id} id={`card-${item.id}`} className={`rounded-lg shadow p-4 hover:shadow-lg transition-shadow overflow-hidden ${getConditionCardStyle(item.condition)} ${item.is_archived ? 'opacity-60' : ''}`}>
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1 min-w-0">
                 <h3 className="text-lg font-semibold text-gray-900 truncate">

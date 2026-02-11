@@ -180,6 +180,7 @@ export default function PhotoGallery({ photos, tanks, onDelete, onUpdate, onRefr
         {photos.map((photo) => (
           <div
             key={photo.id}
+            id={`card-${photo.id}`}
             onClick={() => setSelectedPhoto(photo)}
             className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer overflow-hidden group"
           >

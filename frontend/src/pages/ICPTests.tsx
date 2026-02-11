@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { icpTestsApi, tanksApi } from '../api'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import type { ICPTest, ICPTestSummary, Tank } from '../types'
 
 export default function ICPTestsPage() {
@@ -25,6 +26,7 @@ export default function ICPTestsPage() {
   const [searchParams] = useSearchParams()
   const [selectedTank, setSelectedTank] = useState<string>(searchParams.get('tank') || '')
   const [uploadTankId, setUploadTankId] = useState<string>('')
+  useScrollToItem(tests)
 
   useEffect(() => {
     loadData()
@@ -298,6 +300,7 @@ export default function ICPTestsPage() {
                 {tests.map((test) => (
                   <div
                     key={test.id}
+                    id={`card-${test.id}`}
                     className={`p-4 cursor-pointer hover:bg-gray-50 ${
                       selectedTest?.id === test.id ? 'bg-blue-50' : ''
                     }`}

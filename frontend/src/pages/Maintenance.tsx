@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { maintenanceApi, tanksApi } from '../api'
 import type { MaintenanceReminder, Tank } from '../types'
+import { useScrollToItem } from '../hooks/useScrollToItem'
 import ReminderCard from '../components/maintenance/ReminderCard'
 import ReminderForm from '../components/maintenance/ReminderForm'
 
@@ -19,6 +20,7 @@ export default function Maintenance() {
   const [isLoading, setIsLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingReminder, setEditingReminder] = useState<MaintenanceReminder | null>(null)
+  useScrollToItem(reminders)
 
   useEffect(() => {
     loadData()
@@ -220,14 +222,15 @@ export default function Maintenance() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {overdueReminders.map((reminder) => (
-                  <ReminderCard
-                    key={reminder.id}
-                    reminder={reminder}
-                    tanks={tanks}
-                    onComplete={handleCompleteReminder}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteReminder}
-                  />
+                  <div key={reminder.id} id={`card-${reminder.id}`}>
+                    <ReminderCard
+                      reminder={reminder}
+                      tanks={tanks}
+                      onComplete={handleCompleteReminder}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -242,14 +245,15 @@ export default function Maintenance() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {dueSoonReminders.map((reminder) => (
-                  <ReminderCard
-                    key={reminder.id}
-                    reminder={reminder}
-                    tanks={tanks}
-                    onComplete={handleCompleteReminder}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteReminder}
-                  />
+                  <div key={reminder.id} id={`card-${reminder.id}`}>
+                    <ReminderCard
+                      reminder={reminder}
+                      tanks={tanks}
+                      onComplete={handleCompleteReminder}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -264,14 +268,15 @@ export default function Maintenance() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {upcomingReminders.map((reminder) => (
-                  <ReminderCard
-                    key={reminder.id}
-                    reminder={reminder}
-                    tanks={tanks}
-                    onComplete={handleCompleteReminder}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteReminder}
-                  />
+                  <div key={reminder.id} id={`card-${reminder.id}`}>
+                    <ReminderCard
+                      reminder={reminder}
+                      tanks={tanks}
+                      onComplete={handleCompleteReminder}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -286,14 +291,15 @@ export default function Maintenance() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {inactiveReminders.map((reminder) => (
-                  <ReminderCard
-                    key={reminder.id}
-                    reminder={reminder}
-                    tanks={tanks}
-                    onComplete={handleCompleteReminder}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteReminder}
-                  />
+                  <div key={reminder.id} id={`card-${reminder.id}`}>
+                    <ReminderCard
+                      reminder={reminder}
+                      tanks={tanks}
+                      onComplete={handleCompleteReminder}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteReminder}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
