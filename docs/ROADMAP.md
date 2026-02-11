@@ -96,13 +96,13 @@ Allow administrators to enable/disable modules per installation. Not all users n
 - Color-coded cards by condition (green/blue/yellow/orange/red)
 - Condition filter dropdown
 - Convert equipment to consumable (and vice versa)
+- **Maintenance linking**: auto-create maintenance reminders when equipment condition degrades to needs_maintenance or failing; auto-deactivate when condition improves
 
 ### Planned
 
 - **Warranty tracking**: warranty_end_date field, visual alert when expiring
 - **Replacement history**: link old equipment to its replacement
 - **Power consumption**: watts field per equipment, total power draw per tank
-- **Maintenance linking**: auto-create maintenance reminders tied to equipment (e.g., "Clean pump every 30 days")
 
 ---
 
