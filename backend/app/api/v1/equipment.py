@@ -148,11 +148,9 @@ def update_equipment(
 
     new_condition = equipment.condition
     needs_attention = new_condition in ("needs_maintenance", "failing")
-    was_fine = old_condition not in ("needs_maintenance", "failing")
 
-    # Auto-create maintenance reminder when condition degrades
-    if needs_attention and was_fine:
-        # Check if an active reminder already exists for this equipment
+    # Ensure a maintenance reminder exists whenever condition is bad
+    if needs_attention:
         existing = db.query(MaintenanceReminder).filter(
             MaintenanceReminder.equipment_id == equipment_id,
             MaintenanceReminder.is_active == True,
@@ -165,7 +163,7 @@ def update_equipment(
                 user_id=current_user.id,
                 equipment_id=equipment.id,
                 title=f"{label}: {equipment.name}",
-                description=f"Equipment condition changed to {new_condition.replace('_', ' ')}. Inspect and service.",
+                description=f"Equipment condition: {new_condition.replace('_', ' ')}. Inspect and service.",
                 reminder_type="equipment_maintenance",
                 frequency_days=7,
                 next_due=date.today(),
@@ -174,7 +172,7 @@ def update_equipment(
             db.add(reminder)
 
     # Deactivate auto-created reminder when condition improves
-    elif not needs_attention and not was_fine:
+    elif old_condition in ("needs_maintenance", "failing"):
         db.query(MaintenanceReminder).filter(
             MaintenanceReminder.equipment_id == equipment_id,
             MaintenanceReminder.reminder_type == "equipment_maintenance",
