@@ -92,9 +92,12 @@ const OUT = '/Users/eprifti/prifticloud/HOBBIES/aqurophilie/Reefing/equipment/Re
   await page.waitForTimeout(5000);
   console.log('  Admin URL:', page.url());
 
-  console.log('Capturing admin...');
+  console.log('Capturing admin (modules tab)...');
   await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(2000);
+  // Click the Modules tab
+  await page.click('button:has-text("Modules")');
+  await page.waitForTimeout(2000);
   await page.screenshot({ path: `${OUT}/screenshot-admin.png` });
 
   await browser.close();
