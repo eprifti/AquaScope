@@ -1,6 +1,7 @@
 """FastAPI application entry point"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app import __version__
 from app.core.config import settings
 
 app = FastAPI(
@@ -24,7 +25,7 @@ async def root():
     """Health check endpoint"""
     return {
         "message": "AquaScope API",
-        "version": "0.1.0",
+        "version": __version__,
         "status": "healthy"
     }
 

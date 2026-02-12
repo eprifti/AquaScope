@@ -2,9 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
+import { execSync } from 'child_process'
 import pkg from './package.json' with { type: 'json' }
 
 const isCapacitorBuild = process.env.CAPACITOR_BUILD === 'true'
+
+// Read version from git tags at build time, fallback to package.json
+function getVersion(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', { encoding: 'utf-8' }).trim()
+  } catch {
+    return `v${pkg.version}`
+  }
+}
 
 export default defineConfig({
   plugins: [
@@ -125,7 +135,7 @@ export default defineConfig({
     })] : []),
   ],
   define: {
-    __APP_VERSION__: JSON.stringify(`v${pkg.version}`),
+    __APP_VERSION__: JSON.stringify(getVersion()),
     __CAPACITOR_BUILD__: JSON.stringify(isCapacitorBuild),
   },
   resolve: {
