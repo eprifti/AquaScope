@@ -719,6 +719,12 @@
           <h4 class="text-sm font-medium text-white mb-0.5">Push Notifications</h4>
           <p class="text-white/40 text-xs">Overdue task alerts</p>
         </div>
+
+        <div class="glass-card rounded-xl p-4 transition-all duration-300 group reveal" style="transition-delay:0.7s">
+          <svg class="w-6 h-6 text-white/30 group-hover:text-amber-400 transition-colors mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          <h4 class="text-sm font-medium text-white mb-0.5">Maturity Score</h4>
+          <p class="text-white/40 text-xs">Tank health gamification</p>
+        </div>
       </div>
     </div>
   </section>
@@ -804,6 +810,126 @@
             <img id="ss-equipment" src="assets/screenshot-equipment.png" alt="AquaScope Equipment" class="screenshot-img w-full hidden" loading="lazy">
             <img id="ss-consumables" src="assets/screenshot-consumables.png" alt="AquaScope Consumables" class="screenshot-img w-full hidden" loading="lazy">
             <img id="ss-admin" src="assets/screenshot-admin.png" alt="AquaScope Admin Dashboard" class="screenshot-img w-full hidden" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- TANK MATURITY SCORE -->
+  <!-- ============================================================ -->
+  <section class="relative py-24 sm:py-32 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: explanation -->
+        <div class="reveal">
+          <span class="text-amber-400 text-sm font-semibold uppercase tracking-wider mb-3 block">Gamification</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight">
+            Tank Maturity <span class="text-amber-400">Score</span>
+          </h2>
+          <p class="text-white/55 text-lg mb-6 leading-relaxed">
+            Every tank earns a 0&ndash;100 maturity score based on three pillars of a healthy aquarium: age, water stability, and livestock diversity. Watch your score grow from <strong class="text-gray-400">New</strong> to <strong class="text-amber-400">Mature</strong> as you build a thriving ecosystem.
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-ocean-500/15 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-ocean-400 text-sm font-bold">30</span>
+              </div>
+              <div>
+                <h4 class="text-white text-sm font-semibold">Age Score</h4>
+                <p class="text-white/40 text-sm">Points increase with tank age &mdash; from 0 at day one to 30 at two years. Patience pays off.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-teal-500/15 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-teal-400 text-sm font-bold">40</span>
+              </div>
+              <div>
+                <h4 class="text-white text-sm font-semibold">Parameter Stability</h4>
+                <p class="text-white/40 text-sm">The largest component. Lower coefficient of variation across key parameters over 60 days = higher score. Consistent chemistry is king.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-emerald-400 text-sm font-bold">30</span>
+              </div>
+              <div>
+                <h4 class="text-white text-sm font-semibold">Livestock Diversity</h4>
+                <p class="text-white/40 text-sm">Species count, type variety (fish, coral, inverts), and population health all contribute. A diverse tank is a thriving tank.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: visual mockup of maturity badge -->
+        <div class="reveal" style="transition-delay:0.2s">
+          <div class="relative">
+            <div class="absolute inset-0 bg-amber-500/5 rounded-3xl blur-2xl"></div>
+            <div class="relative glass-card rounded-2xl p-8">
+              <!-- Five level badges -->
+              <div class="space-y-4">
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 flex-shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(156,163,175,0.2)" stroke-width="3"/><circle cx="24" cy="24" r="21" fill="none" stroke="#9ca3af" stroke-width="3" stroke-dasharray="132" stroke-dashoffset="119" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#9ca3af" font-size="12" font-weight="bold">10</text></svg>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-gray-400 text-sm font-semibold">New</span>
+                    <div class="h-1.5 bg-white/5 rounded-full mt-1"><div class="h-full bg-gray-500/40 rounded-full" style="width:10%"></div></div>
+                  </div>
+                  <span class="text-white/20 text-xs">0&ndash;19</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 flex-shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="3"/><circle cx="24" cy="24" r="21" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="132" stroke-dashoffset="93" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#38bdf8" font-size="12" font-weight="bold">30</text></svg>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-sky-400 text-sm font-semibold">Growing</span>
+                    <div class="h-1.5 bg-white/5 rounded-full mt-1"><div class="h-full bg-sky-500/40 rounded-full" style="width:30%"></div></div>
+                  </div>
+                  <span class="text-white/20 text-xs">20&ndash;39</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 flex-shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(2,132,199,0.15)" stroke-width="3"/><circle cx="24" cy="24" r="21" fill="none" stroke="#0284c7" stroke-width="3" stroke-dasharray="132" stroke-dashoffset="66" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#0284c7" font-size="12" font-weight="bold">50</text></svg>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-sky-600 text-sm font-semibold">Established</span>
+                    <div class="h-1.5 bg-white/5 rounded-full mt-1"><div class="h-full bg-sky-700/40 rounded-full" style="width:50%"></div></div>
+                  </div>
+                  <span class="text-white/20 text-xs">40&ndash;59</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 flex-shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(16,185,129,0.15)" stroke-width="3"/><circle cx="24" cy="24" r="21" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="132" stroke-dashoffset="40" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#10b981" font-size="12" font-weight="bold">70</text></svg>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-emerald-500 text-sm font-semibold">Thriving</span>
+                    <div class="h-1.5 bg-white/5 rounded-full mt-1"><div class="h-full bg-emerald-500/40 rounded-full" style="width:70%"></div></div>
+                  </div>
+                  <span class="text-white/20 text-xs">60&ndash;79</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 flex-shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(245,158,11,0.15)" stroke-width="3"/><circle cx="24" cy="24" r="21" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="132" stroke-dashoffset="13" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#f59e0b" font-size="12" font-weight="bold">90</text></svg>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-amber-500 text-sm font-semibold">Mature</span>
+                    <div class="h-1.5 bg-white/5 rounded-full mt-1"><div class="h-full bg-amber-500/40 rounded-full" style="width:90%"></div></div>
+                  </div>
+                  <span class="text-white/20 text-xs">80&ndash;100</span>
+                </div>
+              </div>
+
+              <!-- Subtitle -->
+              <p class="text-white/30 text-xs text-center mt-6">Each tank card on your dashboard displays a live maturity gauge with score breakdown on hover.</p>
+            </div>
           </div>
         </div>
       </div>

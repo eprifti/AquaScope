@@ -46,8 +46,8 @@
     "electricityCostHint": "Costo giornaliero di elettricità per questo acquario"
   },
   "stats": {
-    "daysRunning_one": "{{count}} giorno attivo",
-    "daysRunning_other": "{{count}} giorni attivi",
+    "daysRunning_one": "{{count}} giorno",
+    "daysRunning_other": "{{count}} giorni",
     "equipmentCount": "Attrezzatura",
     "livestockCount": "Animali",
     "consumableCount": "Consumabili",

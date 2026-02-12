@@ -16,12 +16,14 @@ from pathlib import Path
 from app.database import get_db
 from app.models.user import User
 from app.models.tank import Tank, TankEvent
+from app.schemas.dashboard import MaturityScore
 from app.schemas.tank import (
     TankCreate, TankUpdate, TankResponse,
     TankEventCreate, TankEventUpdate, TankEventResponse
 )
 from app.api.deps import get_current_user
 from app.api.v1.parameter_ranges import populate_default_ranges
+from app.services.maturity import compute_maturity_batch
 
 router = APIRouter()
 
@@ -461,3 +463,33 @@ def get_tank_image(
         media_type="image/jpeg",  # Will be auto-detected by FastAPI
         filename=file_path.name
     )
+
+
+@router.get("/{tank_id}/maturity", response_model=MaturityScore)
+def get_tank_maturity(
+    tank_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Return maturity score for a single tank."""
+    tank = db.query(Tank).filter(
+        Tank.id == tank_id,
+        Tank.user_id == current_user.id,
+    ).first()
+
+    if not tank:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tank not found",
+        )
+
+    try:
+        results = compute_maturity_batch(
+            db,
+            str(current_user.id),
+            [(tank.id, tank.setup_date, tank.water_type or "saltwater")],
+        )
+        ms = results.get(str(tank.id), {})
+        return MaturityScore(**ms) if ms else MaturityScore()
+    except Exception:
+        return MaturityScore()

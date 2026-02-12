@@ -359,6 +359,70 @@ class InfluxDBService:
             print(f"Error exporting tank parameters from InfluxDB: {e}")
             return []
 
+    def query_parameter_stats_batch(
+        self,
+        user_id: str,
+        tank_ids: List[str],
+        start: str = "-60d",
+    ) -> Dict[str, Dict[str, Dict[str, float]]]:
+        """
+        Return per-tank, per-parameter aggregated stats in a single Flux query.
+
+        Returns: {tank_id: {parameter_type: {count, mean, stddev}}}
+        """
+        if not tank_ids:
+            return {}
+
+        tank_filter = " or ".join(f'r["tank_id"] == "{tid}"' for tid in tank_ids)
+
+        query = f'''
+        from(bucket: "{self.bucket}")
+            |> range(start: {start})
+            |> filter(fn: (r) => r["_measurement"] == "reef_parameters")
+            |> filter(fn: (r) => r["user_id"] == "{user_id}")
+            |> filter(fn: (r) => {tank_filter})
+            |> filter(fn: (r) => r["_field"] == "value")
+            |> group(columns: ["tank_id", "parameter_type"])
+            |> reduce(
+                identity: {{count: 0.0, sum: 0.0, sumSq: 0.0}},
+                fn: (r, accumulator) => ({{
+                    count: accumulator.count + 1.0,
+                    sum: accumulator.sum + r._value,
+                    sumSq: accumulator.sumSq + r._value * r._value,
+                }})
+            )
+        '''
+
+        try:
+            result = self.query_api.query(query=query)
+            stats: Dict[str, Dict[str, Dict[str, float]]] = {}
+
+            for table in result:
+                for record in table.records:
+                    tank_id = record.values.get("tank_id", "")
+                    param_type = record.values.get("parameter_type", "")
+                    count = record.values.get("count", 0)
+                    total = record.values.get("sum", 0)
+                    sum_sq = record.values.get("sumSq", 0)
+
+                    if count < 1:
+                        continue
+
+                    mean = total / count
+                    variance = max(0, (sum_sq / count) - (mean * mean))
+                    stddev = variance ** 0.5
+
+                    stats.setdefault(tank_id, {})[param_type] = {
+                        "count": count,
+                        "mean": mean,
+                        "stddev": stddev,
+                    }
+
+            return stats
+        except Exception as e:
+            print(f"Error querying parameter stats batch from InfluxDB: {e}")
+            raise
+
     def close(self):
         """Close InfluxDB client connection"""
         self.client.close()

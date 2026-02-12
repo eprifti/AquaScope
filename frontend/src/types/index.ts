@@ -886,6 +886,14 @@ export interface ExpenseDetailList {
 // Dashboard Types
 // ============================================================================
 
+export interface MaturityScore {
+  score: number
+  level: 'new' | 'growing' | 'established' | 'thriving' | 'mature'
+  age_score: number
+  stability_score: number
+  livestock_score: number
+}
+
 export interface DashboardTankSummary {
   tank_id: string
   tank_name: string
@@ -902,6 +910,7 @@ export interface DashboardTankSummary {
   maintenance_count: number
   consumables_count: number
   overdue_count: number
+  maturity: MaturityScore
 }
 
 export interface DashboardResponse {

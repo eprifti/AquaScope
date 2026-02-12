@@ -19,8 +19,9 @@ from app.models.photo import Photo
 from app.models.note import Note
 from app.models.maintenance import MaintenanceReminder
 from app.models.consumable import Consumable
-from app.schemas.dashboard import DashboardResponse, TankSummary
+from app.schemas.dashboard import DashboardResponse, TankSummary, MaturityScore
 from app.api.deps import get_current_user
+from app.services.maturity import compute_maturity_batch
 
 router = APIRouter()
 
@@ -34,6 +35,7 @@ def get_dashboard_summary(
     Return everything the dashboard needs in one call:
     - Per-tank counts (equipment, livestock, photos, notes, maintenance, consumables)
     - Overdue maintenance totals
+    - Maturity scores
     """
     tanks = (
         db.query(Tank)
@@ -75,12 +77,20 @@ def get_dashboard_summary(
     )
     overdue_counts = {tid: cnt for tid, cnt in overdue_rows}
 
+    # Maturity scores (1 InfluxDB + 1 SQL call for all tanks)
+    try:
+        tank_tuples = [(t.id, t.setup_date, t.water_type or "saltwater") for t in tanks]
+        maturity_scores = compute_maturity_batch(db, str(current_user.id), tank_tuples)
+    except Exception:
+        maturity_scores = {}
+
     summaries: List[TankSummary] = []
     total_overdue = 0
 
     for tank in tanks:
         overdue = overdue_counts.get(tank.id, 0)
         total_overdue += overdue
+        ms = maturity_scores.get(str(tank.id), {})
         summaries.append(
             TankSummary(
                 tank_id=tank.id,
@@ -98,6 +108,7 @@ def get_dashboard_summary(
                 maintenance_count=maintenance_counts.get(tank.id, 0),
                 consumables_count=consumable_counts.get(tank.id, 0),
                 overdue_count=overdue,
+                maturity=MaturityScore(**ms) if ms else MaturityScore(),
             )
         )
 

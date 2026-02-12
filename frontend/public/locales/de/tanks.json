@@ -46,8 +46,8 @@
     "electricityCostHint": "Tägliche Stromkosten für dieses Aquarium"
   },
   "stats": {
-    "daysRunning_one": "{{count}} Tag in Betrieb",
-    "daysRunning_other": "{{count}} Tage in Betrieb",
+    "daysRunning_one": "{{count}} Tag",
+    "daysRunning_other": "{{count}} Tage",
     "equipmentCount": "Ausrüstung",
     "livestockCount": "Tierbestand",
     "consumableCount": "Verbrauchsmaterial",

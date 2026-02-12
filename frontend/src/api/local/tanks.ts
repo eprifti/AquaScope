@@ -190,4 +190,9 @@ export const tanksApi = {
   unsetDefault: async (_id: string): Promise<void> => {
     // No-op in local mode
   },
+
+  getMaturity: async (_tankId: string) => {
+    // Maturity scoring not available in local/offline mode
+    return { score: 0, level: 'new' as const, age_score: 0, stability_score: 0, livestock_score: 0 }
+  },
 }

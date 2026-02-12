@@ -1,7 +1,16 @@
 """Dashboard summary schemas."""
-from typing import List, Optional, Dict
+from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
+
+
+class MaturityScore(BaseModel):
+    """Tank maturity score breakdown."""
+    score: int = 0
+    level: str = "new"
+    age_score: int = 0
+    stability_score: int = 0
+    livestock_score: int = 0
 
 
 class TankSummary(BaseModel):
@@ -25,6 +34,9 @@ class TankSummary(BaseModel):
 
     # Maintenance urgency
     overdue_count: int
+
+    # Maturity
+    maturity: MaturityScore = MaturityScore()
 
 
 class DashboardResponse(BaseModel):

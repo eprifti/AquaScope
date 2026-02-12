@@ -123,5 +123,13 @@
     "dark": "Scuro",
     "system": "Sistema",
     "toggleTheme": "Cambia tema"
+  },
+  "maturityTooltip": "Età: {{age}}/30 | Stabilità: {{stability}}/40 | Diversità: {{livestock}}/30",
+  "maturityLevels": {
+    "new": "Nuovo",
+    "growing": "In crescita",
+    "established": "Consolidato",
+    "thriving": "Fiorente",
+    "mature": "Maturo"
   }
 }

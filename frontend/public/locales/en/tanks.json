@@ -46,8 +46,8 @@
     "electricityCostHint": "Daily electricity cost for this tank's equipment"
   },
   "stats": {
-    "daysRunning_one": "{{count}} day running",
-    "daysRunning_other": "{{count}} days running",
+    "daysRunning_one": "{{count}} day",
+    "daysRunning_other": "{{count}} days",
     "equipmentCount": "Equipment",
     "livestockCount": "Livestock",
     "consumableCount": "Consumables",

@@ -64,6 +64,7 @@ import type {
   BudgetStatus,
   ExpenseDetailList,
   ApiError,
+  MaturityScore,
 } from '../types'
 
 // API base URL - empty string means same origin (nginx proxy in Docker)
@@ -293,6 +294,11 @@ export const tanksApi = {
 
   unsetDefault: async (id: string): Promise<void> => {
     await apiClient.delete(`/tanks/${id}/set-default`)
+  },
+
+  getMaturity: async (tankId: string): Promise<MaturityScore> => {
+    const response = await apiClient.get<MaturityScore>(`/tanks/${tankId}/maturity`)
+    return response.data
   },
 }
 

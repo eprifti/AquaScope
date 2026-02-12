@@ -17,7 +17,7 @@ import {
   maintenanceApi,
   icpTestsApi,
 } from '../api'
-import type { Tank, TankEvent, Equipment, Livestock, Consumable, Photo, Note, MaintenanceReminder, ICPTestSummary } from '../types'
+import type { Tank, TankEvent, Equipment, Livestock, Consumable, Photo, Note, MaintenanceReminder, ICPTestSummary, MaturityScore } from '../types'
 import TankSidebar from '../components/tanks/TankSidebar'
 import TankTabs from '../components/tanks/TankTabs'
 
@@ -35,6 +35,7 @@ export default function TankDetail() {
   const [notes, setNotes] = useState<Note[]>([])
   const [maintenance, setMaintenance] = useState<MaintenanceReminder[]>([])
   const [icpTests, setIcpTests] = useState<ICPTestSummary[]>([])
+  const [maturity, setMaturity] = useState<MaturityScore | null>(null)
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -60,6 +61,7 @@ export default function TankDetail() {
         notesData,
         maintenanceData,
         icpTestsData,
+        maturityData,
       ] = await Promise.all([
         tanksApi.get(tankId),
         tanksApi.listEvents(tankId).catch(() => []),
@@ -70,6 +72,7 @@ export default function TankDetail() {
         notesApi.list(tankId).catch(() => []),
         maintenanceApi.listReminders({ tank_id: tankId }).catch(() => []),
         icpTestsApi.list({ tank_id: tankId }).catch(() => []),
+        tanksApi.getMaturity(tankId).catch(() => null),
       ])
 
       setTank(tankData)
@@ -81,6 +84,7 @@ export default function TankDetail() {
       setNotes(notesData)
       setMaintenance(maintenanceData)
       setIcpTests(icpTestsData)
+      setMaturity(maturityData)
     } catch (error) {
       console.error('Failed to load tank data:', error)
       alert('Failed to load tank. Returning to tank list.')
@@ -166,6 +170,7 @@ export default function TankDetail() {
           <TankSidebar
             tank={tank}
             stats={stats}
+            maturity={maturity}
             onEdit={() => alert('Edit tank functionality - to be implemented')}
             onAddEvent={() => alert('Add event - switch to Events tab')}
             onRefresh={handleRefresh}

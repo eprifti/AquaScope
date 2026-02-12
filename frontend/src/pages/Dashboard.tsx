@@ -8,6 +8,7 @@ import { banners } from '../components/banners'
 import BannerEditor from '../components/banners/BannerEditor'
 import { useNotifications } from '../hooks/useNotifications'
 import Sparkline from '../components/dashboard/Sparkline'
+import MaturityBadge from '../components/dashboard/MaturityBadge'
 import type { MaintenanceReminder, DashboardTankSummary } from '../types'
 
 interface TankCard {
@@ -305,6 +306,15 @@ export default function Dashboard() {
                           <div className="inline-block px-3 py-1 bg-ocean-600 text-white text-sm font-semibold rounded-full">
                             {daysUp} {t('daysUp')}
                           </div>
+                        )}
+                        {summary.maturity && summary.maturity.score > 0 && (
+                          <MaturityBadge
+                            score={summary.maturity.score}
+                            level={summary.maturity.level}
+                            ageScore={summary.maturity.age_score}
+                            stabilityScore={summary.maturity.stability_score}
+                            livestockScore={summary.maturity.livestock_score}
+                          />
                         )}
                         {summary.setup_date && (
                           <div className={`text-xs ${imageUrl ? 'text-white/70' : 'text-gray-600 dark:text-gray-400'}`}>

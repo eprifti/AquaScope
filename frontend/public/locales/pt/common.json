@@ -123,5 +123,13 @@
     "dark": "Escuro",
     "system": "Sistema",
     "toggleTheme": "Alternar tema"
+  },
+  "maturityTooltip": "Idade: {{age}}/30 | Estabilidade: {{stability}}/40 | Diversidade: {{livestock}}/30",
+  "maturityLevels": {
+    "new": "Novo",
+    "growing": "Crescendo",
+    "established": "Estabelecido",
+    "thriving": "Próspero",
+    "mature": "Maduro"
   }
 }

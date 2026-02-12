@@ -54,6 +54,12 @@ Welcome to the ReefLab documentation! This folder contains comprehensive guides,
   - Photo organization
   - Tank-specific galleries
 
+- **[MATURITY_SCORE.md](MATURITY_SCORE.md)** - Tank Maturity Score
+  - Scoring formula (Age + Stability + Diversity)
+  - Maturity levels and badge colors
+  - API response format
+  - Architecture and performance notes
+
 ## Release Information
 
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history

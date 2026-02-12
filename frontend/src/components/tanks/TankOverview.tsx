@@ -73,8 +73,27 @@ export default function TankOverview({
     }
   }, [photos])
 
+  const daysRunning = tank.setup_date
+    ? Math.ceil(Math.abs(new Date().getTime() - new Date(tank.setup_date).getTime()) / (1000 * 60 * 60 * 24))
+    : 0
+
   return (
     <div className="space-y-6">
+      {/* Setup Date & Days Running */}
+      {tank.setup_date && (
+        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+          <span>{t('fields.setupDate')}: <span className="font-medium text-gray-900 dark:text-gray-100">{new Date(tank.setup_date).toLocaleDateString()}</span></span>
+          {daysRunning > 0 && (
+            <>
+              <span>·</span>
+              <span className="inline-block px-3 py-0.5 bg-ocean-600 text-white text-sm font-semibold rounded-full">
+                {t('stats.daysRunning', { count: daysRunning })}
+              </span>
+            </>
+          )}
+        </div>
+      )}
+
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="bg-gradient-to-br from-ocean-50 to-white dark:from-ocean-900/30 dark:to-gray-800 p-4 rounded-lg border border-ocean-100 dark:border-ocean-800">
@@ -104,39 +123,6 @@ export default function TankOverview({
         </div>
       </div>
 
-      {/* Latest ICP Test */}
-      {latestICPTest && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('latestIcpTest')}</h3>
-            <Link
-              to="/icp-tests"
-              className="text-sm text-ocean-600 hover:text-ocean-700 font-medium"
-            >
-              {t('viewAll')} →
-            </Link>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {new Date(latestICPTest.test_date).toLocaleDateString()}
-              </div>
-              <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 mt-1">
-                {latestICPTest.lab_name}
-              </div>
-            </div>
-            {latestICPTest.score_overall && (
-              <div className="text-right">
-                <div className="text-3xl font-bold text-ocean-600">
-                  {latestICPTest.score_overall}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">{t('overallScore')}</div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Visual Timeline */}
       {(() => {
         const timelineEntries = buildTimelineEntries(tank, events, livestock, equipment, photos, icpTests)
@@ -144,6 +130,31 @@ export default function TankOverview({
           <TankTimelineVisual entries={timelineEntries} compact />
         ) : null
       })()}
+
+      {/* Latest ICP Test — compact banner */}
+      {latestICPTest && (
+        <Link
+          to="/icp-tests"
+          className="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-lg shadow-md px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition group"
+        >
+          <span className="text-xl flex-shrink-0">🔬</span>
+          <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t('latestIcpTest')}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">·</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 truncate">{latestICPTest.lab_name}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">·</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{new Date(latestICPTest.test_date).toLocaleDateString()}</span>
+          </div>
+          {latestICPTest.score_overall && (
+            <span className="px-3 py-1 rounded-full text-sm font-bold bg-ocean-100 dark:bg-ocean-900/50 text-ocean-700 dark:text-ocean-300 flex-shrink-0">
+              {latestICPTest.score_overall}
+            </span>
+          )}
+          <svg className="w-4 h-4 text-gray-400 group-hover:text-ocean-600 flex-shrink-0 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      )}
 
       {/* Recent Photos */}
       {recentPhotos.length > 0 && (
