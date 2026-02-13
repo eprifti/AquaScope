@@ -87,6 +87,37 @@ services:
     volumes:
       - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
 
+  backup-cron:
+    image: docker:27-cli
+    container_name: aquascope-backup-cron
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./backups:/backups
+      - ./data/uploads:/uploads:ro
+      - ./scripts/backup-cron.sh:/app/backup-cron.sh:ro
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-aquascope}
+      POSTGRES_DB: ${POSTGRES_DB:-aquascope}
+      INFLUXDB_ORG: ${INFLUXDB_ORG:-aquascope}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-my-super-secret-admin-token}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+      BACKUP_CRON_SCHEDULE: ${BACKUP_CRON_SCHEDULE:-0 2 * * *}
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        cp /app/backup-cron.sh /usr/local/bin/backup-cron.sh
+        chmod +x /usr/local/bin/backup-cron.sh
+        echo "$${BACKUP_CRON_SCHEDULE} /usr/local/bin/backup-cron.sh >> /proc/1/fd/1 2>&1" | crontab -
+        echo "Backup cron scheduled: $${BACKUP_CRON_SCHEDULE}"
+        crond -f -l 2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+
 volumes:
   postgres_data:
     driver: local

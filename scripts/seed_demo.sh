@@ -14,6 +14,14 @@ USER="DemoUser"
 
 echo "=== AquaScope Demo Seed ==="
 
+# ── Safety: backup before seeding ─────────────────────────────────
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q aquascope-postgres; then
+  echo "[0/12] Creating pre-seed backup..."
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+  bash "$SCRIPT_DIR/backup.sh" 2>/dev/null && echo "  Backup saved to backups/" || echo "  Backup skipped (not critical)"
+  echo ""
+fi
+
 # ── Register & Login ──────────────────────────────────────────────
 echo "[1/12] Registering demo user..."
 curl -sf -X POST "$API/auth/register" \
