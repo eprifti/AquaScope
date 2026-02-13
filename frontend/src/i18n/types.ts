@@ -21,6 +21,7 @@ declare module 'react-i18next' {
       icptests: typeof import('../../public/locales/en/icptests.json')
       dosing: typeof import('../../public/locales/en/dosing.json')
       compatibility: typeof import('../../public/locales/en/compatibility.json')
+      waterchange: typeof import('../../public/locales/en/waterchange.json')
     }
   }
 }

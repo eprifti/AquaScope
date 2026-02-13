@@ -14,7 +14,8 @@
     "equipment": "Ausrüstung",
     "icpTests": "ICP-Tests",
     "consumables": "Verbrauchsmaterial",
-    "finances": "Finanzen"
+    "finances": "Finanzen",
+    "waterChangeCalc": "Wasserwechsel-Rechner"
   },
   "actions": {
     "add": "Hinzufügen",

@@ -1,0 +1,55 @@
+{
+  "title": "Calcolatore cambio d'acqua",
+  "subtitle": "Prevedere le variazioni dei parametri o calcolare il volume necessario",
+  "noTanks": "Nessun acquario. Creane uno per usare il calcolatore.",
+  "volume": {
+    "display": "Vasca",
+    "sump": "Sump",
+    "total": "Volume totale"
+  },
+  "tabs": {
+    "impact": "Anteprima impatto",
+    "target": "Parametro obiettivo"
+  },
+  "impact": {
+    "waterChangePercent": "Cambio d'acqua",
+    "liters": "{{value}} L",
+    "replacementWater": "Acqua di ricambio",
+    "saltMix": "Sale marino",
+    "custom": "Personalizzato",
+    "saveProfile": "Salva",
+    "profileSaved": "Salvato!",
+    "results": "Parametri previsti",
+    "noData": "Nessun dato. Registra prima alcune letture.",
+    "parameter": "Parametro",
+    "current": "Attuale",
+    "afterWC": "Dopo CA",
+    "change": "Variazione",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Parametro da correggere",
+    "currentValue": "Valore attuale",
+    "targetValue": "Valore obiettivo",
+    "replacementValue": "Nell'acqua di ricambio",
+    "noReading": "Nessuna lettura",
+    "result": {
+      "required": "Cambio d'acqua richiesto",
+      "volume": "Volume da cambiare",
+      "ofTotal": "su {{total}} L totali",
+      "notFeasible": "Non raggiungibile con cambi d'acqua",
+      "notFeasibleDesc": "L'acqua di ricambio non può portare questo parametro all'obiettivo. Considera il dosaggio.",
+      "noChangeNeeded": "Già nell'obiettivo",
+      "noChangeDesc": "Il valore attuale è già vicino all'obiettivo."
+    },
+    "split": {
+      "title": "Cambio d'acqua grande",
+      "description": "Cambi superiori al 50% possono stressare gli abitanti. Considera {{count}} cambi del {{percent}}% ({{liters}} L ciascuno) distribuiti su più giorni."
+    }
+  },
+  "info": {
+    "title": "Come funziona",
+    "description": "I cambi d'acqua diluiscono l'acqua dell'acquario con acqua fresca. Il calcolatore usa la formula di diluizione per prevedere la variazione di ogni parametro.",
+    "formula": "dopo = attuale × (1 − %CA) + ricambio × %CA"
+  }
+}

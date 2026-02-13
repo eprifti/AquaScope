@@ -302,6 +302,13 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
               <span>🧪</span>
               <span className="truncate">{t('actions.dosingCalc')}</span>
             </button>
+            <Link
+              to={`/water-change-calculator?tank=${tank.id}`}
+              className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm text-center rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition font-medium"
+            >
+              <span>💧</span>
+              <span className="truncate">{t('actions.waterChangeCalc')}</span>
+            </Link>
           </div>
         </div>
       </div>

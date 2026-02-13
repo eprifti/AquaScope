@@ -3,8 +3,8 @@
   "addTank": "Aquarium hinzufügen",
   "editTank": "Aquarium bearbeiten",
   "deleteTank": "Aquarium löschen",
-    "setDefault": "Als Standard festlegen",
-    "isDefault": "Standard",
+  "setDefault": "Als Standard festlegen",
+  "isDefault": "Standard",
   "createTank": "Neues Aquarium erstellen",
   "updateTank": "Aquarium aktualisieren",
   "saving": "Speichern...",
@@ -24,7 +24,6 @@
   "returnToList": "Zurück zur Aquarienliste",
   "detailsAndManagement": "Aquarium-Details & Verwaltung",
   "items": "Einträge",
-  "viewAll": "Alle anzeigen",
   "score": "Bewertung",
   "fields": {
     "name": "Aquariumname",
@@ -75,7 +74,8 @@
     "manageLivestock": "Tierbestand verwalten",
     "changeImage": "Bild ändern",
     "addTest": "Test hinzufügen",
-    "dosingCalc": "Dosierungsrechner"
+    "dosingCalc": "Dosierungsrechner",
+    "waterChangeCalc": "Wasserwechsel"
   },
   "emptyState": {
     "noTanks": "Noch keine Aquarien",

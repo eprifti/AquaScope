@@ -1,0 +1,55 @@
+{
+  "title": "Calculateur de changement d'eau",
+  "subtitle": "Prévoir l'impact sur les paramètres ou calculer le volume nécessaire",
+  "noTanks": "Aucun bac. Créez un bac pour utiliser le calculateur.",
+  "volume": {
+    "display": "Bac principal",
+    "sump": "Décantation",
+    "total": "Volume total"
+  },
+  "tabs": {
+    "impact": "Aperçu de l'impact",
+    "target": "Paramètre cible"
+  },
+  "impact": {
+    "waterChangePercent": "Changement d'eau",
+    "liters": "{{value}} L",
+    "replacementWater": "Eau de remplacement",
+    "saltMix": "Sel marin",
+    "custom": "Personnalisé",
+    "saveProfile": "Enregistrer",
+    "profileSaved": "Enregistré !",
+    "results": "Paramètres projetés",
+    "noData": "Aucune donnée. Enregistrez d'abord des relevés.",
+    "parameter": "Paramètre",
+    "current": "Actuel",
+    "afterWC": "Après",
+    "change": "Variation",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Paramètre à corriger",
+    "currentValue": "Valeur actuelle",
+    "targetValue": "Valeur cible",
+    "replacementValue": "Dans l'eau de remplacement",
+    "noReading": "Aucune mesure",
+    "result": {
+      "required": "Changement d'eau requis",
+      "volume": "Volume à changer",
+      "ofTotal": "sur {{total}} L au total",
+      "notFeasible": "Non réalisable par changement d'eau",
+      "notFeasibleDesc": "L'eau de remplacement ne peut pas atteindre la valeur cible. Envisagez un dosage.",
+      "noChangeNeeded": "Déjà dans la cible",
+      "noChangeDesc": "La valeur actuelle est déjà proche de la cible."
+    },
+    "split": {
+      "title": "Changement d'eau important",
+      "description": "Les changements de plus de 50 % peuvent stresser les habitants. Envisagez {{count}} changements de {{percent}} % ({{liters}} L chacun) sur plusieurs jours."
+    }
+  },
+  "info": {
+    "title": "Comment ça marche",
+    "description": "Les changements d'eau diluent l'eau du bac avec de l'eau fraîche. Le calculateur utilise la formule de dilution pour prédire l'évolution de chaque paramètre.",
+    "formula": "après = actuel × (1 − %CE) + remplacement × %CE"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Calculadora de troca de água",
+  "subtitle": "Prever alterações nos parâmetros ou calcular o volume necessário",
+  "noTanks": "Sem aquários. Crie um primeiro para usar a calculadora.",
+  "volume": {
+    "display": "Aquário",
+    "sump": "Sump",
+    "total": "Volume total"
+  },
+  "tabs": {
+    "impact": "Visualização do impacto",
+    "target": "Parâmetro alvo"
+  },
+  "impact": {
+    "waterChangePercent": "Troca de água",
+    "liters": "{{value}} L",
+    "replacementWater": "Água de reposição",
+    "saltMix": "Mistura de sal",
+    "custom": "Personalizado",
+    "saveProfile": "Salvar",
+    "profileSaved": "Salvo!",
+    "results": "Parâmetros projetados",
+    "noData": "Sem dados. Registre algumas leituras primeiro.",
+    "parameter": "Parâmetro",
+    "current": "Atual",
+    "afterWC": "Após TA",
+    "change": "Variação",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Parâmetro a corrigir",
+    "currentValue": "Valor atual",
+    "targetValue": "Valor alvo",
+    "replacementValue": "Na água de reposição",
+    "noReading": "Sem leitura",
+    "result": {
+      "required": "Troca de água necessária",
+      "volume": "Volume a trocar",
+      "ofTotal": "de {{total}} L no total",
+      "notFeasible": "Não alcançável com trocas de água",
+      "notFeasibleDesc": "A água de reposição não pode levar este parâmetro ao alvo. Considere dosagem.",
+      "noChangeNeeded": "Já no alvo",
+      "noChangeDesc": "O valor atual já está próximo do alvo."
+    },
+    "split": {
+      "title": "Troca de água grande",
+      "description": "Trocas acima de 50% podem estressar os habitantes. Considere {{count}} trocas de {{percent}}% ({{liters}} L cada) ao longo de vários dias."
+    }
+  },
+  "info": {
+    "title": "Como funciona",
+    "description": "As trocas de água diluem a água do aquário com água fresca. A calculadora usa a fórmula de diluição para prever como cada parâmetro muda.",
+    "formula": "depois = atual × (1 − %TA) + reposição × %TA"
+  }
+}

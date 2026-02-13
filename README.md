@@ -131,6 +131,7 @@ If you find AquaScope useful, consider supporting its development:
 - **Species Traits Admin** — CRUD API + admin UI for managing the compatibility knowledge base
 - **Species typeahead** — debounced WoRMS/iNaturalist/FishBase lookup on the species name field (create + edit)
 - **Water type validation** — backend enforcement of water type consistency
+- **Water Change Calculator** — dilution-based parameter impact prediction with salt mix presets and reverse target calculation ([docs](docs/water-change-calculator.md))
 
 ---
 
@@ -467,7 +468,7 @@ Generate a new token in the InfluxDB UI and update your `.env` file.
 - [x] ~~Dark mode~~ (v1.9.0)
 - [x] ~~Species compatibility checker~~ (v1.9.0)
 - [ ] Email notifications for maintenance reminders
-- [ ] Water change calculator
+- [x] ~~Water change calculator~~ (v1.9.0)
 - [ ] Integration with reef controllers (ReefPi, Neptune)
 - [ ] Native mobile app (Capacitor — in progress)
 - [ ] Advanced analytics and trend prediction

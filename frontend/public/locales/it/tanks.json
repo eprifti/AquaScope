@@ -3,8 +3,8 @@
   "addTank": "Aggiungi vasca",
   "editTank": "Modifica vasca",
   "deleteTank": "Elimina vasca",
-    "setDefault": "Imposta come predefinito",
-    "isDefault": "Predefinito",
+  "setDefault": "Imposta come predefinito",
+  "isDefault": "Predefinito",
   "createTank": "Crea nuova vasca",
   "updateTank": "Aggiorna vasca",
   "saving": "Salvataggio...",
@@ -24,7 +24,6 @@
   "returnToList": "Torna alla lista delle vasche",
   "detailsAndManagement": "Dettagli e gestione vasca",
   "items": "elementi",
-  "viewAll": "Vedi tutto",
   "score": "Punteggio",
   "fields": {
     "name": "Nome vasca",
@@ -75,7 +74,8 @@
     "manageLivestock": "Gestisci animali",
     "changeImage": "Cambia immagine",
     "addTest": "Aggiungi test",
-    "dosingCalc": "Calc. dosaggio"
+    "dosingCalc": "Calc. dosaggio",
+    "waterChangeCalc": "Cambio acqua"
   },
   "emptyState": {
     "noTanks": "Nessuna vasca",

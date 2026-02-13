@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Water Change Calculator
+- **Standalone page** at `/water-change-calculator` with two tabs: Impact Preview and Target Parameter
+- **Dilution formula engine** predicts parameter shifts for any water change percentage
+- **Salt mix presets**: Instant Ocean, Red Sea Coral Pro, Fritz RPM, Tropic Marin Pro, HW Reefer
+- **Freshwater presets**: RO/DI Water and Tap Water profiles
+- **Reverse calculator**: enter a target value, get the required WC% and liters
+- **Split recommendation**: warns when >50% and suggests splitting into smaller changes
+- **Profile persistence**: replacement water values saved to localStorage
+- **Quick action** button in TankSidebar for direct access with tank pre-selection
+- Fully translated into 6 languages ([docs](docs/water-change-calculator.md))
+
 #### Dark Mode
 - **Theme toggle** with sun/moon icon in Layout navbar
 - Persisted user preference via `useTheme` hook (localStorage)

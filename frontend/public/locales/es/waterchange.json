@@ -1,0 +1,55 @@
+{
+  "title": "Calculadora de cambio de agua",
+  "subtitle": "Predecir cambios en los parámetros o calcular el volumen necesario",
+  "noTanks": "Sin acuarios. Cree uno primero para usar la calculadora.",
+  "volume": {
+    "display": "Acuario",
+    "sump": "Sump",
+    "total": "Volumen total"
+  },
+  "tabs": {
+    "impact": "Vista previa del impacto",
+    "target": "Parámetro objetivo"
+  },
+  "impact": {
+    "waterChangePercent": "Cambio de agua",
+    "liters": "{{value}} L",
+    "replacementWater": "Agua de reemplazo",
+    "saltMix": "Mezcla de sal",
+    "custom": "Personalizado",
+    "saveProfile": "Guardar",
+    "profileSaved": "¡Guardado!",
+    "results": "Parámetros proyectados",
+    "noData": "Sin datos. Registre algunas lecturas primero.",
+    "parameter": "Parámetro",
+    "current": "Actual",
+    "afterWC": "Después",
+    "change": "Cambio",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Parámetro a corregir",
+    "currentValue": "Valor actual",
+    "targetValue": "Valor objetivo",
+    "replacementValue": "En agua de reemplazo",
+    "noReading": "Sin lectura",
+    "result": {
+      "required": "Cambio de agua requerido",
+      "volume": "Volumen a cambiar",
+      "ofTotal": "de {{total}} L en total",
+      "notFeasible": "No alcanzable con cambios de agua",
+      "notFeasibleDesc": "El agua de reemplazo no puede llevar este parámetro al objetivo. Considere dosificar.",
+      "noChangeNeeded": "Ya en el objetivo",
+      "noChangeDesc": "El valor actual ya está en o cerca del objetivo."
+    },
+    "split": {
+      "title": "Cambio de agua grande",
+      "description": "Cambios mayores al 50% pueden estresar a los habitantes. Considere {{count}} cambios de {{percent}}% ({{liters}} L cada uno) durante varios días."
+    }
+  },
+  "info": {
+    "title": "Cómo funciona",
+    "description": "Los cambios de agua diluyen el agua del acuario con agua fresca. La calculadora usa la fórmula de dilución para predecir cómo cambia cada parámetro.",
+    "formula": "después = actual × (1 − %CA) + reemplazo × %CA"
+  }
+}

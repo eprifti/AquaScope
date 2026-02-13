@@ -1,0 +1,55 @@
+{
+  "title": "Water Change Calculator",
+  "subtitle": "Predict parameter changes or calculate needed water change volume",
+  "noTanks": "No tanks yet. Create a tank first to use the calculator.",
+  "volume": {
+    "display": "Display",
+    "sump": "Sump",
+    "total": "Total System"
+  },
+  "tabs": {
+    "impact": "Impact Preview",
+    "target": "Target Parameter"
+  },
+  "impact": {
+    "waterChangePercent": "Water Change",
+    "liters": "{{value}} L",
+    "replacementWater": "Replacement Water",
+    "saltMix": "Salt Mix",
+    "custom": "Custom",
+    "saveProfile": "Save",
+    "profileSaved": "Saved!",
+    "results": "Projected Parameters",
+    "noData": "No parameter data. Log some readings first.",
+    "parameter": "Parameter",
+    "current": "Current",
+    "afterWC": "After WC",
+    "change": "Change",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Parameter to correct",
+    "currentValue": "Current Value",
+    "targetValue": "Target Value",
+    "replacementValue": "In replacement water",
+    "noReading": "No current reading",
+    "result": {
+      "required": "Required Water Change",
+      "volume": "Volume to change",
+      "ofTotal": "of {{total}} L total",
+      "notFeasible": "Not achievable with water changes",
+      "notFeasibleDesc": "The replacement water cannot bring this parameter to the target value. Consider dosing instead.",
+      "noChangeNeeded": "Already on target",
+      "noChangeDesc": "Current value is already at or very close to the target."
+    },
+    "split": {
+      "title": "Large Water Change",
+      "description": "Changes over 50% can stress inhabitants. Consider {{count}} changes of {{percent}}% ({{liters}} L each) over several days."
+    }
+  },
+  "info": {
+    "title": "How it works",
+    "description": "Water changes dilute tank water with fresh replacement water. The calculator uses the dilution formula to predict how each parameter shifts.",
+    "formula": "after = current × (1 − WC%) + replacement × WC%"
+  }
+}

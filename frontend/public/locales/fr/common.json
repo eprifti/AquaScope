@@ -14,7 +14,8 @@
     "equipment": "Équipement",
     "icpTests": "Tests ICP",
     "consumables": "Consommables",
-    "finances": "Finances"
+    "finances": "Finances",
+    "waterChangeCalc": "Changement d'eau"
   },
   "actions": {
     "add": "Ajouter",

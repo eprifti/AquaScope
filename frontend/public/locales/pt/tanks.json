@@ -3,8 +3,8 @@
   "addTank": "Adicionar aquário",
   "editTank": "Editar aquário",
   "deleteTank": "Excluir aquário",
-    "setDefault": "Definir como padrão",
-    "isDefault": "Padrão",
+  "setDefault": "Definir como padrão",
+  "isDefault": "Padrão",
   "createTank": "Criar novo aquário",
   "updateTank": "Atualizar aquário",
   "saving": "Salvando...",
@@ -24,7 +24,6 @@
   "returnToList": "Voltar à lista de aquários",
   "detailsAndManagement": "Detalhes e gestão do aquário",
   "items": "itens",
-  "viewAll": "Ver tudo",
   "score": "Pontuação",
   "fields": {
     "name": "Nome do aquário",
@@ -75,7 +74,8 @@
     "manageLivestock": "Gerenciar animais",
     "changeImage": "Alterar imagem",
     "addTest": "Adicionar teste",
-    "dosingCalc": "Calc. dosagem"
+    "dosingCalc": "Calc. dosagem",
+    "waterChangeCalc": "Troca de água"
   },
   "emptyState": {
     "noTanks": "Nenhum aquário",

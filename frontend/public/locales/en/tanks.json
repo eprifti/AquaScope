@@ -3,8 +3,8 @@
   "addTank": "Add Tank",
   "editTank": "Edit Tank",
   "deleteTank": "Delete Tank",
-    "setDefault": "Set as default",
-    "isDefault": "Default",
+  "setDefault": "Set as default",
+  "isDefault": "Default",
   "createTank": "Create New Tank",
   "updateTank": "Update Tank",
   "saving": "Saving...",
@@ -16,7 +16,7 @@
   "recentEvents": "Recent Events",
   "recentPhotos": "Recent Photos",
   "recentNotes": "Recent Notes",
-  "viewAll": "View All",
+  "viewAll": "View all",
   "viewParameters": "View Parameters",
   "latestIcpTest": "Latest ICP Test",
   "overallScore": "Overall Score",
@@ -24,7 +24,6 @@
   "returnToList": "Return to tank list",
   "detailsAndManagement": "Tank Details & Management",
   "items": "items",
-  "viewAll": "View all",
   "score": "Score",
   "fields": {
     "name": "Tank Name",
@@ -75,7 +74,8 @@
     "manageLivestock": "Manage Livestock",
     "changeImage": "Change Image",
     "addTest": "Add Test",
-    "dosingCalc": "Dosing Calc"
+    "dosingCalc": "Dosing Calc",
+    "waterChangeCalc": "Water Change"
   },
   "emptyState": {
     "noTanks": "No tanks yet",

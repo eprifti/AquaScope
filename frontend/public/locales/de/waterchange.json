@@ -1,0 +1,55 @@
+{
+  "title": "Wasserwechsel-Rechner",
+  "subtitle": "Parameteränderungen vorhersagen oder benötigtes Wechselvolumen berechnen",
+  "noTanks": "Keine Becken vorhanden. Erstellen Sie zuerst ein Becken.",
+  "volume": {
+    "display": "Hauptbecken",
+    "sump": "Technikbecken",
+    "total": "Gesamtvolumen"
+  },
+  "tabs": {
+    "impact": "Auswirkungsvorschau",
+    "target": "Zielparameter"
+  },
+  "impact": {
+    "waterChangePercent": "Wasserwechsel",
+    "liters": "{{value}} L",
+    "replacementWater": "Wechselwasser",
+    "saltMix": "Salzmischung",
+    "custom": "Benutzerdefiniert",
+    "saveProfile": "Speichern",
+    "profileSaved": "Gespeichert!",
+    "results": "Prognostizierte Parameter",
+    "noData": "Keine Daten. Erfassen Sie zuerst Messwerte.",
+    "parameter": "Parameter",
+    "current": "Aktuell",
+    "afterWC": "Nach WW",
+    "change": "Änderung",
+    "unchanged": "—"
+  },
+  "target": {
+    "selectParameter": "Parameter korrigieren",
+    "currentValue": "Aktueller Wert",
+    "targetValue": "Zielwert",
+    "replacementValue": "Im Wechselwasser",
+    "noReading": "Keine Messung",
+    "result": {
+      "required": "Erforderlicher Wasserwechsel",
+      "volume": "Zu wechselndes Volumen",
+      "ofTotal": "von {{total}} L gesamt",
+      "notFeasible": "Durch Wasserwechsel nicht erreichbar",
+      "notFeasibleDesc": "Das Wechselwasser kann den Zielwert nicht erreichen. Erwägen Sie eine Dosierung.",
+      "noChangeNeeded": "Bereits im Zielbereich",
+      "noChangeDesc": "Der aktuelle Wert liegt bereits nahe am Zielwert."
+    },
+    "split": {
+      "title": "Großer Wasserwechsel",
+      "description": "Wechsel über 50 % können Bewohner stressen. Erwägen Sie {{count}} Wechsel à {{percent}} % ({{liters}} L) über mehrere Tage."
+    }
+  },
+  "info": {
+    "title": "So funktioniert's",
+    "description": "Wasserwechsel verdünnen das Beckenwasser mit frischem Wechselwasser. Der Rechner nutzt die Verdünnungsformel, um die Parameteränderung vorherzusagen.",
+    "formula": "nachher = aktuell × (1 − WW%) + Wechselwasser × WW%"
+  }
+}
