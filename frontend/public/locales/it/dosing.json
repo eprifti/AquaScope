@@ -1,0 +1,62 @@
+{
+  "calculator": "Calcolatore di dosaggio",
+  "title": "Calcolatore di dosaggio",
+  "subtitle": "Calcola quanto dosare per correggere i parametri dell'acqua",
+  "tankVolume": "Volume della vasca",
+  "selectParameter": "Seleziona un parametro da correggere",
+  "selectCompound": "Seleziona un composto di dosaggio",
+  "currentValue": "Valore attuale",
+  "targetValue": "Valore obiettivo",
+  "noReading": "Nessuna lettura — inserire manualmente",
+  "noTarget": "Nessun obiettivo — inserire manualmente",
+  "needsCorrection": "Necessita correzione",
+  "onTarget": "In obiettivo",
+  "noData": "Nessun dato",
+  "result": {
+    "add": "Aggiungere",
+    "of": "di",
+    "toRaise": "per alzare",
+    "by": "di",
+    "from": "da",
+    "to": "a",
+    "inYour": "nel tuo sistema da",
+    "system": "",
+    "noCorrection": "Nessuna correzione necessaria — il valore attuale è pari o superiore all'obiettivo."
+  },
+  "safety": {
+    "warning": "Correzione importante",
+    "splitDoses": "Considera di suddividere in {{count}} dosi su 2–3 giorni per evitare stress agli abitanti della vasca.",
+    "maxSingle": "Correzione singola massima raccomandata: {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "Come funziona",
+    "description": "Questo calcolatore determina quanto composto aggiungere per portare un parametro dal valore attuale al tuo obiettivo. Coralli e altri organismi consumano questi elementi continuamente, quindi test e correzioni regolari sono attesi.",
+    "balancing": "Stai bilanciando — non programmando dosi giornaliere."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Carbonato di sodio",
+      "description": "Alza l'alcalinità. Preferito per le vasche reef — alza anche leggermente il pH."
+    },
+    "baking_soda": {
+      "name": "Bicarbonato di sodio",
+      "description": "Alza l'alcalinità. Impatto pH più delicato. Comune ed economico."
+    },
+    "calcium_chloride": {
+      "name": "Cloruro di calcio (diidrato)",
+      "description": "Integratore di calcio più comune per vasche reef."
+    },
+    "magnesium_chloride": {
+      "name": "Cloruro di magnesio (esaidrato)",
+      "description": "Alza il magnesio. Spesso usato insieme al solfato di magnesio."
+    },
+    "magnesium_sulfate": {
+      "name": "Solfato di magnesio (sale di Epsom)",
+      "description": "Alza il magnesio. Fornisce anche solfato."
+    },
+    "calcium_sulfate": {
+      "name": "Solfato di calcio (gesso)",
+      "description": "Alza la durezza generale (GH) nelle vasche d'acqua dolce."
+    }
+  }
+}

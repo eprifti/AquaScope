@@ -74,7 +74,8 @@
     "manageEquipment": "Gérer l'équipement",
     "manageLivestock": "Gérer les animaux",
     "changeImage": "Changer l'image",
-    "addTest": "Ajouter un test"
+    "addTest": "Ajouter un test",
+    "dosingCalc": "Calc. dosage"
   },
   "emptyState": {
     "noTanks": "Aucun aquarium",

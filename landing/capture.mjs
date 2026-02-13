@@ -110,6 +110,28 @@ async function loginViaToken(page, email, password) {
   await page.waitForTimeout(3000);
   await page.screenshot({ path: `${OUT}/screenshot-parameters.png` });
 
+  // Dosing Calculator (modal on Parameters page)
+  console.log('Capturing dosing calculator...');
+  // Click the Dosing button to open the modal
+  const dosingBtn = await page.$('button:has-text("Dosing")');
+  if (dosingBtn) {
+    await dosingBtn.click();
+    await page.waitForTimeout(2000);
+    // Select the first parameter card (e.g., Alkalinity)
+    const paramCard = await page.$('.fixed button.rounded-lg');
+    if (paramCard) {
+      await paramCard.click();
+      await page.waitForTimeout(1000);
+    }
+    await page.screenshot({ path: `${OUT}/screenshot-dosing.png` });
+    // Close modal
+    const closeBtn = await page.$('.fixed [aria-label="Close"]');
+    if (closeBtn) await closeBtn.click();
+    await page.waitForTimeout(500);
+  } else {
+    console.log('  Dosing button not found, skipping');
+  }
+
   // Livestock
   console.log('Capturing livestock...');
   await page.goto(`${BASE}/livestock`, { waitUntil: 'networkidle' });

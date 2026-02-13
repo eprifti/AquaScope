@@ -14,6 +14,7 @@ import ParameterChart from '../components/parameters/ParameterChart'
 import ParameterForm from '../components/parameters/ParameterForm'
 import TankSelector from '../components/common/TankSelector'
 import { useAuth } from '../hooks/useAuth'
+import DosingCalculator from '../components/dosing/DosingCalculator'
 import type { Tank, ParameterReading } from '../types'
 
 export default function Parameters() {
@@ -38,6 +39,7 @@ export default function Parameters() {
   const [editTimestamp, setEditTimestamp] = useState<string>('')
   const [tableFilter, setTableFilter] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [showDosingCalc, setShowDosingCalc] = useState(false)
   const itemsPerPage = 30
 
   useEffect(() => {
@@ -397,6 +399,17 @@ export default function Parameters() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             CSV
+          </button>
+          <button
+            onClick={() => setShowDosingCalc(true)}
+            disabled={!selectedTank}
+            className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-50 flex items-center gap-2"
+            title={tc('dosingCalc', { ns: 'dosing', defaultValue: 'Dosing Calculator' })}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            {tc('calculator', { ns: 'dosing', defaultValue: 'Dosing' })}
           </button>
           <button
             onClick={() => setShowTableView(!showTableView)}
@@ -759,6 +772,21 @@ export default function Parameters() {
             </button>
           </div>
         )}
+
+      {/* Dosing Calculator Modal */}
+      {showDosingCalc && selectedTank && (() => {
+        const tank = tanks.find(t => t.id === selectedTank)
+        if (!tank) return null
+        return (
+          <DosingCalculator
+            tankId={selectedTank}
+            tankVolumeLiters={tank.total_volume_liters}
+            waterType={tank.water_type}
+            isOpen={showDosingCalc}
+            onClose={() => setShowDosingCalc(false)}
+          />
+        )
+      })()}
     </div>
   )
 }

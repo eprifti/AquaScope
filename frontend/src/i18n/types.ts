@@ -19,6 +19,7 @@ declare module 'react-i18next' {
       equipment: typeof import('../../public/locales/en/equipment.json')
       livestock: typeof import('../../public/locales/en/livestock.json')
       icptests: typeof import('../../public/locales/en/icptests.json')
+      dosing: typeof import('../../public/locales/en/dosing.json')
     }
   }
 }

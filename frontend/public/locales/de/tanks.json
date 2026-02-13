@@ -74,7 +74,8 @@
     "manageEquipment": "Ausrüstung verwalten",
     "manageLivestock": "Tierbestand verwalten",
     "changeImage": "Bild ändern",
-    "addTest": "Test hinzufügen"
+    "addTest": "Test hinzufügen",
+    "dosingCalc": "Dosierungsrechner"
   },
   "emptyState": {
     "noTanks": "Noch keine Aquarien",

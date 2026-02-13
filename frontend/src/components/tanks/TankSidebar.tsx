@@ -11,6 +11,7 @@ import type { Tank, MaturityScore } from '../../types'
 import TankImageUpload from './TankImageUpload'
 import DefaultTankAnimation from './DefaultTankAnimation'
 import { tanksApi } from '../../api'
+import DosingCalculator from '../dosing/DosingCalculator'
 import type { ShareTokenResponse } from '../../types'
 
 interface TankSidebarProps {
@@ -50,6 +51,7 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
   const [shareToken, setShareToken] = useState(tank.share_token)
   const [shareLoading, setShareLoading] = useState(false)
   const [shareCopied, setShareCopied] = useState(false)
+  const [showDosingCalc, setShowDosingCalc] = useState(false)
 
   const calculateDaysUp = (setupDate: string | null): number => {
     if (!setupDate) return 0
@@ -293,6 +295,13 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
               <span>🐟</span>
               <span className="truncate">{t('actions.manageLivestock')}</span>
             </Link>
+            <button
+              onClick={() => setShowDosingCalc(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm text-center rounded-md hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition font-medium"
+            >
+              <span>🧪</span>
+              <span className="truncate">{t('actions.dosingCalc')}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -425,6 +434,16 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
         )
       })()}
 
+      {/* Dosing Calculator Modal */}
+      {showDosingCalc && (
+        <DosingCalculator
+          tankId={tank.id}
+          tankVolumeLiters={tank.total_volume_liters}
+          waterType={tank.water_type}
+          isOpen={showDosingCalc}
+          onClose={() => setShowDosingCalc(false)}
+        />
+      )}
     </div>
   )
 }

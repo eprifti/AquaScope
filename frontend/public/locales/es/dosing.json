@@ -1,0 +1,62 @@
+{
+  "calculator": "Calculadora de dosificación",
+  "title": "Calculadora de dosificación",
+  "subtitle": "Calcule cuánto dosificar para corregir los parámetros del agua",
+  "tankVolume": "Volumen del acuario",
+  "selectParameter": "Seleccione un parámetro a corregir",
+  "selectCompound": "Seleccione un compuesto de dosificación",
+  "currentValue": "Valor actual",
+  "targetValue": "Valor objetivo",
+  "noReading": "Sin lectura — ingrese manualmente",
+  "noTarget": "Sin objetivo — ingrese manualmente",
+  "needsCorrection": "Necesita corrección",
+  "onTarget": "En objetivo",
+  "noData": "Sin datos",
+  "result": {
+    "add": "Agregar",
+    "of": "de",
+    "toRaise": "para subir",
+    "by": "en",
+    "from": "de",
+    "to": "a",
+    "inYour": "en su sistema de",
+    "system": "",
+    "noCorrection": "No se necesita corrección — el valor actual está en o por encima del objetivo."
+  },
+  "safety": {
+    "warning": "Corrección grande",
+    "splitDoses": "Considere dividir en {{count}} dosis durante 2–3 días para evitar estresar a los habitantes del acuario.",
+    "maxSingle": "Corrección máxima recomendada por dosis: {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "Cómo funciona",
+    "description": "Esta calculadora determina cuánto compuesto agregar para llevar un parámetro de su valor actual a su objetivo. Los corales y otros organismos consumen estos elementos continuamente, por lo que las pruebas y correcciones regulares son esperadas.",
+    "balancing": "Está equilibrando — no programando dosis diarias."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Carbonato de sodio",
+      "description": "Sube la alcalinidad. Preferido para acuarios de arrecife — también sube ligeramente el pH."
+    },
+    "baking_soda": {
+      "name": "Bicarbonato de sodio",
+      "description": "Sube la alcalinidad. Impacto de pH más suave. Común y económico."
+    },
+    "calcium_chloride": {
+      "name": "Cloruro de calcio (dihidratado)",
+      "description": "Suplemento de calcio más común para acuarios de arrecife."
+    },
+    "magnesium_chloride": {
+      "name": "Cloruro de magnesio (hexahidratado)",
+      "description": "Sube el magnesio. A menudo usado junto con sulfato de magnesio."
+    },
+    "magnesium_sulfate": {
+      "name": "Sulfato de magnesio (sal de Epsom)",
+      "description": "Sube el magnesio. También aporta sulfato."
+    },
+    "calcium_sulfate": {
+      "name": "Sulfato de calcio (yeso)",
+      "description": "Sube la dureza general (GH) en acuarios de agua dulce."
+    }
+  }
+}

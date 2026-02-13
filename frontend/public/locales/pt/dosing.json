@@ -1,0 +1,62 @@
+{
+  "calculator": "Calculadora de dosagem",
+  "title": "Calculadora de dosagem",
+  "subtitle": "Calcule quanto dosar para corrigir os parâmetros da água",
+  "tankVolume": "Volume do aquário",
+  "selectParameter": "Selecione um parâmetro para corrigir",
+  "selectCompound": "Selecione um composto de dosagem",
+  "currentValue": "Valor atual",
+  "targetValue": "Valor alvo",
+  "noReading": "Sem leitura — insira manualmente",
+  "noTarget": "Sem alvo — insira manualmente",
+  "needsCorrection": "Necessita correção",
+  "onTarget": "No alvo",
+  "noData": "Sem dados",
+  "result": {
+    "add": "Adicionar",
+    "of": "de",
+    "toRaise": "para elevar",
+    "by": "em",
+    "from": "de",
+    "to": "para",
+    "inYour": "no seu sistema de",
+    "system": "",
+    "noCorrection": "Nenhuma correção necessária — o valor atual está no alvo ou acima."
+  },
+  "safety": {
+    "warning": "Correção grande",
+    "splitDoses": "Considere dividir em {{count}} doses ao longo de 2–3 dias para evitar estressar os habitantes do aquário.",
+    "maxSingle": "Correção máxima recomendada por dose: {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "Como funciona",
+    "description": "Esta calculadora determina quanto composto adicionar para levar um parâmetro do valor atual ao seu alvo. Corais e outros organismos consomem esses elementos continuamente, então testes e correções regulares são esperados.",
+    "balancing": "Você está equilibrando — não agendando doses diárias."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Carbonato de sódio",
+      "description": "Eleva a alcalinidade. Preferido para aquários de recife — também eleva ligeiramente o pH."
+    },
+    "baking_soda": {
+      "name": "Bicarbonato de sódio",
+      "description": "Eleva a alcalinidade. Impacto de pH mais suave. Comum e barato."
+    },
+    "calcium_chloride": {
+      "name": "Cloreto de cálcio (di-hidratado)",
+      "description": "Suplemento de cálcio mais comum para aquários de recife."
+    },
+    "magnesium_chloride": {
+      "name": "Cloreto de magnésio (hexa-hidratado)",
+      "description": "Eleva o magnésio. Frequentemente usado com sulfato de magnésio."
+    },
+    "magnesium_sulfate": {
+      "name": "Sulfato de magnésio (sal de Epsom)",
+      "description": "Eleva o magnésio. Também fornece sulfato."
+    },
+    "calcium_sulfate": {
+      "name": "Sulfato de cálcio (gesso)",
+      "description": "Eleva a dureza geral (GH) em aquários de água doce."
+    }
+  }
+}

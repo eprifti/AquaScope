@@ -74,7 +74,8 @@
     "manageEquipment": "Manage Equipment",
     "manageLivestock": "Manage Livestock",
     "changeImage": "Change Image",
-    "addTest": "Add Test"
+    "addTest": "Add Test",
+    "dosingCalc": "Dosing Calc"
   },
   "emptyState": {
     "noTanks": "No tanks yet",

@@ -74,7 +74,8 @@
     "manageEquipment": "Gestisci attrezzatura",
     "manageLivestock": "Gestisci animali",
     "changeImage": "Cambia immagine",
-    "addTest": "Aggiungi test"
+    "addTest": "Aggiungi test",
+    "dosingCalc": "Calc. dosaggio"
   },
   "emptyState": {
     "noTanks": "Nessuna vasca",

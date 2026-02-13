@@ -208,12 +208,12 @@ async def get_latest_parameters(
             detail="Tank not found or access denied"
         )
 
-    # Query last 24 hours and group by parameter_type
+    # Query wide range and pick latest per parameter type
     try:
         results = influxdb_service.query_parameters(
             user_id=str(current_user.id),
             tank_id=tank_id,
-            start="-24h"
+            start="-365d"
         )
     except Exception as e:
         raise HTTPException(

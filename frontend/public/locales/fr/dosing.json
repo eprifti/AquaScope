@@ -1,0 +1,62 @@
+{
+  "calculator": "Calculateur de dosage",
+  "title": "Calculateur de dosage",
+  "subtitle": "Calculez la quantité à doser pour corriger vos paramètres d'eau",
+  "tankVolume": "Volume du bac",
+  "selectParameter": "Sélectionnez un paramètre à corriger",
+  "selectCompound": "Sélectionnez un composé de dosage",
+  "currentValue": "Valeur actuelle",
+  "targetValue": "Valeur cible",
+  "noReading": "Pas de mesure — saisir manuellement",
+  "noTarget": "Pas de cible — saisir manuellement",
+  "needsCorrection": "Correction nécessaire",
+  "onTarget": "Dans la cible",
+  "noData": "Pas de données",
+  "result": {
+    "add": "Ajouter",
+    "of": "de",
+    "toRaise": "pour augmenter",
+    "by": "de",
+    "from": "de",
+    "to": "à",
+    "inYour": "dans votre système de",
+    "system": "",
+    "noCorrection": "Aucune correction nécessaire — la valeur actuelle est égale ou supérieure à la cible."
+  },
+  "safety": {
+    "warning": "Correction importante",
+    "splitDoses": "Envisagez de répartir en {{count}} doses sur 2–3 jours pour éviter de stresser les habitants de votre bac.",
+    "maxSingle": "Correction maximale recommandée en une dose : {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "Comment ça marche",
+    "description": "Ce calculateur détermine la quantité de composé à ajouter pour amener un paramètre de sa valeur actuelle à votre cible. Les coraux et autres organismes consomment ces éléments en continu, des tests et corrections réguliers sont donc attendus.",
+    "balancing": "Vous équilibrez — vous ne planifiez pas des doses quotidiennes."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Carbonate de soude",
+      "description": "Augmente l'alcalinité. Préféré pour les bacs récifaux — augmente aussi légèrement le pH."
+    },
+    "baking_soda": {
+      "name": "Bicarbonate de soude",
+      "description": "Augmente l'alcalinité. Impact pH plus doux. Courant et économique."
+    },
+    "calcium_chloride": {
+      "name": "Chlorure de calcium (dihydraté)",
+      "description": "Supplément de calcium le plus courant pour les bacs récifaux."
+    },
+    "magnesium_chloride": {
+      "name": "Chlorure de magnésium (hexahydraté)",
+      "description": "Augmente le magnésium. Souvent utilisé avec le sulfate de magnésium."
+    },
+    "magnesium_sulfate": {
+      "name": "Sulfate de magnésium (sel d'Epsom)",
+      "description": "Augmente le magnésium. Fournit aussi du sulfate."
+    },
+    "calcium_sulfate": {
+      "name": "Sulfate de calcium (gypse)",
+      "description": "Augmente la dureté générale (GH) en eau douce."
+    }
+  }
+}

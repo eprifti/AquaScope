@@ -1,0 +1,62 @@
+{
+  "calculator": "Dosierungsrechner",
+  "title": "Dosierungsrechner",
+  "subtitle": "Berechnen Sie, wie viel Sie dosieren müssen, um Ihre Wasserparameter zu korrigieren",
+  "tankVolume": "Beckenvolumen",
+  "selectParameter": "Parameter zum Korrigieren auswählen",
+  "selectCompound": "Dosierungsverbindung auswählen",
+  "currentValue": "Aktueller Wert",
+  "targetValue": "Zielwert",
+  "noReading": "Keine Messung — manuell eingeben",
+  "noTarget": "Kein Ziel — manuell eingeben",
+  "needsCorrection": "Korrektur nötig",
+  "onTarget": "Im Zielbereich",
+  "noData": "Keine Daten",
+  "result": {
+    "add": "Hinzufügen",
+    "of": "von",
+    "toRaise": "um zu erhöhen",
+    "by": "um",
+    "from": "von",
+    "to": "auf",
+    "inYour": "in Ihrem",
+    "system": "System",
+    "noCorrection": "Keine Korrektur nötig — der aktuelle Wert liegt auf oder über dem Ziel."
+  },
+  "safety": {
+    "warning": "Große Korrektur",
+    "splitDoses": "Erwägen Sie, auf {{count}} Dosen über 2–3 Tage aufzuteilen, um Stress für die Beckenbewohner zu vermeiden.",
+    "maxSingle": "Empfohlene maximale Einzelkorrektur: {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "So funktioniert es",
+    "description": "Dieser Rechner berechnet, wie viel einer Verbindung benötigt wird, um einen Parameter von seinem aktuellen Wert auf Ihr Ziel zu bringen. Korallen und andere Organismen verbrauchen diese Elemente kontinuierlich, regelmäßige Tests und Korrekturen sind daher normal.",
+    "balancing": "Sie gleichen aus — keine tägliche Dosierplanung."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Soda (Natriumcarbonat)",
+      "description": "Erhöht die Alkalinität. Bevorzugt für Riffbecken — erhöht auch leicht den pH-Wert."
+    },
+    "baking_soda": {
+      "name": "Backpulver (Natriumbicarbonat)",
+      "description": "Erhöht die Alkalinität. Sanftere pH-Wirkung. Gängig und preiswert."
+    },
+    "calcium_chloride": {
+      "name": "Calciumchlorid (Dihydrat)",
+      "description": "Häufigstes Calciumpräparat für Riffbecken."
+    },
+    "magnesium_chloride": {
+      "name": "Magnesiumchlorid (Hexahydrat)",
+      "description": "Erhöht Magnesium. Oft zusammen mit Magnesiumsulfat verwendet."
+    },
+    "magnesium_sulfate": {
+      "name": "Magnesiumsulfat (Bittersalz)",
+      "description": "Erhöht Magnesium. Liefert auch Sulfat."
+    },
+    "calcium_sulfate": {
+      "name": "Calciumsulfat (Gips)",
+      "description": "Erhöht die Gesamthärte (GH) in Süßwasserbecken."
+    }
+  }
+}

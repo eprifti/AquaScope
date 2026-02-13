@@ -1,0 +1,62 @@
+{
+  "calculator": "Dosing Calculator",
+  "title": "Dosing Calculator",
+  "subtitle": "Calculate how much to dose to correct your water parameters",
+  "tankVolume": "Tank Volume",
+  "selectParameter": "Select a parameter to correct",
+  "selectCompound": "Select a dosing compound",
+  "currentValue": "Current Value",
+  "targetValue": "Target Value",
+  "noReading": "No reading — enter manually",
+  "noTarget": "No target — enter manually",
+  "needsCorrection": "Needs correction",
+  "onTarget": "On target",
+  "noData": "No data",
+  "result": {
+    "add": "Add",
+    "of": "of",
+    "toRaise": "to raise",
+    "by": "by",
+    "from": "from",
+    "to": "to",
+    "inYour": "in your",
+    "system": "system",
+    "noCorrection": "No correction needed — current value is at or above target."
+  },
+  "safety": {
+    "warning": "Large Correction",
+    "splitDoses": "Consider splitting into {{count}} doses over 2–3 days to avoid stressing your tank inhabitants.",
+    "maxSingle": "Max recommended single correction: {{value}} {{unit}}"
+  },
+  "info": {
+    "title": "How this works",
+    "description": "This calculator computes how much compound to add to bring a parameter from its current value to your target. Corals and other organisms consume these elements continuously, so regular testing and correction is expected.",
+    "balancing": "You are balancing — not scheduling daily doses."
+  },
+  "compounds": {
+    "soda_ash": {
+      "name": "Soda Ash",
+      "description": "Raises alkalinity. Preferred for reef tanks — also slightly raises pH."
+    },
+    "baking_soda": {
+      "name": "Baking Soda",
+      "description": "Raises alkalinity. Gentler pH impact than soda ash. Common and inexpensive."
+    },
+    "calcium_chloride": {
+      "name": "Calcium Chloride (dihydrate)",
+      "description": "Most common calcium supplement for reef tanks."
+    },
+    "magnesium_chloride": {
+      "name": "Magnesium Chloride (hexahydrate)",
+      "description": "Raises magnesium. Often used alongside magnesium sulfate."
+    },
+    "magnesium_sulfate": {
+      "name": "Magnesium Sulfate (Epsom Salt)",
+      "description": "Raises magnesium. Also provides sulfate."
+    },
+    "calcium_sulfate": {
+      "name": "Calcium Sulfate (gypsum)",
+      "description": "Raises general hardness (GH) in freshwater tanks."
+    }
+  }
+}
