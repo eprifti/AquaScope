@@ -758,6 +758,81 @@ export interface ModuleSettings {
   maintenance: boolean
   icp_tests: boolean
   finances: boolean
+  feeding: boolean
+}
+
+// ============================================================================
+// Feeding Types
+// ============================================================================
+
+export interface FeedingSchedule {
+  id: string
+  tank_id: string
+  user_id: string
+  consumable_id: string | null
+  food_name: string
+  quantity: number | null
+  quantity_unit: string | null
+  frequency_hours: number
+  last_fed: string | null
+  next_due: string | null
+  is_active: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface FeedingScheduleCreate {
+  tank_id: string
+  consumable_id?: string | null
+  food_name: string
+  quantity?: number | null
+  quantity_unit?: string | null
+  frequency_hours?: number
+  next_due?: string | null
+  notes?: string | null
+}
+
+export interface FeedingScheduleUpdate {
+  food_name?: string
+  quantity?: number | null
+  quantity_unit?: string | null
+  frequency_hours?: number
+  consumable_id?: string | null
+  is_active?: boolean
+  notes?: string | null
+}
+
+export interface FeedingLog {
+  id: string
+  tank_id: string
+  user_id: string
+  schedule_id: string | null
+  food_name: string
+  quantity: number | null
+  quantity_unit: string | null
+  fed_at: string
+  notes: string | null
+  created_at: string
+}
+
+export interface FeedingLogCreate {
+  tank_id: string
+  schedule_id?: string | null
+  food_name: string
+  quantity?: number | null
+  quantity_unit?: string | null
+  fed_at?: string | null
+  notes?: string | null
+}
+
+export interface FeedingOverview {
+  tank_id: string
+  active_schedules: number
+  last_fed: string | null
+  next_due: string | null
+  overdue_count: number
+  recent_logs: FeedingLog[]
 }
 
 export interface StorageFile {

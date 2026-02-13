@@ -16,7 +16,8 @@
     "consumables": "Verbrauchsmaterial",
     "finances": "Finanzen",
     "waterChangeCalc": "Wasserwechsel-Rechner",
-    "calculators": "Rechner"
+    "calculators": "Rechner",
+    "feeding": "Fütterung"
   },
   "actions": {
     "add": "Hinzufügen",

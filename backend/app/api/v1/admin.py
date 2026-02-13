@@ -1609,6 +1609,7 @@ MODULE_KEYS = [
     "modules.consumables",
     "modules.maintenance",
     "modules.icp_tests",
+    "modules.feeding",
 ]
 
 MODULE_DEFAULTS = {k: "true" for k in MODULE_KEYS}

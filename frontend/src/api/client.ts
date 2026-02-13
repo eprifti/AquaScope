@@ -70,6 +70,12 @@ import type {
   SpeciesTrait,
   SpeciesTraitCreate,
   SpeciesTraitUpdate,
+  FeedingSchedule,
+  FeedingScheduleCreate,
+  FeedingScheduleUpdate,
+  FeedingLog,
+  FeedingLogCreate,
+  FeedingOverview,
 } from '../types'
 
 // API base URL - empty string means same origin (nginx proxy in Docker)
@@ -1208,6 +1214,64 @@ export const shareApi = {
   getPhotoBlobUrl: async (token: string, photoId: string, thumbnail = true): Promise<string> => {
     const response = await publicClient.get(`/share/${token}/photos/${photoId}?thumbnail=${thumbnail}`, { responseType: 'blob' })
     return URL.createObjectURL(response.data)
+  },
+}
+
+// ============================================================================
+// Feeding API
+// ============================================================================
+
+export const feedingApi = {
+  listSchedules: async (params?: {
+    tank_id?: string
+    active_only?: boolean
+  }): Promise<FeedingSchedule[]> => {
+    const response = await apiClient.get<FeedingSchedule[]>('/feeding/schedules', { params })
+    return response.data
+  },
+
+  getSchedule: async (id: string): Promise<FeedingSchedule> => {
+    const response = await apiClient.get<FeedingSchedule>(`/feeding/schedules/${id}`)
+    return response.data
+  },
+
+  createSchedule: async (data: FeedingScheduleCreate): Promise<FeedingSchedule> => {
+    const response = await apiClient.post<FeedingSchedule>('/feeding/schedules', data)
+    return response.data
+  },
+
+  updateSchedule: async (id: string, data: FeedingScheduleUpdate): Promise<FeedingSchedule> => {
+    const response = await apiClient.put<FeedingSchedule>(`/feeding/schedules/${id}`, data)
+    return response.data
+  },
+
+  deleteSchedule: async (id: string): Promise<void> => {
+    await apiClient.delete(`/feeding/schedules/${id}`)
+  },
+
+  markFed: async (id: string): Promise<FeedingLog> => {
+    const response = await apiClient.post<FeedingLog>(`/feeding/schedules/${id}/feed`)
+    return response.data
+  },
+
+  listLogs: async (params?: {
+    tank_id?: string
+    limit?: number
+  }): Promise<FeedingLog[]> => {
+    const response = await apiClient.get<FeedingLog[]>('/feeding/logs', { params })
+    return response.data
+  },
+
+  createLog: async (data: FeedingLogCreate): Promise<FeedingLog> => {
+    const response = await apiClient.post<FeedingLog>('/feeding/logs', data)
+    return response.data
+  },
+
+  getOverview: async (tankId: string): Promise<FeedingOverview> => {
+    const response = await apiClient.get<FeedingOverview>('/feeding/overview', {
+      params: { tank_id: tankId },
+    })
+    return response.data
   },
 }
 

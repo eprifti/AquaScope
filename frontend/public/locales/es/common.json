@@ -16,7 +16,8 @@
     "consumables": "Consumibles",
     "finances": "Finanzas",
     "waterChangeCalc": "Cambio de agua",
-    "calculators": "Calculadoras"
+    "calculators": "Calculadoras",
+    "feeding": "Alimentación"
   },
   "actions": {
     "add": "Agregar",

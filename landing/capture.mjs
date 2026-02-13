@@ -183,6 +183,12 @@ async function loginViaToken(page, email, password) {
   await page.waitForTimeout(2000);
   await page.screenshot({ path: `${OUT}/screenshot-consumables.png` });
 
+  // Feeding
+  console.log('Capturing feeding...');
+  await page.goto(`${BASE}/feeding`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: `${OUT}/screenshot-feeding.png` });
+
   // Admin page
   if (ADMIN_EMAIL && ADMIN_PASS) {
     console.log('Switching to admin account...');

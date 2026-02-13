@@ -18,6 +18,7 @@ const DEFAULT_SETTINGS: ModuleSettings = {
   maintenance: true,
   icp_tests: true,
   finances: true,
+  feeding: true,
 }
 
 interface ModuleSettingsContextValue {
