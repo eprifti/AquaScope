@@ -67,6 +67,75 @@ Allow administrators to enable/disable modules per installation. Not all users n
 
 ---
 
+## Regional & Unit Preferences
+
+**Priority**: High
+**Status**: Planned
+
+Centralize all locale-aware settings — measurement system, temperature scale, currency, and country — under a single "Regional Settings" concept. Configure during first-launch onboarding and adjustable from Admin (web) or Settings (local).
+
+### Scope
+
+- **Unit systems**: Metric (liters, cm, kg), US Imperial (gallons, inches, lbs), UK Imperial (gallons UK, inches, stone)
+- **Temperature**: °C or °F — affects parameter display, ranges, and charts
+- **Currency**: Already exists (`default_currency` in `app_settings`), integrate into the same settings panel
+- **Country / locale**: Optional, used for number formatting (1,000.50 vs 1.000,50), date format (DD/MM vs MM/DD), and default unit/currency presets
+- **Preset profiles**: Selecting a country auto-fills sensible defaults:
+  - US → US gallons, °F, USD, MM/DD
+  - UK → UK gallons, °C, GBP, DD/MM
+  - France/Germany/etc. → Metric, °C, EUR, DD/MM
+  - Custom → pick each setting independently
+
+### Backend
+
+- Extend `GENERAL_SETTINGS_DEFAULTS` in `/api/v1/admin.py`:
+  ```
+  "unit_system": "metric",         # metric | us_imperial | uk_imperial
+  "temperature_unit": "celsius",   # celsius | fahrenheit
+  "default_currency": "EUR",       # existing
+  "country": "",                   # ISO 3166-1 alpha-2 (optional)
+  "date_format": "DD/MM/YYYY",     # DD/MM/YYYY | MM/DD/YYYY | YYYY-MM-DD
+  ```
+- No new tables — uses existing `app_settings` key-value store
+- CSV/parameter export respects unit preference in headers
+- API continues to store/return canonical units (liters, °C) — conversion is UI-only
+
+### Frontend
+
+- **`useRegionalSettings()` hook** — replaces and extends `useCurrency()`:
+  - Provides: `unitSystem`, `temperatureUnit`, `currency`, `country`, `dateFormat`
+  - Conversion helpers: `formatVolume(liters)`, `formatTemperature(celsius)`, `formatDate(iso)`
+  - Reverse helpers for form inputs: `toLiters(userValue)`, `toCelsius(userValue)`
+- **Conversion constants**:
+  - 1 US gallon = 3.78541 liters, 1 UK gallon = 4.54609 liters
+  - °F = °C × 9/5 + 32
+- **Display-only conversion** — all storage remains in liters and °C:
+  - Tank forms: volume fields show unit label (L / gal), convert on save
+  - Parameter forms: temperature input in user's preferred unit, convert on save
+  - Parameter charts: Y-axis label and tooltip values in preferred unit
+  - Dashboard sparklines: temperature values converted
+  - Water Change Calculator: volumes in preferred unit
+  - Dosing Calculator: volumes in preferred unit
+- **Onboarding wizard** (both web and local modes):
+  - After registration or first launch, show a 1-step setup screen:
+    - Country selector (dropdown with flags) — auto-fills defaults
+    - Unit system toggle (Metric / US / UK)
+    - Temperature toggle (°C / °F)
+    - Currency selector
+  - "Get Started" button saves settings and continues to dashboard
+  - Can be skipped (defaults to Metric / °C / EUR)
+- **Admin settings panel**: new "Regional" section or tab with same controls
+- **i18n**: Add `regional` namespace with unit labels, country names, onboarding text
+
+### Migration Path
+
+- Existing installations default to Metric / °C / EUR (no breaking change)
+- All database values remain in liters and °C (canonical units)
+- Conversion happens exclusively in the UI rendering layer
+- Parameter ranges (min/max/ideal) stored in °C, displayed in user's preference
+
+---
+
 ## Equipment Enhancements
 
 **Priority**: Medium

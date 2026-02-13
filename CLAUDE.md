@@ -98,6 +98,14 @@ photos, notes, livestock, equipment, consumables, maintenance, icp_tests, financ
 
 Module visibility controlled by `useModuleSettings` hook. Defaults: all enabled.
 
+## Units & Regional Settings (current state)
+
+- **Volume**: Always stored in liters (tank model fields: `display_volume_liters`, `sump_volume_liters`)
+- **Temperature**: Always stored in °C
+- **Currency**: Configurable via `app_settings` key `default_currency` (default EUR), loaded by `useCurrency()` hook
+- **Settings store**: `app_settings` table (key-value), accessed via `GET/PUT /api/v1/admin/settings/general`
+- **Conversion**: Not yet implemented — planned as display-only conversion in UI layer (canonical storage stays metric/°C)
+
 ## Key Patterns
 
 ### Adding a new feature module

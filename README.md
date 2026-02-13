@@ -471,6 +471,7 @@ Generate a new token in the InfluxDB UI and update your `.env` file.
 - [x] ~~Water change calculator~~ (v1.9.0)
 - [x] ~~Grouped calculators~~ (v1.10.0)
 - [x] ~~Disease/Health tracking~~ (v1.11.0)
+- [ ] Regional & unit preferences (metric/US/UK, °C/°F, currency, country — with onboarding wizard)
 - [ ] Email notifications for maintenance reminders
 - [ ] Integration with reef controllers (ReefPi, Neptune)
 - [ ] Native mobile app (Capacitor — in progress)
