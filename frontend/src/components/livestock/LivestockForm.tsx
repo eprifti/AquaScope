@@ -1,13 +1,18 @@
 /**
  * Livestock Form Component
  *
- * Form for adding and editing livestock with multi-source species search
+ * Form for adding and editing livestock with multi-source species search.
+ * The scientific name field doubles as a typeahead: typing triggers a
+ * debounced lookup against WoRMS / iNaturalist / FishBase, and selecting
+ * a result fills in name, common name, photo, and external IDs.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Livestock, Tank, LivestockCreate, LivestockStatus } from '../../types'
 import { livestockApi } from '../../api'
+import { findTraitsForSpecies } from '../../config/compatibilityData'
+import CompatibilityAlert from './CompatibilityAlert'
 
 interface LivestockFormProps {
   tanks: Tank[]
@@ -43,13 +48,45 @@ export default function LivestockForm({
 
   // Multi-source species search
   const [searchSource, setSearchSource] = useState<'worms' | 'inaturalist' | 'fishbase'>('inaturalist')
-  const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [searchError, setSearchError] = useState('')
   const [isSearching, setIsSearching] = useState(false)
 
+  // Refs for debounced typeahead
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const skipNextSearchRef = useRef(false)
+
+  // Escape key: close search dropdown first, otherwise cancel the form
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (searchResults.length > 0 || searchError) {
+          setSearchResults([])
+          setSearchError('')
+        } else {
+          onCancel()
+        }
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [searchResults, searchError, onCancel])
+
+  // Water type mismatch detection
+  const selectedTank = tanks.find(t => t.id === tankId)
+  const waterTypeMismatch = useMemo(() => {
+    if (!speciesName || !selectedTank) return null
+    const traits = findTraitsForSpecies(speciesName)
+    if (!traits || traits.waterType === 'both') return null
+    if (traits.waterType !== selectedTank.water_type) {
+      return { speciesWater: traits.waterType, tankWater: selectedTank.water_type, species: traits.commonGroupName }
+    }
+    return null
+  }, [speciesName, selectedTank])
+
   useEffect(() => {
     if (livestock) {
+      skipNextSearchRef.current = true // don't auto-search on initial load
       setTankId(livestock.tank_id)
       setSpeciesName(livestock.species_name)
       setCommonName(livestock.common_name || '')
@@ -71,8 +108,10 @@ export default function LivestockForm({
     }
   }, [livestock])
 
-  const handleSpeciesSearch = async () => {
-    if (!searchQuery || searchQuery.length < 2) return
+  // --- Species search logic ---
+
+  const runSearch = useCallback(async (query: string) => {
+    if (!query || query.length < 3) return
 
     setIsSearching(true)
     setSearchError('')
@@ -81,13 +120,13 @@ export default function LivestockForm({
 
       switch (searchSource) {
         case 'worms':
-          results = await livestockApi.searchWoRMS(searchQuery)
+          results = await livestockApi.searchWoRMS(query)
           break
         case 'inaturalist':
-          results = await livestockApi.searchINaturalist(searchQuery)
+          results = await livestockApi.searchINaturalist(query)
           break
         case 'fishbase':
-          results = await livestockApi.searchFishBase(searchQuery)
+          results = await livestockApi.searchFishBase(query)
           break
       }
 
@@ -151,12 +190,43 @@ export default function LivestockForm({
     } finally {
       setIsSearching(false)
     }
-  }
+  }, [searchSource, t])
 
-  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleSpeciesSearch()
+  // Debounced auto-search when speciesName changes (typeahead)
+  useEffect(() => {
+    if (skipNextSearchRef.current) {
+      skipNextSearchRef.current = false
+      return
+    }
+
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+
+    if (speciesName.length < 3) {
+      setSearchResults([])
+      setSearchError('')
+      return
+    }
+
+    searchTimerRef.current = setTimeout(() => {
+      runSearch(speciesName)
+    }, 500)
+
+    return () => {
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    }
+  }, [speciesName, runSearch])
+
+  // Re-search when switching source (if there's already a query)
+  const handleSourceChange = (source: 'worms' | 'inaturalist' | 'fishbase') => {
+    setSearchSource(source)
+    setSearchResults([])
+    setSearchError('')
+    if (speciesName.length >= 3) {
+      skipNextSearchRef.current = true // prevent double-search from the speciesName effect
+      // Directly search with the new source after state updates
+      setTimeout(() => {
+        runSearch(speciesName)
+      }, 50)
     }
   }
 
@@ -164,6 +234,11 @@ export default function LivestockForm({
     let scientificName = ''
     let commonNameValue = ''
     let photoUrl = ''
+
+    // Clear all external IDs first — prevents stale IDs from a previous species
+    setWormsId('')
+    setInaturalistId('')
+    setFishbaseSpeciesId('')
 
     if (searchSource === 'worms') {
       scientificName = result.scientificname || result.valid_name || ''
@@ -188,11 +263,11 @@ export default function LivestockForm({
       photoUrl = result.thumbnail || ''
     }
 
+    skipNextSearchRef.current = true // don't re-trigger search when setting the name
     setSpeciesName(scientificName)
     setCommonName(commonNameValue)
     setCachedPhotoUrl(photoUrl)
     setSearchResults([])
-    setSearchQuery('')
     setSearchError('')
   }
 
@@ -319,166 +394,159 @@ export default function LivestockForm({
             </div>
           </div>
 
-          {/* Species Search - Available for ALL types */}
-          {!livestock && (
-            <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.searchSpecies')}
-              </label>
-
-              {/* Source Selector Tabs */}
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                <button
-                  type="button"
-                  onClick={() => { setSearchSource('worms'); setSearchResults([]); setSearchError('') }}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                    searchSource === 'worms'
-                      ? 'bg-ocean-600 text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
-                  }`}
-                >
-                  WoRMS
-                  <div className="text-xs opacity-75">{t('form.allSpecies')}</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setSearchSource('inaturalist'); setSearchResults([]); setSearchError('') }}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                    searchSource === 'inaturalist'
-                      ? 'bg-ocean-600 text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
-                  }`}
-                >
-                  iNaturalist
-                  <div className="text-xs opacity-75">{t('form.withPhotos')}</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setSearchSource('fishbase'); setSearchResults([]); setSearchError('') }}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                    searchSource === 'fishbase'
-                      ? 'bg-ocean-600 text-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
-                  }`}
-                >
-                  FishBase
-                  <div className="text-xs opacity-75">{t('form.fishOnly')}</div>
-                </button>
-              </div>
-
-              {/* Search Input */}
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearchKeyDown}
-                  placeholder={
-                    searchSource === 'worms' ? t('search.placeholderWorms') :
-                    searchSource === 'inaturalist' ? t('search.placeholderINaturalist') :
-                    t('search.placeholderFishbase')
-                  }
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-                />
-                <button
-                  type="button"
-                  onClick={handleSpeciesSearch}
-                  disabled={isSearching || searchQuery.length < 2}
-                  className="px-4 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50"
-                >
-                  {isSearching ? t('search.searching') : t('search.search')}
-                </button>
-              </div>
-
-              {/* Search Error Message */}
-              {searchError && (
-                <div className="mt-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2">
-                  {searchError}
-                </div>
-              )}
-
-              {/* Search Results */}
-              {searchResults.length > 0 && (
-                <div className="mt-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md max-h-64 overflow-y-auto">
-                  {searchResults.map((result, index) => {
-                    let scientificName = ''
-                    let displayCommonName = ''
-                    let photoUrl = ''
-
-                    if (searchSource === 'worms') {
-                      scientificName = result.scientificname || result.valid_name || ''
-                      displayCommonName = result.preferred_common_name || t('card.unknown')
-                      photoUrl = result.thumbnail || ''
-                    } else if (searchSource === 'inaturalist') {
-                      scientificName = result.name || ''
-                      displayCommonName = result.preferred_common_name || t('card.unknown')
-                      photoUrl = result.default_photo?.medium_url || ''
-                    } else if (searchSource === 'fishbase') {
-                      const genus = result.Genus || ''
-                      const species = result.Species || ''
-                      scientificName = genus && species ? `${genus} ${species}` : ''
-                      displayCommonName = result.FBname || result.ComName || t('card.unknown')
-                      photoUrl = result.thumbnail || ''
-                    }
-
-                    return (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => handleSelectResult(result)}
-                        className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0 flex items-center space-x-3"
-                      >
-                        {photoUrl ? (
-                          <img
-                            src={photoUrl}
-                            alt={displayCommonName}
-                            className="w-16 h-16 object-cover rounded bg-blue-50"
-                            onError={(e) => (e.currentTarget.style.display = 'none')}
-                          />
-                        ) : (
-                          <div className="w-16 h-16 bg-blue-50 rounded flex items-center justify-center text-2xl">
-                            {type === 'fish' ? '🐠' : type === 'coral' ? '🪸' : '🦐'}
-                          </div>
-                        )}
-
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 dark:text-gray-100">
-                            {displayCommonName}
-                          </div>
-                          {scientificName && (
-                            <div className="text-sm text-gray-600 dark:text-gray-400 italic">
-                              {scientificName}
-                            </div>
-                          )}
-                          {searchSource === 'worms' && result.status && (
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              Status: {result.status}
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Species Name */}
-          <div>
+          {/* Species Name — doubles as the typeahead search input */}
+          <div className="relative">
             <label htmlFor="speciesName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t('form.scientificName')} <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              id="speciesName"
-              value={speciesName}
-              onChange={(e) => setSpeciesName(e.target.value)}
-              required
-              placeholder="e.g., Amphiprion ocellaris"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="speciesName"
+                value={speciesName}
+                onChange={(e) => setSpeciesName(e.target.value)}
+                required
+                autoComplete="off"
+                placeholder="e.g., Amphiprion ocellaris"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+              />
+              {isSearching && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg className="w-4 h-4 text-ocean-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+
+            {/* Database source selector — compact tabs below the input */}
+            <div className="flex items-center gap-1 mt-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">{t('form.searchSpecies')}:</span>
+              {([
+                { key: 'worms' as const, label: 'WoRMS', hint: t('form.allSpecies') },
+                { key: 'inaturalist' as const, label: 'iNaturalist', hint: t('form.withPhotos') },
+                { key: 'fishbase' as const, label: 'FishBase', hint: t('form.fishOnly') },
+              ]).map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => handleSourceChange(key)}
+                  className={`px-2.5 py-1 rounded text-xs font-medium transition ${
+                    searchSource === key
+                      ? 'bg-ocean-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Error Message */}
+            {searchError && (
+              <div className="mt-2 text-sm text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded px-3 py-2">
+                {searchError}
+              </div>
+            )}
+
+            {/* Search Results Dropdown */}
+            {searchResults.length > 0 && (
+              <div className="mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md max-h-64 overflow-y-auto shadow-lg">
+                {searchResults.map((result, index) => {
+                  let scientificName = ''
+                  let displayCommonName = ''
+                  let photoUrl = ''
+
+                  if (searchSource === 'worms') {
+                    scientificName = result.scientificname || result.valid_name || ''
+                    displayCommonName = result.preferred_common_name || t('card.unknown')
+                    photoUrl = result.thumbnail || ''
+                  } else if (searchSource === 'inaturalist') {
+                    scientificName = result.name || ''
+                    displayCommonName = result.preferred_common_name || t('card.unknown')
+                    photoUrl = result.default_photo?.medium_url || ''
+                  } else if (searchSource === 'fishbase') {
+                    const genus = result.Genus || ''
+                    const species = result.Species || ''
+                    scientificName = genus && species ? `${genus} ${species}` : ''
+                    displayCommonName = result.FBname || result.ComName || t('card.unknown')
+                    photoUrl = result.thumbnail || ''
+                  }
+
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSelectResult(result)}
+                      className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0 flex items-center space-x-3"
+                    >
+                      {photoUrl ? (
+                        <img
+                          src={photoUrl}
+                          alt={displayCommonName}
+                          className="w-16 h-16 object-cover rounded bg-blue-50"
+                          onError={(e) => (e.currentTarget.style.display = 'none')}
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-blue-50 dark:bg-gray-700 rounded flex items-center justify-center text-2xl">
+                          {type === 'fish' ? '🐠' : type === 'coral' ? '🪸' : '🦐'}
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          {displayCommonName}
+                        </div>
+                        {scientificName && (
+                          <div className="text-sm text-gray-600 dark:text-gray-400 italic">
+                            {scientificName}
+                          </div>
+                        )}
+                        {searchSource === 'worms' && result.status && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            Status: {result.status}
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </div>
+
+          {/* Compatibility Alert - when adding or editing livestock */}
+          {speciesName && tankId && (
+            <CompatibilityAlert
+              speciesName={speciesName}
+              speciesType={type}
+              tankId={tankId}
+              tanks={tanks}
+            />
+          )}
+
+          {/* Water type mismatch hard block */}
+          {waterTypeMismatch && (
+            <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700 rounded-lg p-4 flex items-start gap-3">
+              <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              </svg>
+              <div>
+                <p className="font-semibold text-red-800 dark:text-red-300">
+                  {t('compatibility:rules.water_type_conflict', {
+                    species: waterTypeMismatch.species,
+                    speciesWater: waterTypeMismatch.speciesWater,
+                    tankWater: waterTypeMismatch.tankWater,
+                    defaultValue: `${waterTypeMismatch.species} is a ${waterTypeMismatch.speciesWater} species and cannot be added to a ${waterTypeMismatch.tankWater} tank.`,
+                  })}
+                </p>
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                  {t('form.waterTypeMismatchHint', { defaultValue: 'Please select a compatible tank or choose a different species.' })}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Common Name */}
           <div>
@@ -645,7 +713,7 @@ export default function LivestockForm({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || !tankId || !speciesName}
+              disabled={isSubmitting || !tankId || !speciesName || !!waterTypeMismatch}
               className="px-6 py-2 bg-ocean-600 text-white rounded-md hover:bg-ocean-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? t('form.saving') : livestock ? t('form.updateLivestock') : t('form.addLivestock')}

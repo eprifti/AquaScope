@@ -15,6 +15,7 @@ import TankSelector from '../components/common/TankSelector'
 import { useAuth } from '../hooks/useAuth'
 import LivestockCard from '../components/livestock/LivestockCard'
 import LivestockForm from '../components/livestock/LivestockForm'
+import CompatibilityChecker from '../components/livestock/CompatibilityChecker'
 
 export default function Livestock() {
   const { t } = useTranslation('livestock')
@@ -30,6 +31,7 @@ export default function Livestock() {
   const [selectedTank, setSelectedTank] = useState<string>(searchParams.get('tank') || 'all')
   const [showPast, setShowPast] = useState(false)
   const [showArchived, setShowArchived] = useState(false)
+  const [showCompatChecker, setShowCompatChecker] = useState(false)
   useScrollToItem(livestock)
 
   useEffect(() => {
@@ -155,6 +157,16 @@ export default function Livestock() {
         </div>
 
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowCompatChecker(true)}
+            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 flex items-center gap-2"
+            title={t('compatibility:checker', { defaultValue: 'Compatibility' })}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            {t('compatibility:checker', { defaultValue: 'Compatibility' })}
+          </button>
           <button
             onClick={() => exportApi.downloadLivestockCSV(selectedTank !== 'all' ? selectedTank : undefined)}
             className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex items-center gap-2"
@@ -425,6 +437,15 @@ export default function Livestock() {
           </div>
         </div>
       )}
+
+      {/* Compatibility Checker Modal */}
+      <CompatibilityChecker
+        isOpen={showCompatChecker}
+        onClose={() => setShowCompatChecker(false)}
+        livestock={livestock}
+        tanks={tanks}
+        selectedTankId={selectedTank}
+      />
     </div>
   )
 }

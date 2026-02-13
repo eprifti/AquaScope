@@ -34,6 +34,7 @@ export let financesApi: typeof import('./client').financesApi
 export let dashboardApi: typeof import('./client').dashboardApi
 export let exportApi: typeof import('./client').exportApi
 export let shareApi: typeof import('./client').shareApi
+export let speciesTraitsApi: typeof import('./client').speciesTraitsApi
 
 // ---------------------------------------------------------------------------
 // Initialization
@@ -65,9 +66,10 @@ export async function initializeApi(): Promise<void> {
     financesApi = local.financesApi
     dashboardApi = local.dashboardApi
     exportApi = local.exportApi
-    // shareApi always uses remote public client (no auth needed)
+    // shareApi & speciesTraitsApi always use remote client
     const remoteShare = await import('./client')
     shareApi = remoteShare.shareApi
+    speciesTraitsApi = remoteShare.speciesTraitsApi
   } else {
     const remote = await import('./client')
     authApi = remote.authApi
@@ -86,6 +88,7 @@ export async function initializeApi(): Promise<void> {
     dashboardApi = remote.dashboardApi
     exportApi = remote.exportApi
     shareApi = remote.shareApi
+    speciesTraitsApi = remote.speciesTraitsApi
   }
 
   initialized = true

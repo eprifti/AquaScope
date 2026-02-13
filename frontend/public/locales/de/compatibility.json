@@ -1,0 +1,62 @@
+{
+  "checker": "Kompatibilität",
+  "title": "Kompatibilitätsprüfer",
+  "subtitle": "Prüfen Sie, ob Ihre Aquarienbewohner miteinander verträglich sind",
+  "selectTank": "Wählen Sie ein Aquarium zum Prüfen",
+  "overallCompatible": "Alle geprüften Arten scheinen kompatibel",
+  "overallCaution": "Einige mögliche Bedenken erkannt",
+  "overallIncompatible": "Kompatibilitätsprobleme erkannt",
+  "speciesChecked": "{{count}} Arten geprüft",
+  "issuesFound": "{{count}} Problem(e) gefunden",
+  "noIssues": "Keine Kompatibilitätsprobleme erkannt",
+  "notInDatabase": "Arten nicht in der Datenbank",
+  "notInDatabaseInfo": "Die folgenden Arten sind nicht in unserer Kompatibilitätsdatenbank. Es wurden keine Prüfungen durchgeführt.",
+  "noLivestock": "Keine aktiven Tiere in diesem Aquarium zum Prüfen",
+  "inlineCompatible": "Diese Art scheint mit Ihren aktuellen Aquarienbewohnern kompatibel.",
+  "inlineNoData": "Keine Kompatibilitätsdaten für diese Art verfügbar.",
+  "inlineChecking": "Kompatibilität wird geprüft...",
+  "rules": {
+    "aggression_conflict": "{{speciesA}} ({{tempA}}) kann mit {{speciesB}} ({{tempB}}) in Konflikt geraten. Aggressive Arten können friedliche Mitbewohner stressen oder verletzen.",
+    "reef_safety": "{{speciesA}} ist nicht riffsicher und kann {{speciesB}} beschädigen oder fressen.",
+    "reef_safety_caution": "{{speciesA}} hat fragliche Riffsicherheit. Beobachten Sie genau mit {{speciesB}}.",
+    "tank_too_small": "{{species}} benötigt mindestens {{required}}L — dieses Aquarium hat nur {{actual}}L.",
+    "territorial_duplicates": "Mehrere {{species}} im selben Aquarium können um Territorium kämpfen.",
+    "predator_prey": "{{predator}} ist ein natürlicher Fressfeind von {{prey}}. Hohes Prädationsrisiko.",
+    "size_disparity": "{{large}} ist viel größer als {{small}}. Der Größenunterschied birgt ein Risiko.",
+    "water_type_conflict": "{{species}} ist eine {{speciesWater}}-Art und gedeiht möglicherweise nicht in einem {{tankWater}}-Aquarium.",
+    "specific_seahorse": "Seepferdchen sollten in Artbecken gehalten werden. {{other}} kann sie um Futter konkurrieren oder stressen.",
+    "specific_axolotl": "Axolotl werden am besten allein oder mit ihrer eigenen Art gehalten. {{other}} kann an Kiemen knabbern oder gefressen werden.",
+    "specific_betta_male": "Mehrere männliche Bettas kämpfen aggressiv. Halten Sie nur ein Männchen pro Aquarium.",
+    "specific_coral_war": "{{speciesA}} und {{speciesB}} können chemische Kriegsführung betreiben, wenn sie zu nah platziert werden.",
+    "corallivore_conflict": "{{speciesA}} frisst Korallen und wird {{speciesB}} beschädigen."
+  },
+  "info": {
+    "title": "So funktioniert es",
+    "description": "Dieser Prüfer nutzt eine integrierte Datenbank mit Arteigenschaften, um Aggressionskonflikte, Riffsicherheit, Beckengröße, Revierstreitigkeiten und Räuber-Beute-Beziehungen zu prüfen.",
+    "disclaimer": "Dies ist ein Beratungstool, keine Garantie. Individuelles Verhalten variiert. Recherchieren Sie Arten immer gründlich vor dem Hinzufügen.",
+    "sourcesTitle": "Datenquellen",
+    "sources": "Arteigenschaften sind aus etablierten Quellen zusammengestellt: FishBase.org (Taxonomie, Ökologie, Verhalten), WoRMS (Weltregister der Meeresarten), LiveAquaria-Pflegeanleitungen, Reef2Reef/ReefCentral Community-Wikis, Eric Bornemans Aquarium Corals (Korallen-Allelopathie) und MASNA-Haltungsrichtlinien. Beckengrößen spiegeln die allgemein akzeptierten Mindestmaße der Riffaquaristik-Gemeinschaft wider."
+  },
+  "severity": {
+    "compatible": "Kompatibel",
+    "caution": "Vorsicht",
+    "incompatible": "Inkompatibel"
+  },
+  "tabs": {
+    "issues": "Probleme",
+    "matrix": "Matrix",
+    "network": "Netzwerk"
+  },
+  "matrix": {
+    "clickForDetails": "Klicken Sie auf eine Zelle für Details"
+  },
+  "network": {
+    "predatorPrey": "Räuber → Beute",
+    "incompatible": "Inkompatibel",
+    "caution": "Vorsicht",
+    "fish": "Fisch",
+    "coral": "Koralle",
+    "invertebrate": "Wirbellose",
+    "noConnections": "Keine Kompatibilitätsprobleme zwischen den Arten gefunden"
+  }
+}

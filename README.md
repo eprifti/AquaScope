@@ -5,7 +5,7 @@
 <h1 align="center">AquaScope</h1>
 
 <p align="center">
-  <strong>A comprehensive web application for managing aquarium parameters, maintenance schedules, and livestock tracking.</strong>
+  <strong>A comprehensive, self-hosted aquarium management platform — track parameters, maintenance, livestock compatibility, finances, and more.</strong>
 </p>
 
 <p align="center">
@@ -70,107 +70,74 @@ If you find AquaScope useful, consider supporting its development:
 - Report bugs and suggest features
 - Contribute code and documentation
 
+---
+
 ## Features
 
-### Core Functionality
+### Aquarium Modules
 
-- **Tank Management Hub**: Comprehensive tank detail views with timeline, events, and statistics
-  - Individual tank pages with split-view layout
-  - Tank image upload with default images per water type
-  - Tank events timeline for tracking changes and milestones
-  - Quick actions for common tasks
-  - Statistics dashboard showing equipment, livestock, photos, and test counts
+| Module | Description |
+|--------|-------------|
+| **Tank Management** | Individual tank pages with split-view layout, image upload, events timeline, statistics, maturity score badge, and shareable public profiles |
+| **Parameters** | Log water tests (Ca, Mg, KH, NO3, PO4, salinity, temperature, pH, GH, NH3, NO2) with InfluxDB time-series storage, dashboard sparklines, and Grafana export |
+| **ICP Tests** | Upload ICP-OES results from Triton, ATI, Fauna Marin, etc. with element-level tracking and cross-test comparison |
+| **Livestock** | Catalog fish, corals, and invertebrates with FishBase/WoRMS/iNaturalist integration, health status, quantity tracking, and group splitting |
+| **Compatibility Checker** | 60+ species knowledge base with 8-rule engine detecting aggression, reef-safety, predator-prey, and tank-size conflicts — heatmap matrix and network graph views |
+| **Equipment** | Inventory with condition tracking, manufacturer/model, maintenance auto-linking, and convert-to-consumable |
+| **Consumables** | Track salt mix, additives, food, and supplies with usage/dosing log, auto stock deduction, and expiration warnings |
+| **Maintenance** | Reminders with frequency-based scheduling, overdue notifications, task templates, and completion history |
+| **Photos** | Gallery with drag-and-drop upload, thumbnails, lightbox viewer, and tank-specific filtering |
+| **Notes** | Journal with rich text, timestamps, search, and tank-specific organization |
+| **Finances** | Spending analysis by category/tank, monthly charts, electricity cost tracking, budget management with alerts |
+| **Dosing Calculator** | Chemistry-based corrections for Ca, KH, Mg with product-specific dosing (BRS, Tropic Marin, Red Sea, etc.) |
 
-- **Multi Water Type Support**: Saltwater, freshwater, and brackish aquariums
-  - Dynamic parameter ranges based on water type
-  - Water-type-specific default tank images and badges
-  - Aquarium subtypes (SPS, LPS, mixed reef, planted, cichlid, etc.)
+### Platform Features
 
-- **Parameter Tracking**: Log water test results (Ca, Mg, KH, NO3, PO4, Salinity, Temperature, pH, GH, NH3, NO2)
-  - InfluxDB integration for time-series data storage
-  - Visualization with Recharts in the dashboard
-  - Export data to Grafana for advanced analytics
+| Feature | Description |
+|---------|-------------|
+| **Multi Water Type** | Saltwater, freshwater, and brackish with dynamic parameter ranges and subtypes (SPS, planted, cichlid, etc.) |
+| **Dark Mode** | Full dark theme with toggle, persisted preference, and comprehensive styling across all components |
+| **Tank Maturity Score** | Gamified 0-100 score based on age, parameter stability, and livestock diversity — shown as radial gauge badge |
+| **Public Tank Profiles** | Shareable read-only tank pages with live stats, livestock, and parameters |
+| **Multi-Language** | 6 languages: English, French, Spanish, German, Italian, Portuguese |
+| **PWA / Installable** | Progressive Web App with offline support, service worker caching, and install prompt |
+| **Dashboard** | Sparkline parameter trends, maturity badges, background tank images, animated banners (reef/planted/custom), CSV export |
+| **Admin Panel** | User management, module toggles, database info, storage browser, orphan cleanup, species traits editor |
+| **Backup & Restore** | Single-archive backup (PostgreSQL + InfluxDB + uploads) with manifest verification |
+| **Multi-User** | JWT authentication, user registration, data isolation, admin/user roles |
+| **Selective Export** | ZIP-based export/import with per-module selection and conflict resolution |
+| **CI/CD** | GitHub Actions with backend pytest, frontend type-check + build, and Docker image validation |
+| **Species Traits Database** | Shared JSON knowledge base (`data/species-traits.json`) with admin CRUD API for community-driven updates |
 
-- **ICP Test Management**: Upload and track ICP-OES test results
-  - Support for multiple lab providers (Triton, ATI, Fauna Marin, etc.)
-  - Element-level tracking with visual indicators
-  - Comparison across multiple tests
-  - Detailed element analysis with scores
+---
 
-- **Photo Gallery**: Upload and manage aquarium photos
-  - Drag-and-drop file upload
-  - Thumbnail generation
-  - Photo descriptions and timestamps
-  - Tank-specific photo filtering
+## What's New in v1.9.0
 
-- **Notes System**: Keep detailed notes and observations about your tank
-  - Rich text notes with timestamps
-  - Tank-specific note filtering
-  - Search and organize notes
+- **Dark mode** with system-aware toggle and full component coverage
+- **Tank maturity score** — gamified 0-100 gauge rewarding age, stability, and diversity ([docs](docs/MATURITY_SCORE.md))
+- **Dashboard sparklines** — inline 7-day parameter trend charts on tank cards
+- **CSV export** for parameter data
+- **Shareable public tank profiles** — read-only links for sharing with the community
+- **Dosing calculator** — chemistry-based Ca/KH/Mg corrections with product-specific dosing
+- **Dashboard improvements** — tank background images, notification system, accessibility (aria-labels, skip-to-content)
+- **181 new frontend tests** boosting coverage from 21% to 33%
+- **Livestock Compatibility Checker** — 60+ species knowledge base, 8-rule engine, heatmap matrix, force-directed network graph ([docs](docs/compatibility-checker.md))
+- **Species Traits Admin** — CRUD API + admin UI for managing the compatibility knowledge base
+- **Species typeahead** — debounced WoRMS/iNaturalist/FishBase lookup on the species name field (create + edit)
+- **Water type validation** — backend enforcement of water type consistency
 
-- **Maintenance Reminders**: Track and schedule maintenance tasks
-  - Automatic scheduling based on frequency
-  - Overdue reminder notifications
-  - Maintenance history tracking
-  - Task templates (water changes, pump cleaning, skimmer maintenance)
-
-- **Livestock Database**: Catalog fish, corals, and invertebrates
-  - FishBase, WoRMS, and iNaturalist integration for species information
-  - Track acquisition dates and sources
-  - Monitor health and status
-  - Livestock split feature (split groups by status)
-
-- **Equipment Tracking**: Manage aquarium equipment
-  - Equipment inventory with manufacturers and models
-  - Installation dates and status tracking
-  - Tank-specific equipment filtering
-
-- **Consumables Tracking**: Track salt mix, additives, food, and supplies
-  - Inventory management with quantity, brand, and expiration tracking
-  - Usage/dosing log with automatic stock deduction
-  - Status tracking (active, low stock, depleted, expired)
-  - Expiration warnings (amber < 30 days, red when expired)
-  - Purchase URL for easy re-ordering
-  - 8 consumable types: salt mix, additive, supplement, food, filter media, test kit, medication, other
-
-- **Finance Module**: Full spending analysis and budget management
-  - Category breakdown: equipment, consumables, livestock, ICP tests, electricity
-  - Electricity running cost calculated from per-tank daily rate and setup date
-  - Monthly spending stacked bar chart with cumulative line
-  - Category pie chart with amount labels
-  - Per-tank spending comparison table
-  - Individual expense editing with inline price, date, and URL management
-  - Budget creation with monthly/yearly periods and category filtering
-  - Budget progress bars with over-budget alerts
-
-- **Admin Panel**: System administration dashboard
-  - User management with stats
-  - Database information
-  - Storage browser for uploaded files
-  - Orphan file cleanup
-
-- **Multi-Language Support**: Available in 6 languages
-  - English, French, Spanish, German, Italian, Portuguese
-
-- **Backup & Restore**: Full system backup and restore scripts
-  - Single-archive backup (PostgreSQL + InfluxDB + uploaded files)
-  - Manifest with record counts for verification
-  - Interactive restore with confirmation
-
-- **Multi-User Support**: Secure authentication and user-specific data management
-  - JWT-based authentication
-  - User registration and login
-  - Data isolation between users
+---
 
 ## Technology Stack
 
 ### Frontend
 - React 18 with TypeScript
 - Vite for fast development and optimized builds
-- Tailwind CSS for modern, responsive UI
+- Tailwind CSS with dark mode support
 - React Router for navigation
-- Axios for API communication
+- Recharts for data visualization
 - i18next for internationalization
+- vite-plugin-pwa for Progressive Web App
 
 ### Backend
 - Python 3.11+ with FastAPI
@@ -185,11 +152,7 @@ If you find AquaScope useful, consider supporting its development:
 - PostgreSQL 15 for relational data
 - InfluxDB2 for time-series data
 
-## Prerequisites
-
-- Docker and Docker Compose
-- Git
-- (Optional) Node.js 20+ and Python 3.11+ for local development
+---
 
 ## Quick Start
 
@@ -256,6 +219,8 @@ Then log in with:
 - **Email**: `demo@reeflab.io`
 - **Password**: `demo1234`
 
+---
+
 ## Backup & Restore
 
 ### Create a Backup
@@ -273,6 +238,8 @@ Creates a timestamped `.tar.gz` archive containing PostgreSQL dump, InfluxDB bac
 ```
 
 Restores all data from a backup archive with interactive confirmation.
+
+---
 
 ## Grafana Integration
 
@@ -306,6 +273,8 @@ from(bucket: "reef_parameters")
   |> filter(fn: (r) => r["_measurement"] == "reef_parameters")
   |> filter(fn: (r) => r["parameter_type"] == "calcium")
 ```
+
+---
 
 ## Development
 
@@ -375,34 +344,44 @@ Apply migrations:
 alembic upgrade head
 ```
 
+---
+
 ## Project Structure
 
 ```
 AquaScope/
 ├── backend/               # FastAPI backend
 │   ├── app/
-│   │   ├── api/          # API endpoints
-│   │   ├── core/         # Core configuration and security
+│   │   ├── api/v1/       # REST API endpoints (18 routers)
+│   │   ├── core/         # Configuration, security, dependencies
 │   │   ├── models/       # SQLAlchemy models
-│   │   ├── schemas/      # Pydantic schemas
-│   │   └── services/     # External service integrations
+│   │   ├── schemas/      # Pydantic request/response schemas
+│   │   └── services/     # Business logic (InfluxDB, maturity, species traits)
 │   ├── alembic/          # Database migrations
 │   └── Dockerfile
 ├── frontend/             # React frontend
 │   ├── src/
-│   │   ├── components/   # React components
-│   │   ├── pages/        # Page components
-│   │   ├── api/          # API client
+│   │   ├── components/   # React components (tanks, livestock, dashboard, admin, ...)
+│   │   ├── pages/        # Page-level components (15 pages)
+│   │   ├── config/       # Compatibility rules and data
+│   │   ├── api/          # API client + routing layer
 │   │   ├── hooks/        # Custom React hooks
 │   │   └── i18n/         # Internationalization config
+│   ├── public/locales/   # Translation files (6 languages x 12 namespaces)
 │   └── Dockerfile
+├── data/                 # Shared data files
+│   └── species-traits.json  # Species compatibility knowledge base (60+ entries)
 ├── scripts/              # Utility scripts
 │   ├── backup.sh         # Full system backup
 │   ├── restore.sh        # Full system restore
 │   └── seed_demo.sh      # Demo data seeder
+├── landing/              # Promotional landing page
+├── docs/                 # Documentation
 ├── docker-compose.yml    # Docker orchestration
 └── README.md
 ```
+
+---
 
 ## API Documentation
 
@@ -410,16 +389,21 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 
 ### Key Endpoints
 
-- `POST /api/v1/auth/register` - Register new user
-- `POST /api/v1/auth/login` - Login and get JWT token
-- `GET /api/v1/tanks` - List user's tanks
-- `POST /api/v1/parameters` - Submit water test results
-- `GET /api/v1/parameters` - Query parameter history
-- `POST /api/v1/photos` - Upload photos
-- `POST /api/v1/maintenance/reminders` - Create maintenance reminder
-- `GET /api/v1/consumables` - List consumables
-- `POST /api/v1/consumables/{id}/usage` - Log consumable usage
-- `GET /api/v1/admin/storage/stats` - Admin storage statistics
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/v1/auth/register` | Register new user |
+| `POST /api/v1/auth/login` | Login and get JWT token |
+| `GET /api/v1/dashboard/summary` | Dashboard with maturity scores and sparklines |
+| `GET /api/v1/tanks` | List user's tanks |
+| `POST /api/v1/parameters` | Submit water test results |
+| `GET /api/v1/parameters/export/csv` | Export parameter data as CSV |
+| `GET /api/v1/livestock` | List livestock inventory |
+| `GET /api/v1/species-traits` | List species compatibility traits |
+| `GET /api/v1/finances/summary` | Financial summary by category/tank |
+| `GET /api/v1/share/{token}` | Public tank profile |
+| `GET /api/v1/admin/storage/stats` | Admin storage statistics |
+
+---
 
 ## Contributing
 
@@ -429,7 +413,7 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## Commit Convention
+### Commit Convention
 
 This project follows conventional commits:
 
@@ -440,6 +424,8 @@ This project follows conventional commits:
 - `refactor:` Code refactoring
 - `test:` Adding or updating tests
 - `chore:` Maintenance tasks
+
+---
 
 ## Troubleshooting
 
@@ -466,65 +452,26 @@ docker compose restart backend
 
 Generate a new token in the InfluxDB UI and update your `.env` file.
 
-## License
+---
 
-MIT License - see LICENSE file for details
+## Roadmap
 
-## Support
-
-For issues and questions:
-- GitHub Issues: https://github.com/eprifti/AquaScope/issues
-- Discussions: https://github.com/eprifti/AquaScope/discussions
-
-## Features Status
-
-### Completed (v1.8.0)
-- Tank management hub with detail views and timeline
-- Tank image upload with default images per water type
-- Multi water type support (saltwater, freshwater, brackish)
-- Visual timeline with category-based filtering and tooltips
-- ICP test management with element tracking
-- Parameter tracking with InfluxDB integration
-- Equipment tracking and inventory management
-- Consumables tracking with usage/dosing log and stock management
-- Maintenance reminder system with automatic scheduling
-- Photo gallery with drag-and-drop upload
-- Notes/journal system
-- Livestock inventory with FishBase/WoRMS/iNaturalist integration
-- Livestock split feature (split groups by status)
-- Multi-user authentication and authorization
-- Admin panel with storage browser and user management
-- Full backup/restore scripts (PostgreSQL + InfluxDB + files)
-- Responsive UI with Tailwind CSS
-- Data visualization with Recharts
-- Excel/CSV import for historical data
-- Selective export/import with ZIP archives
-- GitHub Actions CI/CD pipeline with automated tests
-- Comprehensive unit and integration tests (647+ tests, 75% backend coverage)
-- Multi-language support (EN, FR, ES, DE, IT, PT)
-- Default aquarium images for each water type
-- Custom logo and branding
-- Finance module with spending analysis, budgets, and electricity cost tracking
-- User avatars with upload and management
-- Default tank preference with auto-selection across all modules
-- Compact card layouts for notes, maintenance, consumables, and livestock
-- Animated dashboard banners (reef and planted themes) with custom image upload
-- Promotional landing page with dark aquarium theme
-
-### Roadmap
-
+- [x] ~~Dosing calculator~~ (v1.9.0)
+- [x] ~~Shareable public tank profiles~~ (v1.9.0)
+- [x] ~~Dark mode~~ (v1.9.0)
+- [x] ~~Species compatibility checker~~ (v1.9.0)
 - [ ] Email notifications for maintenance reminders
-- [ ] Mobile responsive design improvements
-- [ ] Dosing calculator
 - [ ] Water change calculator
-- [ ] Community features (share tanks publicly)
 - [ ] Integration with reef controllers (ReefPi, Neptune)
-- [ ] Mobile app (React Native)
+- [ ] Native mobile app (Capacitor — in progress)
 - [ ] Advanced analytics and trend prediction
-- [ ] Automatic parameter recommendations based on tank type
 - [ ] Real-time parameter monitoring with IoT integration
 
 ---
+
+## License
+
+MIT License - see LICENSE file for details
 
 ## Credits & Acknowledgments
 
@@ -544,17 +491,6 @@ Special thanks to the open-source projects that make AquaScope possible:
 - [InfluxDB](https://www.influxdata.com/) - Time-series database
 - [Docker](https://www.docker.com/) - Containerization
 - And many more amazing tools and libraries
-
-### Contributing
-
-Contributions are welcome! Whether it's:
-- Bug reports and fixes
-- New features
-- Documentation improvements
-- UI/UX enhancements
-- Test coverage
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Support
 

@@ -1,0 +1,62 @@
+{
+  "checker": "Compatibilità",
+  "title": "Verifica compatibilità",
+  "subtitle": "Controlla se gli abitanti della tua vasca sono compatibili tra loro",
+  "selectTank": "Seleziona una vasca da verificare",
+  "overallCompatible": "Tutte le specie verificate sembrano compatibili",
+  "overallCaution": "Rilevate alcune potenziali preoccupazioni",
+  "overallIncompatible": "Rilevati problemi di compatibilità",
+  "speciesChecked": "{{count}} specie verificate",
+  "issuesFound": "{{count}} problema/i trovato/i",
+  "noIssues": "Nessun problema di compatibilità rilevato",
+  "notInDatabase": "Specie non nel database",
+  "notInDatabaseInfo": "Le seguenti specie non sono nel nostro database di compatibilità. Non sono state effettuate verifiche.",
+  "noLivestock": "Nessun animale attivo in questa vasca da verificare",
+  "inlineCompatible": "Questa specie sembra compatibile con gli attuali abitanti della tua vasca.",
+  "inlineNoData": "Nessun dato di compatibilità disponibile per questa specie.",
+  "inlineChecking": "Verifica compatibilità in corso...",
+  "rules": {
+    "aggression_conflict": "{{speciesA}} ({{tempA}}) può entrare in conflitto con {{speciesB}} ({{tempB}}). Le specie aggressive possono stressare o ferire i compagni pacifici.",
+    "reef_safety": "{{speciesA}} non è sicuro per la barriera e può danneggiare o mangiare {{speciesB}}.",
+    "reef_safety_caution": "{{speciesA}} ha sicurezza della barriera discutibile. Monitora attentamente con {{speciesB}}.",
+    "tank_too_small": "{{species}} necessita almeno {{required}}L — questa vasca ha solo {{actual}}L.",
+    "territorial_duplicates": "Più {{species}} nella stessa vasca possono combattere per il territorio.",
+    "predator_prey": "{{predator}} è un predatore naturale di {{prey}}. Alto rischio di predazione.",
+    "size_disparity": "{{large}} è molto più grande di {{small}}. La differenza di dimensioni comporta un rischio.",
+    "water_type_conflict": "{{species}} è una specie di acqua {{speciesWater}} e potrebbe non prosperare in una vasca di acqua {{tankWater}}.",
+    "specific_seahorse": "I cavallucci marini devono essere tenuti in vasche dedicate. {{other}} può competere per il cibo o stressarli.",
+    "specific_axolotl": "Gli axolotl stanno meglio da soli o con la propria specie. {{other}} può mordere le branchie o essere mangiato.",
+    "specific_betta_male": "Più maschi Betta combatteranno aggressivamente. Tieni solo un maschio per vasca.",
+    "specific_coral_war": "{{speciesA}} e {{speciesB}} possono ingaggiare guerra chimica se posizionati troppo vicini.",
+    "corallivore_conflict": "{{speciesA}} si nutre di corallo e danneggerà {{speciesB}}."
+  },
+  "info": {
+    "title": "Come funziona",
+    "description": "Questo verificatore utilizza un database integrato di tratti delle specie acquariofili per controllare conflitti di aggressione, sicurezza della barriera, dimensioni della vasca, dispute territoriali e relazioni predatore-preda.",
+    "disclaimer": "Questo è uno strumento orientativo, non una garanzia. Il comportamento individuale varia. Ricerca sempre le specie prima di aggiungerle.",
+    "sourcesTitle": "Fonti dei dati",
+    "sources": "I tratti delle specie sono compilati da riferimenti consolidati: FishBase.org (tassonomia, ecologia, comportamento), WoRMS (Registro Mondiale delle Specie Marine), guide di cura LiveAquaria, wiki delle comunità Reef2Reef/ReefCentral, Aquarium Corals di Eric Borneman (allelopatia corallina) e linee guida MASNA. Le dimensioni delle vasche riflettono i minimi ampiamente accettati dalla comunità acquariofila."
+  },
+  "severity": {
+    "compatible": "Compatibile",
+    "caution": "Attenzione",
+    "incompatible": "Incompatibile"
+  },
+  "tabs": {
+    "issues": "Problemi",
+    "matrix": "Matrice",
+    "network": "Rete"
+  },
+  "matrix": {
+    "clickForDetails": "Clicca su una cella per vedere i dettagli"
+  },
+  "network": {
+    "predatorPrey": "Predatore → Preda",
+    "incompatible": "Incompatibile",
+    "caution": "Attenzione",
+    "fish": "Pesce",
+    "coral": "Corallo",
+    "invertebrate": "Invertebrato",
+    "noConnections": "Nessun problema di compatibilità trovato tra le specie"
+  }
+}

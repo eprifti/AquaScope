@@ -11,8 +11,9 @@ import { useCurrency } from '../hooks/useCurrency'
 import { Navigate } from 'react-router-dom'
 import { adminApi } from '../api'
 import { User, UserWithStats, SystemStats, UserDataSummary, Tank, StorageStats, StorageFile, ModuleSettings } from '../types'
+import SpeciesTraitsManager from '../components/admin/SpeciesTraitsManager'
 
-type Tab = 'overview' | 'users' | 'database' | 'storage' | 'modules'
+type Tab = 'overview' | 'users' | 'database' | 'storage' | 'modules' | 'species'
 
 export default function Admin() {
   const { user } = useAuth()
@@ -348,6 +349,16 @@ export default function Admin() {
             }`}
           >
             Modules
+          </button>
+          <button
+            onClick={() => setActiveTab('species')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'species'
+                ? 'border-ocean-500 text-ocean-600'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+            }`}
+          >
+            Species
           </button>
         </nav>
       </div>
@@ -1464,6 +1475,10 @@ export default function Admin() {
             </div>
           </div>
         </div>
+      )}
+
+      {activeTab === 'species' && (
+        <SpeciesTraitsManager />
       )}
     </div>
   )

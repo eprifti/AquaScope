@@ -17,6 +17,7 @@ from app.api.deps import get_current_user
 from app.services.fishbase import fishbase_service
 from app.services.worms import worms_service
 from app.services.inaturalist import inaturalist_service
+from app.services.water_type_check import check_species_water_type
 
 router = APIRouter()
 
@@ -48,6 +49,16 @@ def add_livestock(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Tank not found"
+        )
+
+    # Validate water type compatibility
+    water_type_error = check_species_water_type(
+        livestock_in.species_name, tank.water_type
+    )
+    if water_type_error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=water_type_error
         )
 
     # Clean species name if it contains numbers
@@ -140,6 +151,19 @@ def update_livestock(
         )
 
     update_data = livestock_in.model_dump(exclude_unset=True)
+
+    # Validate water type if species name is being changed
+    if "species_name" in update_data and update_data["species_name"]:
+        tank = db.query(Tank).filter(Tank.id == livestock.tank_id).first()
+        if tank:
+            water_type_error = check_species_water_type(
+                update_data["species_name"], tank.water_type
+            )
+            if water_type_error:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail=water_type_error
+                )
 
     # Auto-set removed_date when status changes to dead or removed
     if "status" in update_data and update_data["status"] in ("dead", "removed"):

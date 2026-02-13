@@ -37,7 +37,7 @@ async def health():
 
 
 # API routes
-from app.api.v1 import auth, tanks, parameters, notes, photos, maintenance, livestock, equipment, icp_tests, admin, parameter_ranges, consumables, finances, dashboard, export, share
+from app.api.v1 import auth, tanks, parameters, notes, photos, maintenance, livestock, equipment, icp_tests, admin, parameter_ranges, consumables, finances, dashboard, export, share, species_traits
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["authentication"])
 app.include_router(dashboard.router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["dashboard"])
@@ -55,3 +55,4 @@ app.include_router(consumables.router, prefix=f"{settings.API_V1_STR}/consumable
 app.include_router(finances.router, prefix=f"{settings.API_V1_STR}/finances", tags=["finances"])
 app.include_router(export.router, prefix=f"{settings.API_V1_STR}/export", tags=["export"])
 app.include_router(share.router, prefix=f"{settings.API_V1_STR}/share", tags=["sharing"])
+app.include_router(species_traits.router, prefix=f"{settings.API_V1_STR}/species-traits", tags=["species-traits"])

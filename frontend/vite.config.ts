@@ -21,7 +21,7 @@ export default defineConfig({
     react(),
     // Skip PWA plugin for Capacitor builds (native app doesn't need a service worker)
     ...(!isCapacitorBuild ? [VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: [
         'favicon.svg',
         'favicon.png',

@@ -9,14 +9,17 @@ ARG VITE_API_URL=""
 # Set as env vars so Vite picks them up during build
 ENV VITE_API_URL=$VITE_API_URL
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (context is repo root)
+COPY frontend/package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy source files
-COPY . .
+# Copy frontend source files
+COPY frontend/ .
+
+# Copy shared species-traits data (imported by compatibilityData.ts)
+COPY data/species-traits.json /data/species-traits.json
 
 # Build the application
 RUN npm run build
@@ -28,7 +31,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY frontend/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
 EXPOSE 80

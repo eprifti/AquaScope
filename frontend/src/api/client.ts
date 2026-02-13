@@ -67,6 +67,9 @@ import type {
   MaturityScore,
   ShareTokenResponse,
   PublicTankProfile,
+  SpeciesTrait,
+  SpeciesTraitCreate,
+  SpeciesTraitUpdate,
 } from '../types'
 
 // API base URL - empty string means same origin (nginx proxy in Docker)
@@ -1029,6 +1032,40 @@ export const adminApi = {
       { headers: { 'Content-Type': 'multipart/form-data' } }
     )
     return response.data
+  },
+}
+
+// ============================================================================
+// Species Traits API (Compatibility Database)
+// ============================================================================
+
+export const speciesTraitsApi = {
+  list: async (params?: {
+    category?: string
+    water_type?: string
+    search?: string
+  }): Promise<SpeciesTrait[]> => {
+    const response = await apiClient.get<SpeciesTrait[]>('/species-traits', { params })
+    return response.data
+  },
+
+  get: async (id: string): Promise<SpeciesTrait> => {
+    const response = await apiClient.get<SpeciesTrait>(`/species-traits/${id}`)
+    return response.data
+  },
+
+  create: async (data: SpeciesTraitCreate): Promise<SpeciesTrait> => {
+    const response = await apiClient.post<SpeciesTrait>('/species-traits', data)
+    return response.data
+  },
+
+  update: async (id: string, data: SpeciesTraitUpdate): Promise<SpeciesTrait> => {
+    const response = await apiClient.put<SpeciesTrait>(`/species-traits/${id}`, data)
+    return response.data
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/species-traits/${id}`)
   },
 }
 

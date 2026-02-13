@@ -970,3 +970,57 @@ export interface PublicTankProfile {
   photo_count: number
   event_count: number
 }
+
+// ============================================================================
+// Species Traits Types (Compatibility Database)
+// ============================================================================
+
+export interface SpeciesTrait {
+  id: string
+  genusOrFamily: string
+  matchLevel: 'genus' | 'family' | 'species'
+  commonGroupName: string
+  category: 'fish' | 'coral' | 'invertebrate'
+  waterType: 'saltwater' | 'freshwater' | 'both'
+  temperament: 'peaceful' | 'semi-aggressive' | 'aggressive'
+  reefSafe: 'yes' | 'no' | 'caution'
+  minTankSizeLiters: number
+  diet: 'herbivore' | 'carnivore' | 'omnivore' | 'filter-feeder' | 'corallivore'
+  sizeClass: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge'
+  territorial: boolean
+  maxGroupConflict: boolean
+  predatorOf: string[]
+}
+
+export interface SpeciesTraitCreate {
+  id?: string
+  genusOrFamily: string
+  matchLevel: string
+  commonGroupName: string
+  category: string
+  waterType: string
+  temperament: string
+  reefSafe: string
+  minTankSizeLiters: number
+  diet: string
+  sizeClass: string
+  territorial: boolean
+  maxGroupConflict: boolean
+  predatorOf: string[]
+}
+
+export interface SpeciesTraitUpdate {
+  genusOrFamily?: string
+  matchLevel?: string
+  commonGroupName?: string
+  category?: string
+  waterType?: string
+  temperament?: string
+  reefSafe?: string
+  minTankSizeLiters?: number
+  diet?: string
+  sizeClass?: string
+  territorial?: boolean
+  maxGroupConflict?: boolean
+  predatorOf?: string[]
+}

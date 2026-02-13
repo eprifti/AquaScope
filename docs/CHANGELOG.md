@@ -5,6 +5,74 @@ All notable changes to AquaScope will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-02-13
+
+### Added
+
+#### Dark Mode
+- **Theme toggle** with sun/moon icon in Layout navbar
+- Persisted user preference via `useTheme` hook (localStorage)
+- Comprehensive dark styling across all components and pages
+
+#### Tank Maturity Score
+- **Gamified 0–100 scoring** based on tank age, parameter stability, and livestock diversity
+- Radial gauge **MaturityBadge** component displayed on dashboard tank cards
+- Backend `maturity.py` service for score calculation
+- Detailed breakdown view on tank detail page
+
+#### Dashboard Sparklines
+- Inline **7-day parameter trend charts** on dashboard tank cards
+- Lightweight `Sparkline` SVG component
+
+#### CSV Parameter Export
+- Backend endpoint for CSV download of parameter history
+- Frontend download button on Parameters page
+
+#### Shareable Public Tank Profiles
+- **Share tokens** for generating public read-only tank URLs
+- Public tank profile pages accessible without authentication
+- Dark-mode screenshots for shared profiles
+
+#### Dosing Calculator
+- **Chemistry-based Ca/KH/Mg corrections** with product-specific dosing amounts
+- `DosingCalculator` component with interactive input form
+- Landing page section showcasing the calculator
+
+#### Livestock Compatibility Checker
+- **8-rule compatibility engine** detecting aggression, reef-safety, predator-prey, tank-size, territorial, size-disparity, water-type, and species-specific conflicts
+- **60+ species knowledge base** (`data/species-traits.json`) with genus-level matching across saltwater fish, corals, invertebrates, and freshwater species
+- **Heatmap matrix visualization** — asymmetric CSS grid showing pairwise compatibility with color-coded cells (green/amber/red), click-to-inspect details, directional aggressor/victim axes
+- **Network graph visualization** — force-directed SVG layout with directed edges (red solid = predator-prey, red dashed = incompatible, amber dashed = caution), category-colored nodes, hover highlighting
+- **Inline compatibility alert** in livestock form — real-time check when adding new species to a tank
+- **3-tab modal** (Issues / Matrix / Network) accessible from the Livestock page
+- **Species traits admin CRUD** — Admin > Species tab with search, filters, inline add/edit form, and REST API at `/api/v1/species-traits`
+- **Water type validation** — backend enforces livestock water type matches tank water type
+
+#### Livestock Species Typeahead
+- **Debounced typeahead search** on the species name field — type 3+ characters to auto-search WoRMS, iNaturalist, or FishBase
+- Species lookup works in both **create and edit** mode — correct a misidentified species by simply editing the name
+- Compact source tabs (WoRMS / iNaturalist / FishBase) below the species name input
+- Selecting a result auto-fills photo, taxonomy, and external IDs; clears stale IDs from previous sources
+
+#### Dashboard Enhancements
+- Tank background images from tank photos displayed on dashboard cards with default fallbacks
+- **Notification system** via `useNotifications` hook
+- **Accessibility improvements**: `aria-label` attributes on icon buttons, skip-to-content link
+
+#### Testing
+- **181 new frontend tests** boosting coverage from 21 % to 33 % across 9 test files
+
+### Changed
+- Dashboard excludes archived tanks from the tank list
+- Auto-read version from git tags instead of hardcoded values in backend
+- Compatibility checker modal auto-selects the first tank when opened from "All tanks" view
+- Admin species table uses fixed layout with word-wrap for long species names
+
+### Fixed
+- Backend hardcoded version string replaced with dynamic git tag reading
+- Archived tanks no longer appear on the dashboard
+- Species name labels in compatibility matrix and network graph improved for readability (larger fonts, bolder weights, stronger contrast)
+
 ## [1.8.0] - 2026-02-12
 
 ### Added
@@ -895,6 +963,7 @@ All releases are tagged in Git and available on GitHub:
 - `v1.6.0` - Freshwater/brackish support, admin storage, backup/restore, rebrand to AquaScope
 - `v1.7.0` - Consumables module, visual timeline, timeline enhancements
 - `v1.8.0` - Animated banners, banner editor, selective export/import, landing page
+- `v1.9.0` - Dark mode, maturity score, sparklines, CSV export, public profiles, dosing calculator, compatibility checker, species typeahead
 
 ## Versioning Strategy
 
@@ -915,6 +984,7 @@ We follow [Semantic Versioning](https://semver.org/):
 - ✅ **Phase 10** (v1.5.x): i18n, animations, branding
 - ✅ **Phase 11** (v1.7.0): Consumables module, visual timeline
 - ✅ **Phase 12** (v1.8.0): Animated banners, banner editor, export/import, landing page
+- ✅ **Phase 13** (v1.9.0): Dark mode, maturity score, sparklines, CSV export, public profiles, dosing calculator, compatibility checker, species typeahead
 
 ## Contributing
 

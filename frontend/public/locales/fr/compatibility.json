@@ -1,0 +1,62 @@
+{
+  "checker": "Compatibilité",
+  "title": "Vérificateur de compatibilité",
+  "subtitle": "Vérifiez si les habitants de votre aquarium sont compatibles entre eux",
+  "selectTank": "Sélectionnez un aquarium à vérifier",
+  "overallCompatible": "Toutes les espèces vérifiées semblent compatibles",
+  "overallCaution": "Quelques préoccupations potentielles détectées",
+  "overallIncompatible": "Problèmes de compatibilité détectés",
+  "speciesChecked": "{{count}} espèces vérifiées",
+  "issuesFound": "{{count}} problème(s) trouvé(s)",
+  "noIssues": "Aucun problème de compatibilité détecté",
+  "notInDatabase": "Espèces non répertoriées",
+  "notInDatabaseInfo": "Les espèces suivantes ne sont pas dans notre base de données de compatibilité. Aucune vérification n'a été effectuée.",
+  "noLivestock": "Aucun animal actif dans cet aquarium à vérifier",
+  "inlineCompatible": "Cette espèce semble compatible avec les habitants actuels de votre aquarium.",
+  "inlineNoData": "Aucune donnée de compatibilité disponible pour cette espèce.",
+  "inlineChecking": "Vérification de la compatibilité...",
+  "rules": {
+    "aggression_conflict": "{{speciesA}} ({{tempA}}) peut entrer en conflit avec {{speciesB}} ({{tempB}}). Les espèces agressives peuvent stresser ou blesser les cohabitants paisibles.",
+    "reef_safety": "{{speciesA}} n'est pas compatible récifal et peut endommager ou manger {{speciesB}}.",
+    "reef_safety_caution": "{{speciesA}} a une compatibilité récifale incertaine. Surveillez de près avec {{speciesB}}.",
+    "tank_too_small": "{{species}} nécessite au moins {{required}}L — cet aquarium ne fait que {{actual}}L.",
+    "territorial_duplicates": "Plusieurs {{species}} dans le même aquarium peuvent se battre pour le territoire.",
+    "predator_prey": "{{predator}} est un prédateur naturel de {{prey}}. Risque élevé de prédation.",
+    "size_disparity": "{{large}} est beaucoup plus grand que {{small}}. La différence de taille pose un risque.",
+    "water_type_conflict": "{{species}} est une espèce d'eau {{speciesWater}} et peut ne pas prospérer dans un aquarium d'eau {{tankWater}}.",
+    "specific_seahorse": "Les hippocampes doivent être maintenus dans des aquariums dédiés. {{other}} peut les concurrencer pour la nourriture.",
+    "specific_axolotl": "Les axolotls sont mieux seuls ou avec leur propre espèce. {{other}} peut mordre leurs branchies ou être mangé.",
+    "specific_betta_male": "Plusieurs mâles Betta se battront agressivement. Gardez un seul mâle par aquarium.",
+    "specific_coral_war": "{{speciesA}} et {{speciesB}} peuvent s'engager dans une guerre chimique s'ils sont placés trop près.",
+    "corallivore_conflict": "{{speciesA}} se nourrit de corail et endommagera {{speciesB}}."
+  },
+  "info": {
+    "title": "Comment ça fonctionne",
+    "description": "Ce vérificateur utilise une base de données intégrée de traits d'espèces aquariophiles pour vérifier les conflits d'agressivité, la compatibilité récifale, la taille de l'aquarium et les relations prédateur-proie.",
+    "disclaimer": "Ceci est un outil de conseil, pas une garantie. Le comportement individuel varie. Recherchez toujours les espèces avant de les ajouter.",
+    "sourcesTitle": "Sources des données",
+    "sources": "Les traits des espèces sont compilés à partir de références établies : FishBase.org (taxonomie, écologie, comportement), WoRMS (Registre mondial des espèces marines), guides de soins LiveAquaria, wikis communautaires Reef2Reef/ReefCentral, Aquarium Corals d'Eric Borneman (allélopathie corallienne) et directives MASNA. Les tailles d'aquarium reflètent les minimums largement acceptés par la communauté récifale."
+  },
+  "severity": {
+    "compatible": "Compatible",
+    "caution": "Attention",
+    "incompatible": "Incompatible"
+  },
+  "tabs": {
+    "issues": "Problèmes",
+    "matrix": "Matrice",
+    "network": "Réseau"
+  },
+  "matrix": {
+    "clickForDetails": "Cliquez sur une cellule pour voir les détails"
+  },
+  "network": {
+    "predatorPrey": "Prédateur → Proie",
+    "incompatible": "Incompatible",
+    "caution": "Attention",
+    "fish": "Poisson",
+    "coral": "Corail",
+    "invertebrate": "Invertébré",
+    "noConnections": "Aucun problème de compatibilité trouvé entre les espèces"
+  }
+}

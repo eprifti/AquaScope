@@ -7,9 +7,13 @@ Planned features and improvements for future releases.
 ## Finances Module
 
 **Priority**: High
-**Status**: Planned
+**Status**: Done
 
 AquaScope already tracks purchase prices across Equipment, Consumables, and Livestock. A dedicated Finances module would aggregate this data and provide budgeting/cost analysis.
+
+### Done
+
+Fully implemented in v1.8.0 with spending analysis, category/tank breakdown, monthly charts, electricity costs, and budget management.
 
 ### Scope
 
@@ -104,7 +108,11 @@ Local-first mobile app using Capacitor + SQLite. One codebase, three deployment 
 ## Dashboard Improvements
 
 **Priority**: Medium
-**Status**: Planned
+**Status**: Done
+
+### Done
+
+Implemented in v1.9.0: sparklines, maturity badges, alert badges, tank images, and animated banners.
 
 - Per-tank quick-glance cards with key parameters
 - Alert badges for overdue maintenance, out-of-range parameters, low stock consumables
@@ -116,11 +124,16 @@ Local-first mobile app using Capacitor + SQLite. One codebase, three deployment 
 ## Data Import/Export
 
 **Priority**: Medium
-**Status**: Planned
+**Status**: Partially Done
 
-- CSV import for bulk parameter readings
-- Excel import for consumables inventory
-- Full JSON export/import for backup and migration
+### Done
+
+- Selective ZIP export/import
+- CSV parameter export
+- Excel/CSV import for historical data
+
+### Planned
+
 - ATI ICP PDF auto-parse (currently manual CSV)
 
 ---
@@ -134,12 +147,14 @@ Local-first mobile app using Capacitor + SQLite. One codebase, three deployment 
 
 - WoRMS integration for marine species
 - iNaturalist integration for photos and taxonomy
+- FishBase integration for freshwater species
 - Species search with cached results
+- **Typeahead species lookup** — debounced search on the species name field in both create and edit modes
+- Compatibility checker with 8-rule engine, heatmap matrix, and network graph
+- Species traits knowledge base (data/species-traits.json) with admin CRUD API
 
 ### Planned
 
-- FishBase integration for freshwater species care requirements
-- Compatibility checker (warn about incompatible species in same tank)
 - Growth tracking with photo comparison
 
 ---
@@ -147,8 +162,39 @@ Local-first mobile app using Capacitor + SQLite. One codebase, three deployment 
 ## Multi-User / Sharing
 
 **Priority**: Low
-**Status**: Planned
+**Status**: Partially Done
+
+### Done
+
+- Public tank profile page (shareable read-only links) — shipped in v1.9.0
+
+### Planned
 
 - Invite other users to view/edit a tank (read-only or collaborator)
-- Public tank profile page (share your tank with the community)
 - Community parameter benchmarks (anonymous aggregated data)
+
+---
+
+## Compatibility Checker Enhancements
+
+**Priority**: Low
+**Status**: Done (core), planned extensions
+
+### Done
+
+- 60+ species knowledge base with genus-level matching
+- 8-rule compatibility engine (aggression, reef-safety, predator-prey, tank-size, etc.)
+- Inline compatibility alert in livestock form (create + edit modes)
+- Full tank compatibility modal with issues list
+- Heatmap matrix visualization (CSS grid, color-coded, asymmetric aggressor/victim axes)
+- Force-directed network graph visualization (SVG, directed edges, category-colored nodes)
+- Species traits admin CRUD via API + admin UI with responsive table layout
+- Shared JSON knowledge base (data/species-traits.json)
+- Water type validation (frontend + backend)
+- Typeahead species lookup in livestock form (debounced WoRMS/iNaturalist/FishBase search)
+
+### Planned
+
+- Community-contributed species traits submissions
+- Per-species detailed compatibility profiles
+- Compatibility score aggregation per tank

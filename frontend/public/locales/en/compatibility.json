@@ -1,0 +1,62 @@
+{
+  "checker": "Compatibility",
+  "title": "Compatibility Checker",
+  "subtitle": "Check if your tank inhabitants are compatible with each other",
+  "selectTank": "Select a tank to check",
+  "overallCompatible": "All checked species appear compatible",
+  "overallCaution": "Some potential concerns detected",
+  "overallIncompatible": "Compatibility issues detected",
+  "speciesChecked": "{{count}} species checked",
+  "issuesFound": "{{count}} issue(s) found",
+  "noIssues": "No compatibility issues detected",
+  "notInDatabase": "Species not in database",
+  "notInDatabaseInfo": "The following species are not in our compatibility database. No checks were performed for them.",
+  "noLivestock": "No active livestock in this tank to check",
+  "inlineCompatible": "This species appears compatible with your current tank inhabitants.",
+  "inlineNoData": "No compatibility data available for this species.",
+  "inlineChecking": "Checking compatibility...",
+  "rules": {
+    "aggression_conflict": "{{speciesA}} ({{tempA}}) may conflict with {{speciesB}} ({{tempB}}). Aggressive species can stress or harm peaceful tankmates.",
+    "reef_safety": "{{speciesA}} is not reef-safe and may damage or eat {{speciesB}}.",
+    "reef_safety_caution": "{{speciesA}} has questionable reef safety. Monitor closely with {{speciesB}}.",
+    "tank_too_small": "{{species}} needs at least {{required}}L — this tank is only {{actual}}L.",
+    "territorial_duplicates": "Multiple {{species}} in the same tank may fight over territory.",
+    "predator_prey": "{{predator}} is a natural predator of {{prey}}. High risk of predation.",
+    "size_disparity": "{{large}} is much larger than {{small}}. The size difference poses a risk.",
+    "water_type_conflict": "{{species}} is a {{speciesWater}} species and may not thrive in a {{tankWater}} tank.",
+    "specific_seahorse": "Seahorses should be kept in species-only tanks. {{other}} may outcompete them for food or stress them.",
+    "specific_axolotl": "Axolotls are best kept alone or with their own species. {{other}} may nip at gills or be eaten.",
+    "specific_betta_male": "Multiple male Bettas will fight aggressively. Keep only one male per tank.",
+    "specific_coral_war": "{{speciesA}} and {{speciesB}} may engage in chemical warfare if placed too close.",
+    "corallivore_conflict": "{{speciesA}} feeds on coral and will damage {{speciesB}}."
+  },
+  "info": {
+    "title": "How this works",
+    "description": "This checker uses a built-in database of common aquarium species traits to check for aggression conflicts, reef safety, tank size, territorial disputes, and predator-prey relationships.",
+    "disclaimer": "This is a guidance tool, not a guarantee. Individual behavior varies. Always research species thoroughly before adding them.",
+    "sourcesTitle": "Data sources",
+    "sources": "Species traits are compiled from established references: FishBase.org (taxonomy, ecology, behavior), WoRMS (World Register of Marine Species), LiveAquaria care guides, Reef2Reef/ReefCentral community wikis, Eric Borneman's Aquarium Corals (coral allelopathy), and MASNA husbandry guidelines. Tank sizes reflect widely accepted minimums from the reef keeping community."
+  },
+  "severity": {
+    "compatible": "Compatible",
+    "caution": "Caution",
+    "incompatible": "Incompatible"
+  },
+  "tabs": {
+    "issues": "Issues",
+    "matrix": "Matrix",
+    "network": "Network"
+  },
+  "matrix": {
+    "clickForDetails": "Click a cell to see details"
+  },
+  "network": {
+    "predatorPrey": "Predator → Prey",
+    "incompatible": "Incompatible",
+    "caution": "Caution",
+    "fish": "Fish",
+    "coral": "Coral",
+    "invertebrate": "Invertebrate",
+    "noConnections": "No compatibility issues found between species"
+  }
+}

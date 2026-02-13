@@ -44,8 +44,8 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: aquascope-backend
     restart: unless-stopped
     environment:
@@ -62,6 +62,7 @@ services:
     volumes:
       - ./backend:/app
       - ./data/uploads:/app/uploads  # bind mount — survives rebuilds & down -v
+      - ./data:/data  # shared species-traits.json for compatibility checks
     ports:
       - "8000:8000"
     depends_on:
@@ -73,8 +74,8 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-}
     container_name: aquascope-frontend

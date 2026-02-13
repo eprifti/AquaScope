@@ -1,0 +1,45 @@
+# Git
+.git/
+.gitignore
+
+# Node modules (each Dockerfile installs its own)
+node_modules/
+frontend/node_modules/
+
+# Build artifacts
+frontend/dist/
+frontend/build/
+backend/build/
+
+# Python cache
+__pycache__/
+*.py[cod]
+venv/
+env/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Uploads (bind mounted separately)
+data/uploads/
+
+# Capacitor native platforms
+frontend/ios/
+frontend/android/
+
+# Landing page (not needed in app containers)
+landing/
+
+# Docs
+docs/
+*.md
+!data/species-traits.json
