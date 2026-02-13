@@ -54,6 +54,12 @@ AquaScope will remain open and free. Pull requests, issues, ideas, and discussio
 
 ---
 
+## Landing Page
+
+A standalone promotional page is available in the [`landing/`](landing/) directory. Open `landing/index.html` in any browser — no build step required. It features a dark aquarium theme with animated bubbles, caustics overlays, feature showcases, and interactive screenshot tabs. Use it to present AquaScope to the community or host it on your own domain.
+
+---
+
 ## Demo & Support
 
 - **GitHub Repository**: [github.com/eprifti/AquaScope](https://github.com/eprifti/AquaScope)
