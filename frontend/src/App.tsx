@@ -25,6 +25,7 @@ import Photos from './pages/Photos'
 import Notes from './pages/Notes'
 import Admin from './pages/Admin'
 import Finances from './pages/Finances'
+import PublicTankProfile from './pages/PublicTankProfile'
 
 const Welcome = lazy(() => import('./pages/Welcome'))
 
@@ -42,6 +43,7 @@ function App() {
           {/* Public Routes — only in web mode */}
           {!local && <Route path="/login" element={<Login />} />}
           {!local && <Route path="/register" element={<Register />} />}
+          <Route path="/share/tank/:shareToken" element={<PublicTankProfile />} />
 
           {/* Welcome/onboarding — only in local mode */}
           {local && (

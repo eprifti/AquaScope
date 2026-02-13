@@ -67,6 +67,14 @@ async function loginViaToken(page, email, password) {
   // Login as demo user
   console.log('Logging in as demo user...');
   await loginViaToken(page, DEMO_EMAIL, DEMO_PASS);
+
+  // Enable dark mode
+  console.log('Enabling dark mode...');
+  await page.evaluate(() => {
+    localStorage.setItem('aquascope_theme', 'dark');
+    document.documentElement.classList.add('dark');
+  });
+
   // Navigate to dashboard (reload so SPA picks up the token from localStorage)
   console.log('Capturing dashboard...');
   await page.goto(`${BASE}/dashboard`, { waitUntil: 'networkidle' });
@@ -155,6 +163,52 @@ async function loginViaToken(page, email, password) {
     await page.screenshot({ path: `${OUT}/screenshot-admin.png` });
   } else {
     console.log('Skipping admin screenshot (CAPTURE_ADMIN_EMAIL / CAPTURE_ADMIN_PASS not set)');
+  }
+
+  // Share profile (public page, no auth needed)
+  console.log('Capturing share profile...');
+  // Find a tank with sharing enabled, or enable it on the first tank
+  const shareToken = await page.evaluate(async ({ email, password }) => {
+    const params = new URLSearchParams();
+    params.append('username', email);
+    params.append('password', password);
+    const loginResp = await fetch('/api/v1/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+    if (!loginResp.ok) return null;
+    const { access_token } = await loginResp.json();
+    const tanksResp = await fetch('/api/v1/tanks/', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    if (!tanksResp.ok) return null;
+    const tanks = await tanksResp.json();
+    const shared = tanks.find(t => t.share_enabled && t.share_token);
+    if (shared) return shared.share_token;
+    if (tanks.length > 0) {
+      const resp = await fetch(`/api/v1/tanks/${tanks[0].id}/share`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        return data.share_token;
+      }
+    }
+    return null;
+  }, { email: DEMO_EMAIL, password: DEMO_PASS });
+
+  if (shareToken) {
+    // Open the public share page in a new context (no auth, dark background)
+    const sharePage = await ctx.newPage();
+    await sharePage.goto(`${BASE}/share/tank/${shareToken}`, { waitUntil: 'networkidle' });
+    await sharePage.waitForTimeout(3000);
+    await sharePage.screenshot({ path: `${OUT}/screenshot-share.png` });
+    await sharePage.close();
+    console.log(`  Share profile captured (token: ${shareToken})`);
+  } else {
+    console.log('  No shared tank found, skipping share screenshot');
   }
 
   await browser.close();

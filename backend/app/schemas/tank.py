@@ -79,9 +79,74 @@ class TankResponse(TankBase):
     user_id: UUID
     total_volume_liters: float
     is_archived: bool = False
+    share_token: Optional[str] = None
+    share_enabled: bool = False
     created_at: datetime
     updated_at: datetime
     events: List[TankEventResponse] = []
 
     class Config:
         from_attributes = True
+
+
+# ============================================================================
+# Share Schemas
+# ============================================================================
+
+class ShareTokenResponse(BaseModel):
+    """Response when enabling/regenerating sharing"""
+    share_token: str
+    share_enabled: bool
+    share_url: str
+
+
+class PublicLivestockItem(BaseModel):
+    """Public-facing livestock data (no user_id, no purchase info)"""
+    species_name: str
+    common_name: Optional[str] = None
+    type: str
+    quantity: int = 1
+    cached_photo_url: Optional[str] = None
+    added_date: Optional[date] = None
+
+
+class PublicPhotoItem(BaseModel):
+    """Public-facing photo data"""
+    id: UUID
+    description: Optional[str] = None
+    taken_at: datetime
+
+
+class PublicEventItem(BaseModel):
+    """Public-facing event data"""
+    title: str
+    description: Optional[str] = None
+    event_date: date
+    event_type: Optional[str] = None
+
+
+class PublicTankProfile(BaseModel):
+    """Full public tank profile — single payload for the share page"""
+    # Tank info
+    name: str
+    water_type: str
+    aquarium_subtype: Optional[str] = None
+    display_volume_liters: Optional[float] = None
+    sump_volume_liters: Optional[float] = None
+    total_volume_liters: float
+    description: Optional[str] = None
+    has_image: bool = False
+    setup_date: Optional[date] = None
+
+    # Maturity
+    maturity: Optional[dict] = None
+
+    # Collections
+    livestock: List[PublicLivestockItem] = []
+    photos: List[PublicPhotoItem] = []
+    events: List[PublicEventItem] = []
+
+    # Counts
+    livestock_count: int = 0
+    photo_count: int = 0
+    event_count: int = 0

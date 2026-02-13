@@ -5,6 +5,7 @@
 import type {
   Tank, TankCreate, TankUpdate,
   TankEvent, TankEventCreate, TankEventUpdate,
+  ShareTokenResponse,
 } from '../../types'
 import { db, generateId, now, getLocalUserId } from './helpers'
 
@@ -29,6 +30,8 @@ function rowToTank(row: any, events: TankEvent[] = []): Tank {
     created_at: row.created_at,
     updated_at: row.updated_at,
     is_archived: !!row.is_archived,
+    share_token: row.share_token || null,
+    share_enabled: !!row.share_enabled,
     events,
   }
 }
@@ -194,5 +197,14 @@ export const tanksApi = {
   getMaturity: async (_tankId: string) => {
     // Maturity scoring not available in local/offline mode
     return { score: 0, level: 'new' as const, age_score: 0, stability_score: 0, livestock_score: 0 }
+  },
+
+  // Sharing not available in local mode
+  enableSharing: async (_tankId: string): Promise<ShareTokenResponse> => {
+    throw new Error('Sharing not available in local mode')
+  },
+  disableSharing: async (_tankId: string): Promise<void> => {},
+  regenerateShareToken: async (_tankId: string): Promise<ShareTokenResponse> => {
+    throw new Error('Sharing not available in local mode')
   },
 }

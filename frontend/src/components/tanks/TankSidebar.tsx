@@ -11,6 +11,7 @@ import type { Tank, MaturityScore } from '../../types'
 import TankImageUpload from './TankImageUpload'
 import DefaultTankAnimation from './DefaultTankAnimation'
 import { tanksApi } from '../../api'
+import type { ShareTokenResponse } from '../../types'
 
 interface TankSidebarProps {
   tank: Tank
@@ -45,6 +46,10 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
   const [imageError, setImageError] = useState(false)
   const [showImageUpload, setShowImageUpload] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [shareEnabled, setShareEnabled] = useState(tank.share_enabled)
+  const [shareToken, setShareToken] = useState(tank.share_token)
+  const [shareLoading, setShareLoading] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
 
   const calculateDaysUp = (setupDate: string | null): number => {
     if (!setupDate) return 0
@@ -57,6 +62,45 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
 
   const daysUp = stats?.tank_age_days || calculateDaysUp(tank.setup_date)
   const hasImage = tank.image_url && !imageError && imageUrl
+  const shareUrl = shareToken ? `${window.location.origin}/share/tank/${shareToken}` : ''
+
+  const handleToggleShare = async () => {
+    setShareLoading(true)
+    try {
+      if (shareEnabled) {
+        await tanksApi.disableSharing(tank.id)
+        setShareEnabled(false)
+      } else {
+        const res: ShareTokenResponse = await tanksApi.enableSharing(tank.id)
+        setShareToken(res.share_token)
+        setShareEnabled(true)
+      }
+    } catch (err) {
+      console.error('Failed to toggle sharing:', err)
+    } finally {
+      setShareLoading(false)
+    }
+  }
+
+  const handleRegenerateToken = async () => {
+    if (!confirm(t('share.regenerateConfirm'))) return
+    setShareLoading(true)
+    try {
+      const res: ShareTokenResponse = await tanksApi.regenerateShareToken(tank.id)
+      setShareToken(res.share_token)
+      setShareEnabled(true)
+    } catch (err) {
+      console.error('Failed to regenerate token:', err)
+    } finally {
+      setShareLoading(false)
+    }
+  }
+
+  const handleCopyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl)
+    setShareCopied(true)
+    setTimeout(() => setShareCopied(false), 2000)
+  }
 
   // Load tank image via API
   useEffect(() => {
@@ -251,6 +295,69 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Share Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+            {t('share.title')}
+          </h3>
+          <button
+            onClick={handleToggleShare}
+            disabled={shareLoading}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              shareEnabled ? 'bg-ocean-600' : 'bg-gray-300 dark:bg-gray-600'
+            } ${shareLoading ? 'opacity-50' : ''}`}
+            aria-label={t('share.title')}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              shareEnabled ? 'translate-x-6' : 'translate-x-1'
+            }`} />
+          </button>
+        </div>
+
+        {shareEnabled && shareToken ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={shareUrl}
+                className="flex-1 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-2 py-1.5 text-gray-600 dark:text-gray-300 truncate"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                onClick={handleCopyShareUrl}
+                className="px-3 py-1.5 bg-ocean-600 text-white text-xs rounded hover:bg-ocean-700 transition font-medium flex-shrink-0"
+              >
+                {shareCopied ? t('share.copied') : t('share.copy')}
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <a
+                href={shareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-ocean-600 hover:text-ocean-700 font-medium"
+              >
+                {t('share.preview')} →
+              </a>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <button
+                onClick={handleRegenerateToken}
+                disabled={shareLoading}
+                className="text-xs text-gray-500 hover:text-red-500 transition"
+              >
+                {t('share.regenerate')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            {t('share.description')}
+          </p>
+        )}
       </div>
 
       {/* Maturity Score Card */}

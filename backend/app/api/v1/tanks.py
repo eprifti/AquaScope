@@ -6,9 +6,11 @@ CRUD operations for user tanks.
 Multi-tenancy: Users can only access their own tanks.
 """
 import os
+import secrets
+import string
 from typing import List
 from uuid import UUID, uuid4
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from pathlib import Path
@@ -19,11 +21,24 @@ from app.models.tank import Tank, TankEvent
 from app.schemas.dashboard import MaturityScore
 from app.schemas.tank import (
     TankCreate, TankUpdate, TankResponse,
-    TankEventCreate, TankEventUpdate, TankEventResponse
+    TankEventCreate, TankEventUpdate, TankEventResponse,
+    ShareTokenResponse,
 )
 from app.api.deps import get_current_user
 from app.api.v1.parameter_ranges import populate_default_ranges
 from app.services.maturity import compute_maturity_batch
+
+SHARE_TOKEN_CHARS = string.ascii_lowercase + string.digits
+SHARE_TOKEN_LENGTH = 8
+
+
+def _generate_share_token(db: Session) -> str:
+    """Generate a unique 8-char share token."""
+    for _ in range(10):
+        token = "".join(secrets.choice(SHARE_TOKEN_CHARS) for _ in range(SHARE_TOKEN_LENGTH))
+        if not db.query(Tank).filter(Tank.share_token == token).first():
+            return token
+    raise RuntimeError("Failed to generate unique share token")
 
 router = APIRouter()
 
@@ -493,3 +508,79 @@ def get_tank_maturity(
         return MaturityScore(**ms) if ms else MaturityScore()
     except Exception:
         return MaturityScore()
+
+
+# ============================================================================
+# Tank Sharing Endpoints
+# ============================================================================
+
+@router.post("/{tank_id}/share", response_model=ShareTokenResponse)
+def enable_sharing(
+    tank_id: UUID,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Enable sharing for a tank. Generates a token if one doesn't exist."""
+    tank = db.query(Tank).filter(Tank.id == tank_id, Tank.user_id == current_user.id).first()
+    if not tank:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tank not found")
+
+    if not tank.share_token:
+        tank.share_token = _generate_share_token(db)
+
+    tank.share_enabled = True
+    db.commit()
+    db.refresh(tank)
+
+    base_url = str(request.base_url).rstrip("/")
+    share_url = f"{base_url}/share/tank/{tank.share_token}"
+
+    return ShareTokenResponse(
+        share_token=tank.share_token,
+        share_enabled=True,
+        share_url=share_url,
+    )
+
+
+@router.delete("/{tank_id}/share", status_code=status.HTTP_204_NO_CONTENT)
+def disable_sharing(
+    tank_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Disable sharing (keeps token so re-enabling restores the same URL)."""
+    tank = db.query(Tank).filter(Tank.id == tank_id, Tank.user_id == current_user.id).first()
+    if not tank:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tank not found")
+
+    tank.share_enabled = False
+    db.commit()
+    return None
+
+
+@router.post("/{tank_id}/share/regenerate", response_model=ShareTokenResponse)
+def regenerate_share_token(
+    tank_id: UUID,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Generate a new share token (invalidates old links)."""
+    tank = db.query(Tank).filter(Tank.id == tank_id, Tank.user_id == current_user.id).first()
+    if not tank:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tank not found")
+
+    tank.share_token = _generate_share_token(db)
+    tank.share_enabled = True
+    db.commit()
+    db.refresh(tank)
+
+    base_url = str(request.base_url).rstrip("/")
+    share_url = f"{base_url}/share/tank/{tank.share_token}"
+
+    return ShareTokenResponse(
+        share_token=tank.share_token,
+        share_enabled=True,
+        share_url=share_url,
+    )

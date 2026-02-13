@@ -157,5 +157,14 @@
       "photo": "Photos",
       "icp_test": "ICP Tests"
     }
+  },
+  "share": {
+    "title": "Share",
+    "description": "Generate a public link to share your tank setup on forums and social media. Viewers don't need an account.",
+    "copy": "Copy Link",
+    "copied": "Copied!",
+    "preview": "Preview",
+    "regenerate": "New Link",
+    "regenerateConfirm": "Generate a new link? The old link will stop working."
   }
 }

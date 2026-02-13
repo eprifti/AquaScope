@@ -122,6 +122,8 @@ export interface Tank {
   setup_date: string | null
   electricity_cost_per_day: number | null
   is_archived: boolean
+  share_token: string | null
+  share_enabled: boolean
   created_at: string
   updated_at: string
   events: TankEvent[]
@@ -916,4 +918,55 @@ export interface DashboardTankSummary {
 export interface DashboardResponse {
   tanks: DashboardTankSummary[]
   total_overdue: number
+}
+
+// ============================================================================
+// Share Types
+// ============================================================================
+
+export interface ShareTokenResponse {
+  share_token: string
+  share_enabled: boolean
+  share_url: string
+}
+
+export interface PublicLivestockItem {
+  species_name: string
+  common_name: string | null
+  type: string
+  quantity: number
+  cached_photo_url: string | null
+  added_date: string | null
+}
+
+export interface PublicPhotoItem {
+  id: string
+  description: string | null
+  taken_at: string
+}
+
+export interface PublicEventItem {
+  title: string
+  description: string | null
+  event_date: string
+  event_type: string | null
+}
+
+export interface PublicTankProfile {
+  name: string
+  water_type: string
+  aquarium_subtype: string | null
+  display_volume_liters: number | null
+  sump_volume_liters: number | null
+  total_volume_liters: number
+  description: string | null
+  has_image: boolean
+  setup_date: string | null
+  maturity: MaturityScore | null
+  livestock: PublicLivestockItem[]
+  photos: PublicPhotoItem[]
+  events: PublicEventItem[]
+  livestock_count: number
+  photo_count: number
+  event_count: number
 }

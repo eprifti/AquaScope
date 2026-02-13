@@ -65,6 +65,8 @@ import type {
   ExpenseDetailList,
   ApiError,
   MaturityScore,
+  ShareTokenResponse,
+  PublicTankProfile,
 } from '../types'
 
 // API base URL - empty string means same origin (nginx proxy in Docker)
@@ -298,6 +300,21 @@ export const tanksApi = {
 
   getMaturity: async (tankId: string): Promise<MaturityScore> => {
     const response = await apiClient.get<MaturityScore>(`/tanks/${tankId}/maturity`)
+    return response.data
+  },
+
+  // Sharing
+  enableSharing: async (tankId: string): Promise<ShareTokenResponse> => {
+    const response = await apiClient.post<ShareTokenResponse>(`/tanks/${tankId}/share`)
+    return response.data
+  },
+
+  disableSharing: async (tankId: string): Promise<void> => {
+    await apiClient.delete(`/tanks/${tankId}/share`)
+  },
+
+  regenerateShareToken: async (tankId: string): Promise<ShareTokenResponse> => {
+    const response = await apiClient.post<ShareTokenResponse>(`/tanks/${tankId}/share/regenerate`)
     return response.data
   },
 }
@@ -1119,6 +1136,41 @@ export const exportApi = {
     if (tankId) params.set('tank_id', tankId)
     const response = await apiClient.get('/export/maintenance', { params, responseType: 'blob' })
     triggerDownload(response.data, 'maintenance.csv')
+  },
+}
+
+// ============================================================================
+// Share (Public) API — No auth token
+// ============================================================================
+
+const publicClient: AxiosInstance = axios.create({
+  baseURL: API_V1,
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+})
+
+export const shareApi = {
+  getProfile: async (token: string): Promise<PublicTankProfile> => {
+    const response = await publicClient.get<PublicTankProfile>(`/share/${token}`)
+    return response.data
+  },
+
+  getTankImageUrl: (token: string): string => {
+    return `${API_V1}/share/${token}/image`
+  },
+
+  getTankImageBlobUrl: async (token: string): Promise<string> => {
+    const response = await publicClient.get(`/share/${token}/image`, { responseType: 'blob' })
+    return URL.createObjectURL(response.data)
+  },
+
+  getPhotoUrl: (token: string, photoId: string, thumbnail = true): string => {
+    return `${API_V1}/share/${token}/photos/${photoId}?thumbnail=${thumbnail}`
+  },
+
+  getPhotoBlobUrl: async (token: string, photoId: string, thumbnail = true): Promise<string> => {
+    const response = await publicClient.get(`/share/${token}/photos/${photoId}?thumbnail=${thumbnail}`, { responseType: 'blob' })
+    return URL.createObjectURL(response.data)
   },
 }
 

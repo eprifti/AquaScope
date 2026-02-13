@@ -157,5 +157,14 @@
       "photo": "Fotos",
       "icp_test": "Testes ICP"
     }
+  },
+  "share": {
+    "title": "Partilhar",
+    "description": "Gere um link público para partilhar o seu aquário em fóruns e redes sociais. Sem necessidade de conta.",
+    "copy": "Copiar link",
+    "copied": "Copiado!",
+    "preview": "Pré-visualizar",
+    "regenerate": "Novo link",
+    "regenerateConfirm": "Gerar um novo link? O link antigo deixará de funcionar."
   }
 }

@@ -157,5 +157,14 @@
       "photo": "Foto",
       "icp_test": "Test ICP"
     }
+  },
+  "share": {
+    "title": "Condividi",
+    "description": "Genera un link pubblico per condividere il tuo acquario su forum e social media. Nessun account necessario.",
+    "copy": "Copia link",
+    "copied": "Copiato!",
+    "preview": "Anteprima",
+    "regenerate": "Nuovo link",
+    "regenerateConfirm": "Generare un nuovo link? Il vecchio link smetterà di funzionare."
   }
 }

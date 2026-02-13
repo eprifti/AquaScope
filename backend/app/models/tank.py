@@ -57,6 +57,10 @@ class Tank(Base):
     # Archive
     is_archived = Column(Boolean, default=False, nullable=False, index=True)
 
+    # Sharing
+    share_token = Column(String(16), nullable=True, unique=True, index=True)
+    share_enabled = Column(Boolean, default=False, nullable=False)
+
     # Relationships
     owner = relationship("User", back_populates="tanks", foreign_keys=[user_id])
     notes = relationship("Note", back_populates="tank", cascade="all, delete-orphan")
