@@ -1,0 +1,53 @@
+{
+  "title": "Illuminazione",
+  "subtitle": "Gestisci i programmi di illuminazione LED per le tue vasche",
+  "createSchedule": "Crea programma",
+  "editSchedule": "Modifica programma",
+  "deleteSchedule": "Elimina programma",
+  "deleteConfirm": "Sei sicuro di voler eliminare questo programma di illuminazione?",
+  "noSchedules": "Nessun programma di illuminazione",
+  "noSchedulesHint": "Crea un programma o parti da un modello",
+  "fields": {
+    "name": "Nome programma",
+    "description": "Descrizione",
+    "tank": "Vasca",
+    "channels": "Canali LED",
+    "channelName": "Nome canale",
+    "channelColor": "Colore",
+    "addChannel": "Aggiungi canale",
+    "removeChannel": "Rimuovi",
+    "schedule": "Programma",
+    "intensity": "Intensità",
+    "hour": "Ora",
+    "notes": "Note",
+    "active": "Attivo",
+    "inactive": "Inattivo"
+  },
+  "presets": {
+    "title": "Modelli",
+    "loadPreset": "Carica modello",
+    "selectPreset": "-- Seleziona modello --",
+    "reefbreeders-current": "ReefBreeders — Programma attuale",
+    "reefbreeders-acropora": "ReefBreeders — Ottimizzato Acropora",
+    "reef-low-softies": "Reef — Luce bassa (Molli)",
+    "reef-medium-mixed": "Reef — Luce media (LPS/Misto)",
+    "freshwater-planted": "Acqua dolce piantumato — Luce alta",
+    "refugium-reverse": "Refugium — Fotoperiodo inverso"
+  },
+  "chart": {
+    "title": "Anteprima intensità",
+    "xAxis": "Ora",
+    "yAxis": "Intensità %"
+  },
+  "stats": {
+    "activeSchedules": "Programmi attivi",
+    "totalSchedules": "Totale programmi",
+    "tanksWithLighting": "Vasche con illuminazione"
+  },
+  "actions": {
+    "activate": "Attiva",
+    "deactivate": "Disattiva",
+    "duplicate": "Duplica",
+    "save": "Salva programma"
+  }
+}

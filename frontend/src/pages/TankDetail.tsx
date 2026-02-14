@@ -18,9 +18,10 @@ import {
   icpTestsApi,
   diseasesApi,
 } from '../api'
-import type { Tank, TankEvent, Equipment, Livestock, Consumable, Photo, Note, MaintenanceReminder, ICPTestSummary, MaturityScore, DiseaseRecord } from '../types'
+import type { Tank, TankCreate, TankEvent, Equipment, Livestock, Consumable, Photo, Note, MaintenanceReminder, ICPTestSummary, MaturityScore, DiseaseRecord } from '../types'
 import TankSidebar from '../components/tanks/TankSidebar'
 import TankTabs from '../components/tanks/TankTabs'
+import TankForm from '../components/tanks/TankForm'
 
 export default function TankDetail() {
   const { tankId } = useParams<{ tankId: string }>()
@@ -40,6 +41,7 @@ export default function TankDetail() {
   const [maturity, setMaturity] = useState<MaturityScore | null>(null)
 
   const [isLoading, setIsLoading] = useState(true)
+  const [showEditForm, setShowEditForm] = useState(false)
 
   useEffect(() => {
     if (tankId) {
@@ -114,6 +116,13 @@ export default function TankDetail() {
     await tanksApi.deleteEvent(tankId, eventId)
   }
 
+  const handleUpdateTank = async (data: TankCreate) => {
+    if (!tankId) return
+    await tanksApi.update(tankId, data)
+    setShowEditForm(false)
+    loadAllData()
+  }
+
   const handleRefresh = () => {
     loadAllData()
   }
@@ -168,6 +177,15 @@ export default function TankDetail() {
         </div>
       </div>
 
+      {/* Edit Tank Form */}
+      {showEditForm && (
+        <TankForm
+          tank={tank}
+          onSubmit={handleUpdateTank}
+          onCancel={() => setShowEditForm(false)}
+        />
+      )}
+
       {/* Split view layout - Following ICPTests pattern */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Sidebar - Tank Info & Quick Actions */}
@@ -176,7 +194,7 @@ export default function TankDetail() {
             tank={tank}
             stats={stats}
             maturity={maturity}
-            onEdit={() => alert('Edit tank functionality - to be implemented')}
+            onEdit={() => setShowEditForm(!showEditForm)}
             onAddEvent={() => alert('Add event - switch to Events tab')}
             onRefresh={handleRefresh}
           />

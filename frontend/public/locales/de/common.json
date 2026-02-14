@@ -18,7 +18,8 @@
     "waterChangeCalc": "Wasserwechsel-Rechner",
     "calculators": "Rechner",
     "feeding": "Fütterung",
-    "diseases": "Gesundheit"
+    "diseases": "Gesundheit",
+    "lighting": "Beleuchtung"
   },
   "actions": {
     "add": "Hinzufügen",

@@ -20,6 +20,7 @@ const DEFAULT_SETTINGS: ModuleSettings = {
   finances: true,
   feeding: true,
   diseases: true,
+  lighting: true,
 }
 
 interface ModuleSettingsContextValue {

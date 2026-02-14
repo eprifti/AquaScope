@@ -42,7 +42,23 @@
     "selectSubtype": "-- Select subtype --",
     "setupDateHint": "When did you first set up this tank?",
     "electricityCost": "Electricity Cost / Day",
-    "electricityCostHint": "Daily electricity cost for this tank's equipment"
+    "electricityCostHint": "Daily electricity cost for this tank's equipment",
+    "refugium": "Refugium",
+    "hasRefugium": "Has Refugium",
+    "refugiumType": "Refugium Type",
+    "selectRefugiumType": "-- Select refugium type --",
+    "refugiumVolume": "Refugium Volume",
+    "refugiumAlgae": "Algae / Organisms",
+    "refugiumLightingHours": "Lighting Hours / Day",
+    "refugiumNotes": "Refugium Notes",
+    "refugiumNotesPlaceholder": "e.g., Reverse photoperiod, pod production..."
+  },
+  "refugiumTypes": {
+    "macro_algae": "Macro Algae",
+    "deep_sand_bed": "Deep Sand Bed",
+    "live_rock": "Live Rock",
+    "mud": "Mud / Miracle Mud",
+    "mixed": "Mixed"
   },
   "stats": {
     "daysRunning_one": "{{count}} day",

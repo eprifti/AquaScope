@@ -18,7 +18,8 @@
     "waterChangeCalc": "Cambio d'acqua",
     "calculators": "Calcolatori",
     "feeding": "Alimentazione",
-    "diseases": "Salute"
+    "diseases": "Salute",
+    "lighting": "Illuminazione"
   },
   "actions": {
     "add": "Aggiungi",

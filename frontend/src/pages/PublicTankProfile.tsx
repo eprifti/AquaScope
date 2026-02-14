@@ -218,6 +218,105 @@ export default function PublicTankProfile() {
           )
         })()}
 
+        {/* Refugium Info */}
+        {profile.has_refugium && (
+          <div className="bg-gray-800/50 rounded-xl p-6">
+            <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+              <span className="text-green-400">🌿</span> Refugium
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              {profile.refugium_type && (
+                <div>
+                  <div className="text-gray-500 text-xs mb-1">Type</div>
+                  <div className="font-medium capitalize">{profile.refugium_type.replace(/_/g, ' ')}</div>
+                </div>
+              )}
+              {profile.refugium_volume_liters && (
+                <div>
+                  <div className="text-gray-500 text-xs mb-1">Volume</div>
+                  <div className="font-medium">{profile.refugium_volume_liters}L</div>
+                </div>
+              )}
+              {profile.refugium_algae && (
+                <div className="col-span-2 sm:col-span-1">
+                  <div className="text-gray-500 text-xs mb-1">Algae</div>
+                  <div className="font-medium">{profile.refugium_algae}</div>
+                </div>
+              )}
+              {profile.refugium_lighting_hours != null && (
+                <div>
+                  <div className="text-gray-500 text-xs mb-1">Lighting</div>
+                  <div className="font-medium">{profile.refugium_lighting_hours}h/day</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Lighting Schedules */}
+        {profile.lighting && profile.lighting.length > 0 && (
+          <div>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <span className="text-yellow-400">💡</span> Lighting
+            </h2>
+            <div className="space-y-4">
+              {profile.lighting.map((schedule, idx) => {
+                const hours = Object.keys(schedule.schedule_data).map(Number).sort((a, b) => a - b)
+                const maxIntensity = Math.max(
+                  ...Object.values(schedule.schedule_data).flat(),
+                  1
+                )
+                return (
+                  <div key={idx} className="bg-gray-800/50 rounded-xl p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="font-semibold">{schedule.name}</div>
+                        {schedule.description && (
+                          <div className="text-sm text-gray-400 mt-0.5">{schedule.description}</div>
+                        )}
+                      </div>
+                      {schedule.is_active && (
+                        <span className="px-2 py-0.5 bg-green-600/30 text-green-400 text-xs font-semibold rounded-full">Active</span>
+                      )}
+                    </div>
+                    {/* Mini intensity chart */}
+                    <div className="flex items-center gap-1 mb-2">
+                      <span className="text-xs text-gray-500 w-6">{hours[0]}h</span>
+                      <div className="flex-1 flex items-end gap-px h-10">
+                        {hours.map(h => {
+                          const vals = schedule.schedule_data[String(h)]
+                          const avg = vals.reduce((s: number, v: number) => s + v, 0) / vals.length
+                          const pct = (avg / maxIntensity) * 100
+                          return (
+                            <div
+                              key={h}
+                              className="flex-1 rounded-t"
+                              style={{
+                                height: `${Math.max(pct, 2)}%`,
+                                background: `linear-gradient(to top, ${schedule.channels[0]?.color || '#38bdf8'}88, ${schedule.channels[0]?.color || '#38bdf8'}cc)`,
+                              }}
+                            />
+                          )
+                        })}
+                      </div>
+                      <span className="text-xs text-gray-500 w-8 text-right">{hours[hours.length - 1]}h</span>
+                    </div>
+                    {/* Channel badges */}
+                    <div className="flex flex-wrap gap-2">
+                      {schedule.channels.map((ch, ci) => (
+                        <span key={ci} className="flex items-center gap-1.5 text-xs text-gray-400">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ch.color }} />
+                          {ch.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Livestock Showcase — grouped by category */}
         {profile.livestock.length > 0 && (() => {
           const CATEGORIES = [

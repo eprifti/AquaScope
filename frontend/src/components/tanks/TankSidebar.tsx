@@ -242,6 +242,40 @@ export default function TankSidebar({ tank, stats, maturity, onEdit, onAddEvent,
           </div>
         </div>
 
+        {/* Refugium Info */}
+        {tank.has_refugium && (
+          <div className="space-y-2 text-sm pt-4 border-t">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('fields.refugium')}</h3>
+            {tank.refugium_type && (
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">{t('fields.refugiumType')}:</span>
+                <span className="font-medium capitalize">{t(`refugiumTypes.${tank.refugium_type}`)}</span>
+              </div>
+            )}
+            {tank.refugium_volume_liters && (
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">{t('fields.refugiumVolume')}:</span>
+                <span className="font-medium">{formatVolume(tank.refugium_volume_liters)}</span>
+              </div>
+            )}
+            {tank.refugium_algae && (
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">{t('fields.refugiumAlgae')}:</span>
+                <span className="font-medium text-emerald-600 dark:text-emerald-400">{tank.refugium_algae}</span>
+              </div>
+            )}
+            {tank.refugium_lighting_hours != null && (
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">{t('fields.refugiumLightingHours')}:</span>
+                <span className="font-medium">{tank.refugium_lighting_hours}h/day</span>
+              </div>
+            )}
+            {tank.refugium_notes && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-1">{tank.refugium_notes}</p>
+            )}
+          </div>
+        )}
+
         {/* Setup Date & Days Running */}
         {tank.setup_date && (
           <div className="pt-4 border-t">

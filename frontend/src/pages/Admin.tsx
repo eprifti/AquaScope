@@ -1394,6 +1394,7 @@ export default function Admin() {
                 { key: 'feeding' as keyof ModuleSettings, label: 'Feeding', icon: '🍽️' },
                 { key: 'finances' as keyof ModuleSettings, label: 'Finances', icon: '💰' },
                 { key: 'diseases' as keyof ModuleSettings, label: 'Diseases', icon: '🩺' },
+                { key: 'lighting' as keyof ModuleSettings, label: 'Lighting', icon: '💡' },
               ]).map((mod) => (
                 <div key={mod.key} className="flex items-center justify-between py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                   <div className="flex items-center space-x-3">

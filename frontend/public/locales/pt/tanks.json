@@ -42,7 +42,23 @@
     "selectSubtype": "-- Selecionar subtipo --",
     "setupDateHint": "Quando montou este aquário?",
     "electricityCost": "Custo eletricidade / dia",
-    "electricityCostHint": "Custo diário de eletricidade para este aquário"
+    "electricityCostHint": "Custo diário de eletricidade para este aquário",
+    "refugium": "Refúgio",
+    "hasRefugium": "Tem refúgio",
+    "refugiumType": "Tipo de refúgio",
+    "selectRefugiumType": "-- Selecionar tipo --",
+    "refugiumVolume": "Volume do refúgio",
+    "refugiumAlgae": "Algas / Organismos",
+    "refugiumLightingHours": "Horas de luz / dia",
+    "refugiumNotes": "Notas do refúgio",
+    "refugiumNotesPlaceholder": "ex.: Fotoperíodo inverso, produção de copépodes..."
+  },
+  "refugiumTypes": {
+    "macro_algae": "Macroalgas",
+    "deep_sand_bed": "Leito de areia profundo",
+    "live_rock": "Rocha viva",
+    "mud": "Lama / Miracle Mud",
+    "mixed": "Misto"
   },
   "stats": {
     "daysRunning_one": "{{count}} dia",

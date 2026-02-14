@@ -28,6 +28,12 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
   const [description, setDescription] = useState('')
   const [setupDate, setSetupDate] = useState('')
   const [electricityCost, setElectricityCost] = useState('')
+  const [hasRefugium, setHasRefugium] = useState(false)
+  const [refugiumType, setRefugiumType] = useState('')
+  const [refugiumVolume, setRefugiumVolume] = useState('')
+  const [refugiumAlgae, setRefugiumAlgae] = useState('')
+  const [refugiumLightingHours, setRefugiumLightingHours] = useState('')
+  const [refugiumNotes, setRefugiumNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -40,6 +46,12 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
       setDescription(tank.description || '')
       setSetupDate(tank.setup_date || '')
       setElectricityCost(tank.electricity_cost_per_day?.toString() || '')
+      setHasRefugium(tank.has_refugium || false)
+      setRefugiumType(tank.refugium_type || '')
+      setRefugiumVolume(tank.refugium_volume_liters != null ? litersToDisplay(tank.refugium_volume_liters).toString() : '')
+      setRefugiumAlgae(tank.refugium_algae || '')
+      setRefugiumLightingHours(tank.refugium_lighting_hours?.toString() || '')
+      setRefugiumNotes(tank.refugium_notes || '')
     }
   }, [tank])
 
@@ -70,6 +82,12 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
         description: description || null,
         setup_date: setupDate || null,
         electricity_cost_per_day: electricityCost ? parseFloat(electricityCost) : null,
+        has_refugium: hasRefugium,
+        refugium_type: hasRefugium && refugiumType ? refugiumType : null,
+        refugium_volume_liters: hasRefugium && refugiumVolume ? displayToLiters(parseFloat(refugiumVolume)) : null,
+        refugium_algae: hasRefugium && refugiumAlgae ? refugiumAlgae : null,
+        refugium_lighting_hours: hasRefugium && refugiumLightingHours ? parseFloat(refugiumLightingHours) : null,
+        refugium_notes: hasRefugium && refugiumNotes ? refugiumNotes : null,
       }
 
       await onSubmit(data)
@@ -84,6 +102,12 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
         setDescription('')
         setSetupDate('')
         setElectricityCost('')
+        setHasRefugium(false)
+        setRefugiumType('')
+        setRefugiumVolume('')
+        setRefugiumAlgae('')
+        setRefugiumLightingHours('')
+        setRefugiumNotes('')
       }
     } catch (error) {
       console.error('Error submitting tank:', error)
@@ -246,6 +270,115 @@ export default function TankForm({ tank, onSubmit, onCancel }: TankFormProps) {
                   <span className="font-medium">{t('fields.totalSystem')}:</span>{' '}
                   <span className="text-lg font-semibold">{getTotalVolume().toFixed(1)} {volumeLabel}</span>
                 </p>
+              </div>
+            )}
+          </div>
+
+          {/* Refugium Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('fields.refugium')}</h3>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasRefugium}
+                  onChange={(e) => setHasRefugium(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ocean-300 dark:peer-focus:ring-ocean-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:after:border-gray-500 peer-checked:bg-ocean-600" />
+              </label>
+            </div>
+
+            {hasRefugium && (
+              <div className="space-y-4 pl-0 border-l-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Refugium Type */}
+                  <div>
+                    <label htmlFor="refugiumType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('fields.refugiumType')}
+                    </label>
+                    <select
+                      id="refugiumType"
+                      value={refugiumType}
+                      onChange={(e) => setRefugiumType(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 dark:bg-gray-700 dark:text-gray-100"
+                    >
+                      <option value="">{t('fields.selectRefugiumType')}</option>
+                      <option value="macro_algae">{t('refugiumTypes.macro_algae')}</option>
+                      <option value="deep_sand_bed">{t('refugiumTypes.deep_sand_bed')}</option>
+                      <option value="live_rock">{t('refugiumTypes.live_rock')}</option>
+                      <option value="mud">{t('refugiumTypes.mud')}</option>
+                      <option value="mixed">{t('refugiumTypes.mixed')}</option>
+                    </select>
+                  </div>
+
+                  {/* Refugium Volume */}
+                  <div>
+                    <label htmlFor="refugiumVolume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('fields.refugiumVolume')} ({volumeLabel})
+                    </label>
+                    <input
+                      type="number"
+                      id="refugiumVolume"
+                      value={refugiumVolume}
+                      onChange={(e) => setRefugiumVolume(e.target.value)}
+                      step="0.1"
+                      min="0"
+                      placeholder={volumeLabel === 'L' ? 'e.g., 50' : 'e.g., 13'}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 dark:bg-gray-700 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Algae Species */}
+                  <div>
+                    <label htmlFor="refugiumAlgae" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('fields.refugiumAlgae')}
+                    </label>
+                    <input
+                      type="text"
+                      id="refugiumAlgae"
+                      value={refugiumAlgae}
+                      onChange={(e) => setRefugiumAlgae(e.target.value)}
+                      placeholder="e.g., Chaetomorpha, Caulerpa"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 dark:bg-gray-700 dark:text-gray-100"
+                    />
+                  </div>
+
+                  {/* Lighting Hours */}
+                  <div>
+                    <label htmlFor="refugiumLightingHours" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('fields.refugiumLightingHours')}
+                    </label>
+                    <input
+                      type="number"
+                      id="refugiumLightingHours"
+                      value={refugiumLightingHours}
+                      onChange={(e) => setRefugiumLightingHours(e.target.value)}
+                      step="0.5"
+                      min="0"
+                      max="24"
+                      placeholder="e.g., 12"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 dark:bg-gray-700 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Refugium Notes */}
+                <div>
+                  <label htmlFor="refugiumNotes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('fields.refugiumNotes')}
+                  </label>
+                  <textarea
+                    id="refugiumNotes"
+                    value={refugiumNotes}
+                    onChange={(e) => setRefugiumNotes(e.target.value)}
+                    rows={2}
+                    placeholder={t('fields.refugiumNotesPlaceholder')}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
               </div>
             )}
           </div>

@@ -387,3 +387,53 @@ Fully implemented in v1.10.0 with feeding schedules and feeding logs.
 - Food inventory integration with depletion estimates
 - Quick-feed button on dashboard tank cards
 - Species dietary requirements cross-reference
+
+---
+
+## Lighting Schedule Management
+
+**Priority**: Medium
+**Status**: Done
+
+Track and manage LED lighting schedules per tank with multi-channel support and built-in presets.
+
+### Done
+
+Fully implemented in v1.13.0 with lighting schedules, channel editors, area charts, and 6 built-in presets.
+
+### Implementation
+
+- **Backend**: `lighting_schedules` table with CRUD API at `/api/v1/lighting/`
+  - JSON-based channel definitions and hourly intensity data
+  - Built-in presets served from `data/lighting-presets.json`
+  - Activate/deactivate schedules per tank
+- **Frontend**: Lighting page with schedule cards, form with channel/intensity editors, LightingChart SVG visualization
+- **Presets**: 6 built-in presets (2 ReefBreeders, 2 generic reef, 1 freshwater, 1 refugium) + PAR guidelines
+- **i18n**: Full translations in 6 languages
+
+### Planned Extensions
+
+- Sunrise/sunset ramp automation with GPS-based timing
+- Acclimation mode (gradual intensity increase for new corals)
+- Integration with reef controllers (ReefPi PWM channels)
+- Spectrum composition analysis and PAR estimation
+
+---
+
+## Refugium Support
+
+**Priority**: Medium
+**Status**: Done
+
+Record refugium details as part of the tank entity — volume, type, algae species, lighting hours.
+
+### Done
+
+Fully implemented in v1.13.0 as tank extension fields with form section, sidebar info block, and i18n support.
+
+### Implementation
+
+- 6 new columns on `tanks` table (no new tables or API routes)
+- TankForm: collapsible "Refugium" section with type dropdown, volume, algae, lighting hours
+- TankSidebar: refugium info block when has_refugium is true
+- i18n in 6 languages

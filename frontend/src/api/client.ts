@@ -83,6 +83,10 @@ import type {
   DiseaseTreatment,
   DiseaseTreatmentCreate,
   DiseaseHealthSummary,
+  LightingSchedule,
+  LightingScheduleCreate,
+  LightingScheduleUpdate,
+  LightingPreset,
 } from '../types'
 
 // API base URL - empty string means same origin (nginx proxy in Docker)
@@ -1335,6 +1339,46 @@ export const diseasesApi = {
       params: { tank_id: tankId },
     })
     return response.data
+  },
+}
+
+// ============================================================================
+// Lighting API
+// ============================================================================
+
+export const lightingApi = {
+  list: async (params?: { tank_id?: string }): Promise<LightingSchedule[]> => {
+    const response = await apiClient.get<LightingSchedule[]>('/lighting/', { params })
+    return response.data
+  },
+
+  get: async (id: string): Promise<LightingSchedule> => {
+    const response = await apiClient.get<LightingSchedule>(`/lighting/${id}`)
+    return response.data
+  },
+
+  create: async (data: LightingScheduleCreate): Promise<LightingSchedule> => {
+    const response = await apiClient.post<LightingSchedule>('/lighting/', data)
+    return response.data
+  },
+
+  update: async (id: string, data: LightingScheduleUpdate): Promise<LightingSchedule> => {
+    const response = await apiClient.put<LightingSchedule>(`/lighting/${id}`, data)
+    return response.data
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/lighting/${id}`)
+  },
+
+  activate: async (id: string): Promise<LightingSchedule> => {
+    const response = await apiClient.post<LightingSchedule>(`/lighting/${id}/activate`)
+    return response.data
+  },
+
+  getPresets: async (): Promise<LightingPreset[]> => {
+    const response = await apiClient.get<any>('/lighting/presets')
+    return response.data.presets || response.data
   },
 }
 

@@ -16,19 +16,19 @@ echo "=== AquaScope Demo Seed ==="
 
 # ── Safety: backup before seeding ─────────────────────────────────
 if docker ps --format '{{.Names}}' 2>/dev/null | grep -q aquascope-postgres; then
-  echo "[0/13] Creating pre-seed backup..."
+  echo "[0/14] Creating pre-seed backup..."
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
   bash "$SCRIPT_DIR/backup.sh" 2>/dev/null && echo "  Backup saved to backups/" || echo "  Backup skipped (not critical)"
   echo ""
 fi
 
 # ── Register & Login ──────────────────────────────────────────────
-echo "[1/13] Registering demo user..."
+echo "[1/14] Registering demo user..."
 curl -sf -X POST "$API/auth/register" \
   -H "Content-Type: application/json" \
   -d "{\"email\":\"$EMAIL\",\"username\":\"$USER\",\"password\":\"$PASS\"}" > /dev/null 2>&1 || true
 
-echo "[1/13] Logging in..."
+echo "[1/14] Logging in..."
 TOKEN=$(curl -sf -X POST "$API/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=$EMAIL&password=$PASS" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
@@ -61,7 +61,7 @@ print(matches[0]['id'] if matches else '')
 }
 
 # ── Create Tanks ──────────────────────────────────────────────────
-echo "[2/13] Creating tanks..."
+echo "[2/14] Creating tanks..."
 
 SALT_TANK=$(post "$API/tanks/" '{
   "name": "Coral Paradise",
@@ -71,7 +71,13 @@ SALT_TANK=$(post "$API/tanks/" '{
   "sump_volume_liters": 100,
   "description": "SPS dominant reef with Acropora, Montipora, and Pocillopora colonies. Triton method dosing, Radion G6 Pro lighting, Ecotech Vectra M2 return pump.",
   "setup_date": "2024-03-15",
-  "electricity_cost_per_day": 1.20
+  "electricity_cost_per_day": 1.20,
+  "has_refugium": true,
+  "refugium_volume_liters": 30,
+  "refugium_type": "macro_algae",
+  "refugium_algae": "Chaetomorpha linum, Caulerpa prolifera",
+  "refugium_lighting_hours": 12,
+  "refugium_notes": "Reverse photoperiod refugium in sump with Chaeto reactor. Runs 20:00-08:00 when main lights are off. Helps stabilize pH overnight and exports excess nutrients."
 }')
 echo "  Saltwater tank: $SALT_TANK"
 
@@ -88,7 +94,7 @@ FRESH_TANK=$(post "$API/tanks/" '{
 echo "  Freshwater tank: $FRESH_TANK"
 
 # ── Tank Events ───────────────────────────────────────────────────
-echo "[3/13] Adding tank events..."
+echo "[3/14] Adding tank events..."
 
 # Saltwater events
 post_quiet "$API/tanks/$SALT_TANK/events" '{"title":"Initial cycle complete","event_date":"2024-04-20","event_type":"milestone","description":"Ammonia and nitrite at 0 for 7 days"}'
@@ -104,7 +110,7 @@ post_quiet "$API/tanks/$FRESH_TANK/events" '{"title":"Planted new swords","event
 post_quiet "$API/tanks/$FRESH_TANK/events" '{"title":"CO2 system installed","event_date":"2025-03-01","event_type":"equipment","description":"Pressurized CO2 with inline diffuser"}'
 
 # ── Livestock ─────────────────────────────────────────────────────
-echo "[4/13] Adding livestock..."
+echo "[4/14] Adding livestock..."
 
 # Saltwater livestock (with WoRMS, iNaturalist IDs and photo URLs)
 post_quiet "$API/livestock/" "{\"tank_id\":\"$SALT_TANK\",\"species_name\":\"Acropora millepora\",\"common_name\":\"Millepora Acro\",\"type\":\"coral\",\"quantity\":3,\"added_date\":\"2024-05-15\",\"notes\":\"Purple/green coloration, mid-tank placement\",\"worms_id\":\"207023\",\"inaturalist_id\":\"93299\",\"cached_photo_url\":\"https://inaturalist-open-data.s3.amazonaws.com/photos/105111643/medium.jpg\"}"
@@ -126,7 +132,7 @@ post_quiet "$API/livestock/" "{\"tank_id\":\"$FRESH_TANK\",\"species_name\":\"Ot
 post_quiet "$API/livestock/" "{\"tank_id\":\"$FRESH_TANK\",\"species_name\":\"Caridina multidentata\",\"common_name\":\"Amano Shrimp\",\"type\":\"invertebrate\",\"quantity\":10,\"added_date\":\"2024-11-20\",\"notes\":\"Best algae eaters in the tank\",\"worms_id\":\"586329\",\"inaturalist_id\":\"434771\",\"cached_photo_url\":\"https://static.inaturalist.org/photos/163242662/medium.jpg\"}"
 
 # ── Equipment ─────────────────────────────────────────────────────
-echo "[5/13] Adding equipment..."
+echo "[5/14] Adding equipment..."
 
 # Saltwater equipment
 post_quiet "$API/equipment/" "{\"tank_id\":\"$SALT_TANK\",\"name\":\"Radion G6 Pro\",\"equipment_type\":\"light\",\"manufacturer\":\"EcoTech Marine\",\"model\":\"G6 Pro\",\"purchase_date\":\"2024-11-10\",\"purchase_price\":\"899.00\",\"condition\":\"excellent\",\"status\":\"active\",\"notes\":\"Running AB+ schedule at 60% intensity\"}"
@@ -143,7 +149,7 @@ post_quiet "$API/equipment/" "{\"tank_id\":\"$FRESH_TANK\",\"name\":\"CO2Art Pro
 post_quiet "$API/equipment/" "{\"tank_id\":\"$FRESH_TANK\",\"name\":\"Eheim Jager 200W\",\"equipment_type\":\"heater\",\"manufacturer\":\"Eheim\",\"model\":\"Jager 200W\",\"purchase_date\":\"2024-09-01\",\"purchase_price\":\"39.00\",\"condition\":\"good\",\"status\":\"active\",\"notes\":\"Set to 26°C\"}"
 
 # ── Consumables (from Stock matériel inventory) ──────────────────
-echo "[6/13] Adding saltwater consumables..."
+echo "[6/14] Adding saltwater consumables..."
 
 # Decoration
 post_quiet "$API/consumables/" "{\"tank_id\":\"$SALT_TANK\",\"name\":\"CORALGUM\",\"consumable_type\":\"other\",\"brand\":\"Tunze\",\"product_name\":\"112g\",\"quantity_on_hand\":2,\"quantity_unit\":\"units\",\"purchase_price\":\"12.99\",\"purchase_url\":\"https://www.zoanthus.fr/fr/bouturage/2218-tunze-coral-gum-112-g-0104740-4025167010415.html\",\"status\":\"active\",\"notes\":\"Epoxy putty-glue for secure coral frag mounting.\"}"
@@ -197,7 +203,7 @@ post_quiet "$API/consumables/" "{\"tank_id\":\"$SALT_TANK\",\"name\":\"Reef Crys
 post_quiet "$API/consumables/" "{\"tank_id\":\"$SALT_TANK\",\"name\":\"Osmoseur\",\"consumable_type\":\"additive\",\"brand\":\"Aquavie\",\"product_name\":\"380l/j\",\"quantity_on_hand\":1,\"quantity_unit\":\"units\",\"purchase_price\":\"89.70\",\"status\":\"active\",\"notes\":\"RO unit — produces high-quality osmosis water from tap water.\"}"
 
 # ── Freshwater Consumables ────────────────────────────────────────
-echo "[7/13] Adding freshwater consumables..."
+echo "[7/14] Adding freshwater consumables..."
 
 # Plant fertilizers
 post_quiet "$API/consumables/" "{\"tank_id\":\"$FRESH_TANK\",\"name\":\"Flourish Comprehensive\",\"consumable_type\":\"supplement\",\"brand\":\"Seachem\",\"product_name\":\"500ml\",\"quantity_on_hand\":2,\"quantity_unit\":\"units\",\"purchase_price\":\"14.99\",\"status\":\"active\",\"notes\":\"Comprehensive plant supplement — micro and macro nutrients. Dose 5ml per 250L twice weekly.\"}"
@@ -233,7 +239,7 @@ post_quiet "$API/consumables/" "{\"tank_id\":\"$FRESH_TANK\",\"name\":\"ParaGuar
 post_quiet "$API/consumables/" "{\"tank_id\":\"$FRESH_TANK\",\"name\":\"Pimafix\",\"consumable_type\":\"medication\",\"brand\":\"API\",\"product_name\":\"237ml\",\"quantity_on_hand\":1,\"quantity_unit\":\"units\",\"purchase_price\":\"10.49\",\"status\":\"active\",\"notes\":\"Natural antifungal remedy from West Indian Bay Tree. Safe for scaleless fish and shrimp.\"}"
 
 # ── Maintenance Reminders ─────────────────────────────────────────
-echo "[8/13] Adding maintenance reminders..."
+echo "[8/14] Adding maintenance reminders..."
 
 # Saltwater maintenance
 post_quiet "$API/maintenance/reminders" "{\"tank_id\":\"$SALT_TANK\",\"title\":\"10% Water Change\",\"description\":\"Red Sea Coral Pro salt mix, match temp and salinity\",\"reminder_type\":\"water_change\",\"frequency_days\":7,\"next_due\":\"2026-02-15\"}"
@@ -249,7 +255,7 @@ post_quiet "$API/maintenance/reminders" "{\"tank_id\":\"$FRESH_TANK\",\"title\":
 post_quiet "$API/maintenance/reminders" "{\"tank_id\":\"$FRESH_TANK\",\"title\":\"Refill CO2 Cylinder\",\"description\":\"Check CO2 pressure gauge, refill when below 400 PSI\",\"reminder_type\":\"dosing_refill\",\"frequency_days\":60,\"next_due\":\"2026-04-01\"}"
 
 # ── Notes ─────────────────────────────────────────────────────────
-echo "[9/13] Adding notes..."
+echo "[9/14] Adding notes..."
 
 # Saltwater notes
 post_quiet "$API/notes/" "{\"tank_id\":\"$SALT_TANK\",\"content\":\"Noticed slight STN on the base of the green Acropora millepora. Increased flow in that area by adjusting the MP40 to pulse mode. Will monitor closely over the next week. Dipped in CoralRx as a precaution.\"}"
@@ -264,7 +270,7 @@ post_quiet "$API/notes/" "{\"tank_id\":\"$FRESH_TANK\",\"content\":\"CO2 drop ch
 post_quiet "$API/notes/" "{\"tank_id\":\"$FRESH_TANK\",\"content\":\"Rummy-nose tetras all showing deep red noses - good indicator of water quality. Corydoras are active and foraging during the day which is a great sign.\"}"
 
 # ── Parameters (historical data) ──────────────────────────────────
-echo "[10/13] Submitting parameter readings..."
+echo "[10/14] Submitting parameter readings..."
 
 # Saltwater parameters - 6 months of data (biweekly)
 for d in 2024-10-01 2024-10-15 2024-11-01 2024-11-15 2024-12-01 2024-12-15 \
@@ -318,7 +324,7 @@ for d in 2024-11-01 2024-11-08 2024-11-15 2024-11-22 2024-11-29 \
 done
 
 # ── ICP Tests (saltwater only) ────────────────────────────────────
-echo "[11/13] Adding ICP test results..."
+echo "[11/14] Adding ICP test results..."
 
 # ICP Test 1: August 2024 — first test after cycle, mostly good
 post_quiet "$API/icp-tests/" "{\"tank_id\":\"$SALT_TANK\",\"test_date\":\"2024-08-15\",\"lab_name\":\"ATI\",\"test_id\":\"ATI-2024-08-001\",\"water_type\":\"saltwater\",\"sample_date\":\"2024-08-10\",\"received_date\":\"2024-08-13\",\"evaluated_date\":\"2024-08-15\",\"score_major_elements\":88,\"score_minor_elements\":72,\"score_pollutants\":95,\"score_base_elements\":90,\"score_overall\":86,\"salinity\":35.2,\"salinity_status\":\"ok\",\"kh\":7.8,\"kh_status\":\"low\",\"cl\":20100,\"cl_status\":\"ok\",\"na\":10800,\"na_status\":\"ok\",\"mg\":1340,\"mg_status\":\"ok\",\"s\":930,\"s_status\":\"ok\",\"ca\":425,\"ca_status\":\"ok\",\"k\":405,\"k_status\":\"ok\",\"br\":68,\"br_status\":\"ok\",\"sr\":8.4,\"sr_status\":\"ok\",\"b\":4.8,\"b_status\":\"ok\",\"f\":1.3,\"f_status\":\"ok\",\"li\":180,\"li_status\":\"ok\",\"si\":120,\"si_status\":\"ok\",\"i\":52,\"i_status\":\"low\",\"ba\":8,\"ba_status\":\"ok\",\"mo\":10,\"mo_status\":\"ok\",\"ni\":1.2,\"ni_status\":\"ok\",\"mn\":0.5,\"mn_status\":\"ok\",\"fe\":2.1,\"fe_status\":\"ok\",\"cu\":1.8,\"cu_status\":\"ok\",\"zn\":4.2,\"zn_status\":\"ok\",\"sn\":3.5,\"sn_status\":\"high\",\"no3\":3.2,\"no3_status\":\"ok\",\"po4\":0.04,\"po4_status\":\"ok\",\"al\":5,\"al_status\":\"ok\",\"pb\":0,\"pb_status\":\"ok\",\"notes\":\"First ICP test after cycle. Slight tin contamination detected — likely from heater element. Iodine low, started dosing Tropic Marin iodine.\"}"
@@ -330,7 +336,7 @@ post_quiet "$API/icp-tests/" "{\"tank_id\":\"$SALT_TANK\",\"test_date\":\"2025-0
 post_quiet "$API/icp-tests/" "{\"tank_id\":\"$SALT_TANK\",\"test_date\":\"2025-07-10\",\"lab_name\":\"ATI\",\"test_id\":\"ATI-2025-07-089\",\"water_type\":\"saltwater\",\"sample_date\":\"2025-07-05\",\"received_date\":\"2025-07-08\",\"evaluated_date\":\"2025-07-10\",\"score_major_elements\":96,\"score_minor_elements\":92,\"score_pollutants\":100,\"score_base_elements\":97,\"score_overall\":96,\"salinity\":35.1,\"salinity_status\":\"ok\",\"kh\":8.8,\"kh_status\":\"ok\",\"cl\":19900,\"cl_status\":\"ok\",\"na\":10750,\"na_status\":\"ok\",\"mg\":1380,\"mg_status\":\"ok\",\"s\":925,\"s_status\":\"ok\",\"ca\":440,\"ca_status\":\"ok\",\"k\":400,\"k_status\":\"ok\",\"br\":68,\"br_status\":\"ok\",\"sr\":8.8,\"sr_status\":\"ok\",\"b\":4.5,\"b_status\":\"ok\",\"f\":1.3,\"f_status\":\"ok\",\"li\":178,\"li_status\":\"ok\",\"si\":60,\"si_status\":\"ok\",\"i\":58,\"i_status\":\"ok\",\"ba\":6,\"ba_status\":\"ok\",\"mo\":12,\"mo_status\":\"ok\",\"ni\":0.6,\"ni_status\":\"ok\",\"mn\":0.3,\"mn_status\":\"ok\",\"fe\":1.5,\"fe_status\":\"ok\",\"cu\":0.9,\"cu_status\":\"ok\",\"zn\":3.2,\"zn_status\":\"ok\",\"sn\":0.5,\"sn_status\":\"ok\",\"no3\":4.1,\"no3_status\":\"ok\",\"po4\":0.035,\"po4_status\":\"ok\",\"al\":2,\"al_status\":\"ok\",\"pb\":0,\"pb_status\":\"ok\",\"notes\":\"Mature system — all elements stable and within ideal range. Zero pollutants. Coral growth is excellent, Acropora encrusting onto surrounding rocks.\"}"
 
 # ── Feeding Schedules ─────────────────────────────────────────────
-echo "[12/13] Adding feeding schedules..."
+echo "[12/14] Adding feeding schedules..."
 
 # Saltwater feeding schedules
 post_quiet "$API/feeding/schedules" "{\"tank_id\":\"$SALT_TANK\",\"food_name\":\"PE Mysis Shrimp\",\"quantity\":2,\"quantity_unit\":\"cube\",\"frequency_hours\":12,\"notes\":\"Morning and evening feeding for all fish\",\"is_active\":true}"
@@ -347,7 +353,7 @@ post_quiet "$API/feeding/schedules" "{\"tank_id\":\"$FRESH_TANK\",\"food_name\":
 post_quiet "$API/feeding/schedules" "{\"tank_id\":\"$FRESH_TANK\",\"food_name\":\"Shrimp King Complete\",\"quantity\":1,\"quantity_unit\":\"piece\",\"frequency_hours\":72,\"notes\":\"Supplemental feed for amano shrimp colony\",\"is_active\":true}"
 
 # ── Disease/Health Records ────────────────────────────────────────
-echo "[13/13] Adding disease records and treatments..."
+echo "[13/14] Adding disease records and treatments..."
 
 # Lookup livestock IDs for disease linking
 SALT_TANG=$(lookup_livestock "$SALT_TANK" "Paracanthurus")
@@ -403,6 +409,95 @@ if [ -n "$FRESH_CORY" ]; then
   fi
 fi
 
+# ── Lighting Schedules ────────────────────────────────────────
+echo "[14/14] Adding lighting schedules..."
+
+# Saltwater tank - ReefBreeders Current Schedule (active)
+post_quiet "$API/lighting/" "{
+  \"tank_id\": \"$SALT_TANK\",
+  \"name\": \"ReefBreeders — Current Schedule\",
+  \"description\": \"Balanced reef lighting for mixed reef. 6 LED channels with gradual ramp-up from 11:00 to 23:00. Blue-dominant spectrum with moderate white.\",
+  \"channels\": [
+    {\"name\": \"Deep red\", \"color\": \"#DC2626\"},
+    {\"name\": \"Green\", \"color\": \"#16A34A\"},
+    {\"name\": \"Royal blue\", \"color\": \"#2563EB\"},
+    {\"name\": \"Cool white\", \"color\": \"#E5E7EB\"},
+    {\"name\": \"Cool blue\", \"color\": \"#0EA5E9\"},
+    {\"name\": \"Violet\", \"color\": \"#7C3AED\"}
+  ],
+  \"schedule_data\": {
+    \"10\": [0,0,0,0,0,0], \"11\": [0,0,0,1,0,0], \"12\": [0,0,8,8,8,0],
+    \"13\": [1,1,8,8,8,8], \"14\": [9,9,59,23,59,59], \"15\": [9,9,59,23,59,59],
+    \"16\": [9,9,59,23,59,59], \"17\": [9,9,59,23,59,59], \"18\": [9,9,59,23,59,59],
+    \"19\": [9,9,59,23,59,59], \"20\": [9,9,59,3,59,59], \"21\": [1,1,40,3,8,8],
+    \"22\": [0,0,25,0,8,0], \"23\": [0,0,4,0,4,0]
+  },
+  \"is_active\": true,
+  \"notes\": \"Production schedule running on 2x ReefBreeders Photon V2 fixtures\"
+}"
+
+# Saltwater tank - Acropora Optimized (inactive)
+post_quiet "$API/lighting/" "{
+  \"tank_id\": \"$SALT_TANK\",
+  \"name\": \"ReefBreeders — Optimized for Acropora\",
+  \"description\": \"High-intensity schedule for SPS corals. Strong blue/violet channels for 250-350 PAR at coral depth.\",
+  \"channels\": [
+    {\"name\": \"Deep red\", \"color\": \"#DC2626\"},
+    {\"name\": \"Green\", \"color\": \"#16A34A\"},
+    {\"name\": \"Royal blue\", \"color\": \"#2563EB\"},
+    {\"name\": \"Cool white\", \"color\": \"#E5E7EB\"},
+    {\"name\": \"Cool blue\", \"color\": \"#0EA5E9\"},
+    {\"name\": \"Violet\", \"color\": \"#7C3AED\"}
+  ],
+  \"schedule_data\": {
+    \"10\": [0,0,0,0,0,0], \"11\": [0,0,10,5,10,5], \"12\": [0,0,30,10,30,10],
+    \"13\": [0,0,50,15,50,30], \"14\": [1,1,90,30,90,70], \"15\": [1,1,100,35,100,80],
+    \"16\": [1,1,100,35,100,80], \"17\": [1,1,100,30,100,80], \"18\": [1,1,90,20,90,70],
+    \"19\": [0,0,60,10,60,40], \"20\": [0,0,40,5,40,20], \"21\": [0,0,20,2,20,10],
+    \"22\": [0,0,5,0,5,5], \"23\": [0,0,0,0,0,0]
+  },
+  \"is_active\": false,
+  \"notes\": \"Alternative schedule for SPS-heavy tank sections\"
+}"
+
+# Freshwater tank - Planted schedule
+post_quiet "$API/lighting/" "{
+  \"tank_id\": \"$FRESH_TANK\",
+  \"name\": \"Planted Tank — High Light\",
+  \"description\": \"8-hour photoperiod with white-dominant spectrum and supplemental red for plant growth.\",
+  \"channels\": [
+    {\"name\": \"White\", \"color\": \"#F59E0B\"},
+    {\"name\": \"Red\", \"color\": \"#DC2626\"},
+    {\"name\": \"Blue\", \"color\": \"#2563EB\"}
+  ],
+  \"schedule_data\": {
+    \"10\": [10,5,5], \"11\": [30,15,12], \"12\": [55,30,20],
+    \"13\": [75,45,25], \"14\": [80,50,30], \"15\": [80,50,30],
+    \"16\": [70,40,25], \"17\": [45,25,15], \"18\": [20,10,8], \"19\": [5,2,2]
+  },
+  \"is_active\": true,
+  \"notes\": \"Running on Fluval Plant 3.0 with custom schedule\"
+}"
+
+# Refugium reverse photoperiod
+post_quiet "$API/lighting/" "{
+  \"tank_id\": \"$SALT_TANK\",
+  \"name\": \"Refugium — Reverse Photoperiod\",
+  \"description\": \"Runs when main lights are off to stabilize pH and maximize macro algae growth.\",
+  \"channels\": [
+    {\"name\": \"Full spectrum\", \"color\": \"#FBBF24\"}
+  ],
+  \"schedule_data\": {
+    \"0\": [100], \"1\": [100], \"2\": [100], \"3\": [100], \"4\": [100],
+    \"5\": [100], \"6\": [100], \"7\": [100], \"8\": [50], \"9\": [0],
+    \"10\": [0], \"11\": [0], \"12\": [0], \"13\": [0], \"14\": [0],
+    \"15\": [0], \"16\": [0], \"17\": [0], \"18\": [0], \"19\": [50],
+    \"20\": [100], \"21\": [100], \"22\": [100], \"23\": [100]
+  },
+  \"is_active\": true,
+  \"notes\": \"Reverse cycle for Chaetomorpha reactor in sump\"
+}"
+
 echo ""
 echo "=== AquaScope Demo Seed Complete ==="
 echo ""
@@ -422,6 +517,7 @@ echo "    - 41 consumables (additives, food, medication, gear)"
 echo "    - 3 ICP tests (Aug 2024, Jan 2025, Jul 2025)"
 echo "    - 5 feeding schedules (4 active, 1 inactive)"
 echo "    - 3 disease records (1 resolved, 1 monitoring, 1 resolved) with treatments"
+echo "    - 3 lighting schedules (1 active + 1 inactive + 1 refugium)"
 echo ""
 echo "  Rio Negro Biotope (freshwater):"
 echo "    - 4 tank events"
@@ -433,5 +529,6 @@ echo "    - 67 parameter readings (weekly, Nov 2024 - Feb 2026)"
 echo "    - 21 consumables (fertilizers, food, water conditioners, test kits, filter media, medication)"
 echo "    - 5 feeding schedules (all active)"
 echo "    - 2 disease records (both resolved) with treatments"
+echo "    - 1 lighting schedule (Planted Tank)"
 echo ""
 echo "Login at http://localhost with $EMAIL / $PASS"

@@ -1,0 +1,53 @@
+{
+  "title": "Beleuchtung",
+  "subtitle": "LED-Beleuchtungspläne für Ihre Aquarien verwalten",
+  "createSchedule": "Plan erstellen",
+  "editSchedule": "Plan bearbeiten",
+  "deleteSchedule": "Plan löschen",
+  "deleteConfirm": "Sind Sie sicher, dass Sie diesen Beleuchtungsplan löschen möchten?",
+  "noSchedules": "Noch keine Beleuchtungspläne",
+  "noSchedulesHint": "Erstellen Sie einen Plan oder starten Sie mit einer Vorlage",
+  "fields": {
+    "name": "Planname",
+    "description": "Beschreibung",
+    "tank": "Aquarium",
+    "channels": "LED-Kanäle",
+    "channelName": "Kanalname",
+    "channelColor": "Farbe",
+    "addChannel": "Kanal hinzufügen",
+    "removeChannel": "Entfernen",
+    "schedule": "Zeitplan",
+    "intensity": "Intensität",
+    "hour": "Stunde",
+    "notes": "Notizen",
+    "active": "Aktiv",
+    "inactive": "Inaktiv"
+  },
+  "presets": {
+    "title": "Vorlagen",
+    "loadPreset": "Vorlage laden",
+    "selectPreset": "-- Vorlage wählen --",
+    "reefbreeders-current": "ReefBreeders — Aktueller Plan",
+    "reefbreeders-acropora": "ReefBreeders — Optimiert für Acropora",
+    "reef-low-softies": "Riff — Schwaches Licht (Weichkorallen)",
+    "reef-medium-mixed": "Riff — Mittleres Licht (LPS/Gemischt)",
+    "freshwater-planted": "Süßwasser Pflanzen — Starkes Licht",
+    "refugium-reverse": "Refugium — Umgekehrte Photoperiode"
+  },
+  "chart": {
+    "title": "Intensitätsvorschau",
+    "xAxis": "Stunde",
+    "yAxis": "Intensität %"
+  },
+  "stats": {
+    "activeSchedules": "Aktive Pläne",
+    "totalSchedules": "Gesamte Pläne",
+    "tanksWithLighting": "Aquarien mit Beleuchtung"
+  },
+  "actions": {
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "duplicate": "Duplizieren",
+    "save": "Plan speichern"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "title": "Éclairage",
+  "subtitle": "Gérez les programmes d'éclairage LED pour vos aquariums",
+  "createSchedule": "Créer un programme",
+  "editSchedule": "Modifier le programme",
+  "deleteSchedule": "Supprimer le programme",
+  "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce programme d'éclairage ?",
+  "noSchedules": "Aucun programme d'éclairage",
+  "noSchedulesHint": "Créez un programme ou partez d'un modèle",
+  "fields": {
+    "name": "Nom du programme",
+    "description": "Description",
+    "tank": "Aquarium",
+    "channels": "Canaux LED",
+    "channelName": "Nom du canal",
+    "channelColor": "Couleur",
+    "addChannel": "Ajouter un canal",
+    "removeChannel": "Supprimer",
+    "schedule": "Programme",
+    "intensity": "Intensité",
+    "hour": "Heure",
+    "notes": "Notes",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "presets": {
+    "title": "Modèles",
+    "loadPreset": "Charger un modèle",
+    "selectPreset": "-- Sélectionner un modèle --",
+    "reefbreeders-current": "ReefBreeders — Programme actuel",
+    "reefbreeders-acropora": "ReefBreeders — Optimisé Acropora",
+    "reef-low-softies": "Récif — Faible lumière (Mous)",
+    "reef-medium-mixed": "Récif — Lumière moyenne (LPS/Mixte)",
+    "freshwater-planted": "Eau douce planté — Forte lumière",
+    "refugium-reverse": "Refuge — Photopériode inversée"
+  },
+  "chart": {
+    "title": "Aperçu de l'intensité",
+    "xAxis": "Heure",
+    "yAxis": "Intensité %"
+  },
+  "stats": {
+    "activeSchedules": "Programmes actifs",
+    "totalSchedules": "Total programmes",
+    "tanksWithLighting": "Aquariums avec éclairage"
+  },
+  "actions": {
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "duplicate": "Dupliquer",
+    "save": "Enregistrer le programme"
+  }
+}

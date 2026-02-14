@@ -19,7 +19,7 @@ Why separate tanks from users?
 - Parameters, livestock, and maintenance are tank-specific
 - Allows for tank-specific analytics and comparisons
 """
-from sqlalchemy import Column, String, Float, Date, DateTime, ForeignKey, Text, Boolean
+from sqlalchemy import Column, String, Float, Date, DateTime, ForeignKey, Text, Boolean, JSON
 from app.models.types import GUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -54,6 +54,14 @@ class Tank(Base):
     # Running costs
     electricity_cost_per_day = Column(Float, nullable=True)
 
+    # Refugium
+    has_refugium = Column(Boolean, default=False, nullable=False)
+    refugium_volume_liters = Column(Float, nullable=True)
+    refugium_type = Column(String, nullable=True)  # macro_algae, deep_sand_bed, live_rock, mud, mixed
+    refugium_algae = Column(String, nullable=True)  # e.g., "Chaetomorpha, Caulerpa"
+    refugium_lighting_hours = Column(Float, nullable=True)  # hours per day
+    refugium_notes = Column(Text, nullable=True)
+
     # Archive
     is_archived = Column(Boolean, default=False, nullable=False, index=True)
 
@@ -76,6 +84,7 @@ class Tank(Base):
     feeding_schedules = relationship("FeedingSchedule", back_populates="tank", cascade="all, delete-orphan")
     feeding_logs = relationship("FeedingLog", back_populates="tank", cascade="all, delete-orphan")
     disease_records = relationship("DiseaseRecord", back_populates="tank", cascade="all, delete-orphan")
+    lighting_schedules = relationship("LightingSchedule", back_populates="tank", cascade="all, delete-orphan")
 
     @property
     def total_volume_liters(self) -> float:

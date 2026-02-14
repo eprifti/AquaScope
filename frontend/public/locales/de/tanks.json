@@ -42,7 +42,23 @@
     "selectSubtype": "-- Untertyp wählen --",
     "setupDateHint": "Wann haben Sie dieses Aquarium eingerichtet?",
     "electricityCost": "Stromkosten / Tag",
-    "electricityCostHint": "Tägliche Stromkosten für dieses Aquarium"
+    "electricityCostHint": "Tägliche Stromkosten für dieses Aquarium",
+    "refugium": "Refugium",
+    "hasRefugium": "Hat Refugium",
+    "refugiumType": "Refugium-Typ",
+    "selectRefugiumType": "-- Typ wählen --",
+    "refugiumVolume": "Refugium-Volumen",
+    "refugiumAlgae": "Algen / Organismen",
+    "refugiumLightingHours": "Beleuchtungsstunden / Tag",
+    "refugiumNotes": "Refugium-Notizen",
+    "refugiumNotesPlaceholder": "z.B. Umgekehrte Photoperiode, Pod-Produktion..."
+  },
+  "refugiumTypes": {
+    "macro_algae": "Makroalgen",
+    "deep_sand_bed": "Tiefes Sandbett",
+    "live_rock": "Lebendgestein",
+    "mud": "Schlamm / Miracle Mud",
+    "mixed": "Gemischt"
   },
   "stats": {
     "daysRunning_one": "{{count}} Tag",

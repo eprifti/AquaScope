@@ -1,0 +1,53 @@
+{
+  "title": "Lighting",
+  "subtitle": "Manage LED lighting schedules for your tanks",
+  "createSchedule": "Create Schedule",
+  "editSchedule": "Edit Schedule",
+  "deleteSchedule": "Delete Schedule",
+  "deleteConfirm": "Are you sure you want to delete this lighting schedule?",
+  "noSchedules": "No lighting schedules yet",
+  "noSchedulesHint": "Create a schedule or start from a preset",
+  "fields": {
+    "name": "Schedule Name",
+    "description": "Description",
+    "tank": "Tank",
+    "channels": "LED Channels",
+    "channelName": "Channel Name",
+    "channelColor": "Color",
+    "addChannel": "Add Channel",
+    "removeChannel": "Remove",
+    "schedule": "Schedule",
+    "intensity": "Intensity",
+    "hour": "Hour",
+    "notes": "Notes",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "presets": {
+    "title": "Presets",
+    "loadPreset": "Load from Preset",
+    "selectPreset": "-- Select a preset --",
+    "reefbreeders-current": "ReefBreeders — Current Schedule",
+    "reefbreeders-acropora": "ReefBreeders — Optimized for Acropora",
+    "reef-low-softies": "Reef — Low Light (Softies)",
+    "reef-medium-mixed": "Reef — Medium Light (LPS/Mixed)",
+    "freshwater-planted": "Freshwater Planted — High Light",
+    "refugium-reverse": "Refugium — Reverse Photoperiod"
+  },
+  "chart": {
+    "title": "Intensity Preview",
+    "xAxis": "Hour",
+    "yAxis": "Intensity %"
+  },
+  "stats": {
+    "activeSchedules": "Active Schedules",
+    "totalSchedules": "Total Schedules",
+    "tanksWithLighting": "Tanks with Lighting"
+  },
+  "actions": {
+    "activate": "Set Active",
+    "deactivate": "Deactivate",
+    "duplicate": "Duplicate",
+    "save": "Save Schedule"
+  }
+}

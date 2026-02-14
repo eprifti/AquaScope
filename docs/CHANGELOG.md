@@ -5,6 +5,45 @@ All notable changes to AquaScope will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-02-14
+
+### Added
+
+#### Refugium Support (Tank Extension)
+- **Backend**: 6 new columns on `tanks` table: `has_refugium`, `refugium_volume_liters`, `refugium_type`, `refugium_algae`, `refugium_lighting_hours`, `refugium_notes`
+- **Alembic migration**: `l3g4h5i6j7k8` adds refugium columns
+- **Tank schemas**: `TankBase`, `TankUpdate`, `TankResponse` updated with refugium fields
+- **TankForm**: Collapsible "Refugium" section with toggle, type dropdown (macro_algae, deep_sand_bed, live_rock, mud, mixed), volume, algae species, lighting hours, notes
+- **TankSidebar**: Refugium info block shown when `has_refugium` is true — type badge, volume, algae, lighting hours
+- **i18n**: Refugium field labels and type names in all 6 languages
+
+#### Lighting Schedules Module (Full Stack)
+- **Backend**: `LightingSchedule` SQLAlchemy model with CRUD API at `/api/v1/lighting/`
+  - `lighting_schedules` table: name, description, channels (JSON), schedule_data (JSON hourly intensities), is_active, notes
+  - Endpoints: POST, GET (list with tank_id filter), GET presets, GET/PUT/DELETE by ID, POST activate
+  - Built-in presets endpoint returns 6 presets from `data/lighting-presets.json`
+- **Alembic migration**: `m4h5i6j7k8l9` creates `lighting_schedules` table
+- **Frontend Page** (`Lighting.tsx`): Full module page with stats cards, schedule grid, create/edit form, preset picker
+- **LightingScheduleForm**: Channel editor with color pickers, 24-hour intensity grid with sliders, "Load from Preset" dropdown, live chart preview
+- **LightingChart**: SVG area chart showing per-channel intensity curves over 24 hours with hover tooltips and color-coded areas
+- **Built-in Presets** (6 presets in `data/lighting-presets.json`):
+  - ReefBreeders — Current Schedule (6-channel, from user's Excel data)
+  - ReefBreeders — Optimized for Acropora (high-intensity SPS)
+  - Reef — Low Light (Soft Corals) (4-channel, 8h photoperiod)
+  - Reef — Medium Light (LPS / Mixed) (4-channel, 10h photoperiod)
+  - Freshwater — Planted Tank (3-channel, white-dominant)
+  - Refugium — Reverse Photoperiod (1-channel, night cycle)
+- **PAR Guidelines**: 10 species-specific PAR recommendations shipped with presets
+- **Module toggle**: `lighting` added to `MODULE_KEYS` and default module settings
+- **Navigation**: "Lighting" sidebar entry with lightbulb icon, guarded by module setting
+- **i18n**: `lighting` namespace with translations in all 6 languages (EN, FR, DE, ES, IT, PT)
+- **Seed data**: 4 lighting schedules in demo seed (2 saltwater, 1 freshwater, 1 refugium)
+- **Landing page**: Lighting Schedules feature card and screenshot tab added
+
+### Fixed
+- **TankDetail edit**: Replaced placeholder `alert('Edit tank functionality')` with working inline TankForm
+- **Channel color visibility**: Changed "Cool white" from invisible `#F5F5F5` to `#E5E7EB`, "White" to `#F59E0B` (amber) for chart readability
+
 ## [1.12.0] - 2026-02-14
 
 ### Added
@@ -1097,6 +1136,7 @@ All releases are tagged in Git and available on GitHub:
 - `v1.10.0` - Grouped calculators, landing page enhancements, compatibility + calculator sections
 - `v1.11.0` - Disease/Health Tracking module (full stack)
 - `v1.12.0` - Regional & Unit Preferences, onboarding wizard, admin General tab
+- `v1.13.0` - Refugium support, Lighting Schedules module (full stack)
 
 ## Versioning Strategy
 
@@ -1121,6 +1161,7 @@ We follow [Semantic Versioning](https://semver.org/):
 - ✅ **Phase 14** (v1.10.0): Grouped calculators, landing page enhancements
 - ✅ **Phase 15** (v1.11.0): Disease/Health Tracking module
 - ✅ **Phase 16** (v1.12.0): Regional & Unit Preferences, onboarding wizard
+- ✅ **Phase 17** (v1.13.0): Refugium support, Lighting Schedules module
 
 ## Contributing
 

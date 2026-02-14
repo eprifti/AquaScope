@@ -18,7 +18,9 @@ from app.schemas.tank import (
     PublicLivestockItem,
     PublicPhotoItem,
     PublicEventItem,
+    PublicLightingItem,
 )
+from app.models.lighting import LightingSchedule
 from app.services.maturity import compute_maturity_batch
 
 router = APIRouter()
@@ -74,6 +76,13 @@ def get_public_profile(token: str, db: Session = Depends(get_db)):
         .all()
     )
 
+    # Lighting schedules
+    lighting_rows = (
+        db.query(LightingSchedule)
+        .filter(LightingSchedule.tank_id == tank.id)
+        .all()
+    )
+
     # Maturity score
     maturity_data = None
     try:
@@ -98,6 +107,11 @@ def get_public_profile(token: str, db: Session = Depends(get_db)):
         description=tank.description,
         has_image=bool(tank.image_url),
         setup_date=tank.setup_date,
+        has_refugium=tank.has_refugium or False,
+        refugium_volume_liters=tank.refugium_volume_liters,
+        refugium_type=tank.refugium_type,
+        refugium_algae=tank.refugium_algae,
+        refugium_lighting_hours=tank.refugium_lighting_hours,
         maturity=maturity_data,
         livestock=[
             PublicLivestockItem(
@@ -126,6 +140,16 @@ def get_public_profile(token: str, db: Session = Depends(get_db)):
                 event_type=e.event_type,
             )
             for e in event_rows
+        ],
+        lighting=[
+            PublicLightingItem(
+                name=ls.name,
+                description=ls.description,
+                channels=ls.channels,
+                schedule_data=ls.schedule_data,
+                is_active=ls.is_active,
+            )
+            for ls in lighting_rows
         ],
         livestock_count=len(livestock_rows),
         photo_count=len(photo_rows),

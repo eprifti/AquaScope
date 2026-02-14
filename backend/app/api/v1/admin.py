@@ -1612,6 +1612,7 @@ MODULE_KEYS = [
     "modules.feeding",
     "modules.finances",
     "modules.diseases",
+    "modules.lighting",
 ]
 
 MODULE_DEFAULTS = {k: "true" for k in MODULE_KEYS}

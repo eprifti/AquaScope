@@ -121,6 +121,12 @@ export interface Tank {
   image_url: string | null
   setup_date: string | null
   electricity_cost_per_day: number | null
+  has_refugium: boolean
+  refugium_volume_liters: number | null
+  refugium_type: string | null
+  refugium_algae: string | null
+  refugium_lighting_hours: number | null
+  refugium_notes: string | null
   is_archived: boolean
   share_token: string | null
   share_enabled: boolean
@@ -139,6 +145,12 @@ export interface TankCreate {
   image_url?: string | null
   setup_date?: string | null
   electricity_cost_per_day?: number | null
+  has_refugium?: boolean
+  refugium_volume_liters?: number | null
+  refugium_type?: string | null
+  refugium_algae?: string | null
+  refugium_lighting_hours?: number | null
+  refugium_notes?: string | null
 }
 
 export interface TankUpdate {
@@ -151,6 +163,12 @@ export interface TankUpdate {
   image_url?: string | null
   setup_date?: string | null
   electricity_cost_per_day?: number | null
+  has_refugium?: boolean
+  refugium_volume_liters?: number | null
+  refugium_type?: string | null
+  refugium_algae?: string | null
+  refugium_lighting_hours?: number | null
+  refugium_notes?: string | null
 }
 
 // ============================================================================
@@ -760,6 +778,7 @@ export interface ModuleSettings {
   finances: boolean
   feeding: boolean
   diseases: boolean
+  lighting: boolean
 }
 
 // ============================================================================
@@ -947,6 +966,56 @@ export interface StorageFile {
 }
 
 // ============================================================================
+// Lighting Types
+// ============================================================================
+
+export interface LightingChannelDef {
+  name: string
+  color: string
+}
+
+export interface LightingSchedule {
+  id: string
+  tank_id: string
+  user_id: string
+  name: string
+  description: string | null
+  channels: LightingChannelDef[]
+  schedule_data: Record<string, number[]>
+  is_active: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface LightingScheduleCreate {
+  tank_id: string
+  name: string
+  description?: string | null
+  channels: LightingChannelDef[]
+  schedule_data: Record<string, number[]>
+  notes?: string | null
+}
+
+export interface LightingScheduleUpdate {
+  name?: string
+  description?: string | null
+  channels?: LightingChannelDef[]
+  schedule_data?: Record<string, number[]>
+  is_active?: boolean
+  notes?: string | null
+}
+
+export interface LightingPreset {
+  id: string
+  name: string
+  description: string
+  category: string
+  channels: LightingChannelDef[]
+  schedule_data: Record<string, number[]>
+}
+
+// ============================================================================
 // Finance Types
 // ============================================================================
 
@@ -1125,6 +1194,14 @@ export interface PublicEventItem {
   event_type: string | null
 }
 
+export interface PublicLightingItem {
+  name: string
+  description: string | null
+  channels: { name: string; color: string }[]
+  schedule_data: Record<string, number[]>
+  is_active: boolean
+}
+
 export interface PublicTankProfile {
   name: string
   water_type: string
@@ -1135,10 +1212,16 @@ export interface PublicTankProfile {
   description: string | null
   has_image: boolean
   setup_date: string | null
+  has_refugium: boolean
+  refugium_volume_liters: number | null
+  refugium_type: string | null
+  refugium_algae: string | null
+  refugium_lighting_hours: number | null
   maturity: MaturityScore | null
   livestock: PublicLivestockItem[]
   photos: PublicPhotoItem[]
   events: PublicEventItem[]
+  lighting: PublicLightingItem[]
   livestock_count: number
   photo_count: number
   event_count: number

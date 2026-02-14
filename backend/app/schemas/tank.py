@@ -53,6 +53,12 @@ class TankBase(BaseModel):
     image_url: Optional[str] = None
     setup_date: Optional[date] = None
     electricity_cost_per_day: Optional[float] = Field(None, ge=0)
+    has_refugium: bool = False
+    refugium_volume_liters: Optional[float] = Field(None, gt=0)
+    refugium_type: Optional[str] = None
+    refugium_algae: Optional[str] = None
+    refugium_lighting_hours: Optional[float] = Field(None, ge=0, le=24)
+    refugium_notes: Optional[str] = None
 
 
 class TankCreate(TankBase):
@@ -71,6 +77,12 @@ class TankUpdate(BaseModel):
     image_url: Optional[str] = None
     setup_date: Optional[date] = None
     electricity_cost_per_day: Optional[float] = Field(None, ge=0)
+    has_refugium: Optional[bool] = None
+    refugium_volume_liters: Optional[float] = Field(None, gt=0)
+    refugium_type: Optional[str] = None
+    refugium_algae: Optional[str] = None
+    refugium_lighting_hours: Optional[float] = Field(None, ge=0, le=24)
+    refugium_notes: Optional[str] = None
 
 
 class TankResponse(TankBase):
@@ -125,6 +137,15 @@ class PublicEventItem(BaseModel):
     event_type: Optional[str] = None
 
 
+class PublicLightingItem(BaseModel):
+    """Public-facing lighting schedule data"""
+    name: str
+    description: Optional[str] = None
+    channels: list  # [{"name": "Royal blue", "color": "#0000FF"}, ...]
+    schedule_data: dict  # {"10": [0,0,0], "11": [5,10,8], ...}
+    is_active: bool = False
+
+
 class PublicTankProfile(BaseModel):
     """Full public tank profile — single payload for the share page"""
     # Tank info
@@ -138,6 +159,13 @@ class PublicTankProfile(BaseModel):
     has_image: bool = False
     setup_date: Optional[date] = None
 
+    # Refugium
+    has_refugium: bool = False
+    refugium_volume_liters: Optional[float] = None
+    refugium_type: Optional[str] = None
+    refugium_algae: Optional[str] = None
+    refugium_lighting_hours: Optional[float] = None
+
     # Maturity
     maturity: Optional[dict] = None
 
@@ -145,6 +173,7 @@ class PublicTankProfile(BaseModel):
     livestock: List[PublicLivestockItem] = []
     photos: List[PublicPhotoItem] = []
     events: List[PublicEventItem] = []
+    lighting: List[PublicLightingItem] = []
 
     # Counts
     livestock_count: int = 0
