@@ -3,10 +3,12 @@ Report Card PDF Generator — compact single-page report with visual grade ring.
 """
 import io
 from datetime import date
+from pathlib import Path
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.utils import ImageReader
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
     HRFlowable, Flowable,
@@ -40,6 +42,14 @@ STATUS_LABELS = {
     'poor': 'POOR',
     'critical': 'CRITICAL',
 }
+
+ENERGY_LABEL_DATA = [
+    ('A', '90–100', '#10b981', 0.40),
+    ('B', '80–89',  '#0ea5e9', 0.52),
+    ('C', '70–79',  '#f59e0b', 0.64),
+    ('D', '60–69',  '#f97316', 0.76),
+    ('F', '0–59',   '#ef4444', 0.88),
+]
 
 
 # ── Custom Flowables ─────────────────────────────────────────────────────────
@@ -125,7 +135,150 @@ class ProgressBar(Flowable):
             c.roundRect(0, 0, filled, self.height, rad, fill=1, stroke=0)
 
 
+class EnergyLabel(Flowable):
+    """EU energy-label style grade scale with arrow bars."""
+    def __init__(self, current_grade, total_width=180):
+        Flowable.__init__(self)
+        self.current_grade = current_grade
+        self.total_width = total_width
+        self.row_h = 14
+        self.gap = 2
+        self.width = total_width
+        self.height = len(ENERGY_LABEL_DATA) * (self.row_h + self.gap) - self.gap
+
+    def _grade_level(self, grade):
+        if grade.startswith('A'):
+            return 'A'
+        if grade.startswith('B'):
+            return 'B'
+        if grade.startswith('C'):
+            return 'C'
+        if grade.startswith('D'):
+            return 'D'
+        return 'F'
+
+    def draw(self):
+        c = self.canv
+        active_level = self._grade_level(self.current_grade)
+        bar_area = self.total_width * 0.60  # bars use 60% of width
+        y = self.height - self.row_h
+
+        for grade, label, hex_color, width_frac in ENERGY_LABEL_DATA:
+            is_active = (grade == active_level)
+            bar_w = bar_area * width_frac / 0.88  # normalize so F=full
+            arrow_tip = 6
+
+            # Arrow-shaped bar
+            alpha = 1.0 if is_active else 0.35
+            c.saveState()
+            c.setFillColor(colors.HexColor(hex_color))
+            if not is_active:
+                c.setFillAlpha(alpha)
+            p = c.beginPath()
+            p.moveTo(0, y)
+            p.lineTo(bar_w - arrow_tip, y)
+            p.lineTo(bar_w, y + self.row_h / 2)
+            p.lineTo(bar_w - arrow_tip, y + self.row_h)
+            p.lineTo(0, y + self.row_h)
+            p.close()
+            c.drawPath(p, fill=1, stroke=0)
+            c.restoreState()
+
+            # Grade letter inside bar
+            c.saveState()
+            c.setFillColor(colors.white)
+            c.setFont('Helvetica-Bold', 9)
+            c.drawString(6, y + 3.5, grade)
+            c.restoreState()
+
+            # Score range to the right of bar
+            c.saveState()
+            text_color = '#374151' if is_active else '#9ca3af'
+            c.setFillColor(colors.HexColor(text_color))
+            c.setFont('Helvetica' if not is_active else 'Helvetica-Bold', 8)
+            c.drawString(bar_w + 8, y + 3.5, label)
+            c.restoreState()
+
+            # Current grade pointer
+            if is_active:
+                ptr_x = bar_w + 52
+                c.saveState()
+                c.setFillColor(colors.HexColor('#111827'))
+                # Small left-pointing triangle
+                p2 = c.beginPath()
+                p2.moveTo(ptr_x, y + self.row_h / 2)
+                p2.lineTo(ptr_x + 6, y + self.row_h - 1)
+                p2.lineTo(ptr_x + 6, y + 1)
+                p2.close()
+                c.drawPath(p2, fill=1, stroke=0)
+                # Actual grade
+                c.setFont('Helvetica-Bold', 9)
+                c.drawString(ptr_x + 9, y + 3.5, self.current_grade)
+                c.restoreState()
+
+            y -= (self.row_h + self.gap)
+
+
+class CircularImage(Flowable):
+    """Circular clipped image (avatar style)."""
+    def __init__(self, image_path, diameter=80):
+        Flowable.__init__(self)
+        self.image_path = image_path
+        self.diameter = diameter
+        self.width = diameter
+        self.height = diameter
+
+    def draw(self):
+        c = self.canv
+        r = self.diameter / 2
+        try:
+            img = ImageReader(self.image_path)
+            iw, ih = img.getSize()
+
+            # Clip to circle
+            c.saveState()
+            p = c.beginPath()
+            p.circle(r, r, r)
+            c.clipPath(p, stroke=0)
+
+            # Scale image to cover the circle (center-crop)
+            aspect = iw / ih
+            if aspect > 1:
+                draw_h = self.diameter
+                draw_w = self.diameter * aspect
+            else:
+                draw_w = self.diameter
+                draw_h = self.diameter / aspect
+            x_off = (self.diameter - draw_w) / 2
+            y_off = (self.diameter - draw_h) / 2
+            c.drawImage(img, x_off, y_off, draw_w, draw_h)
+            c.restoreState()
+
+            # Thin border ring
+            c.setStrokeColor(colors.HexColor('#d1d5db'))
+            c.setLineWidth(1)
+            c.circle(r, r, r, stroke=1, fill=0)
+        except Exception:
+            # If image fails, draw a placeholder circle
+            c.setFillColor(colors.HexColor('#f3f4f6'))
+            c.circle(r, r, r, fill=1, stroke=0)
+            c.setFillColor(colors.HexColor('#9ca3af'))
+            c.setFont('Helvetica', 10)
+            c.drawCentredString(r, r - 3, '🐠')
+
+
 # ── Main Generator ───────────────────────────────────────────────────────────
+
+def _resolve_image_path(image_url: str | None) -> str | None:
+    """Convert a relative image_url to an absolute filesystem path."""
+    if not image_url:
+        return None
+    # image_url is like /uploads/tank-images/uuid.jpg
+    file_path = Path(f"/app{image_url}")
+    if file_path.exists():
+        return str(file_path)
+    return None
+
 
 def generate_report_card_pdf(
     tank_name: str,
@@ -191,8 +344,27 @@ def generate_report_card_pdf(
     elements.append(AccentBar(pw))
     elements.append(Spacer(1, 8))
 
-    # ── Header ───────────────────────────────────────────────────────────────
-    elements.append(Paragraph(tank_name, s_title))
+    # ── Header with optional tank avatar ─────────────────────────────────────
+    image_path = _resolve_image_path(
+        tank_info.get('image_url') if tank_info else None
+    )
+    if image_path:
+        avatar = CircularImage(image_path, diameter=60)
+        header_table = Table(
+            [[avatar, Paragraph(tank_name, s_title)]],
+            colWidths=[72, pw - 72],
+        )
+        header_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+            ('TOPPADDING', (0, 0), (-1, -1), 0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ]))
+        elements.append(header_table)
+    else:
+        elements.append(Paragraph(tank_name, s_title))
+
     elements.append(Paragraph(
         f"Tank Report Card &nbsp;&bull;&nbsp; {water_type.capitalize()} "
         f"&nbsp;&bull;&nbsp; {date.today().strftime('%B %d, %Y')}",
@@ -248,7 +420,13 @@ def generate_report_card_pdf(
         ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
     ]))
     elements.append(hero)
-    elements.append(Spacer(1, 8))
+    elements.append(Spacer(1, 6))
+
+    # ── Energy Label Grade Scale ─────────────────────────────────────────────
+    energy_label = EnergyLabel(overall_grade, total_width=180)
+    elements.append(Paragraph('GRADE SCALE', s_section))
+    elements.append(energy_label)
+    elements.append(Spacer(1, 4))
 
     # ── Achievements (inline) ────────────────────────────────────────────────
     achievements = report_data.get('achievements', [])

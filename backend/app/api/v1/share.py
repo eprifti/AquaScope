@@ -226,6 +226,7 @@ def get_shared_report_card_pdf(token: str, db: Session = Depends(get_db)):
         "display_volume_liters": tank.display_volume_liters,
         "sump_volume_liters": tank.sump_volume_liters,
         "total_volume_liters": tank.total_volume_liters,
+        "image_url": tank.image_url,
         "has_refugium": tank.has_refugium or False,
         "refugium_type": tank.refugium_type,
         "refugium_volume_liters": tank.refugium_volume_liters,
