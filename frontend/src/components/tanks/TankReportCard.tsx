@@ -132,9 +132,23 @@ export default function TankReportCard({ reportCard, onDownloadPdf }: TankReport
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-6">
       {/* Header */}
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-        {t('reportCard.title', 'Report Card')}
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+          {t('reportCard.title', 'Report Card')}
+        </h3>
+        {onDownloadPdf && (
+          <button
+            onClick={onDownloadPdf}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            title={t('reportCard.downloadPdf', 'Download PDF')}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            PDF
+          </button>
+        )}
+      </div>
 
       {/* Overall Grade Circle */}
       <div className="flex flex-col items-center">
@@ -309,20 +323,6 @@ export default function TankReportCard({ reportCard, onDownloadPdf }: TankReport
         </div>
       )}
 
-      {/* Download PDF */}
-      {onDownloadPdf && (
-        <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={onDownloadPdf}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            {t('reportCard.downloadPdf', 'Download PDF')}
-          </button>
-        </div>
-      )}
     </div>
   )
 }

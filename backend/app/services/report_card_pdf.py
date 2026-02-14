@@ -416,7 +416,7 @@ def generate_report_card_pdf(
             ),
         ])
 
-    cat_table = Table(cat_rows, colWidths=[85, cat_bar_w + 10, 48])
+    cat_table = Table(cat_rows, colWidths=[80, cat_bar_w + 8, 55])
     cat_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('TOPPADDING', (0, 0), (-1, -1), 3),
@@ -426,8 +426,8 @@ def generate_report_card_pdf(
     ]))
 
     ring_w = 100
-    label_w = 140
-    cat_w = pw - ring_w - label_w - 10
+    label_w = 135
+    cat_w = pw - ring_w - label_w - 20
     hero = Table(
         [[grade_ring, energy_label, cat_table]],
         colWidths=[ring_w, label_w, cat_w],
@@ -435,7 +435,8 @@ def generate_report_card_pdf(
     hero.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('ALIGN', (0, 0), (0, 0), 'CENTER'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('LEFTPADDING', (0, 0), (1, -1), 0),
+        ('LEFTPADDING', (2, 0), (2, -1), 16),
         ('RIGHTPADDING', (0, 0), (-1, -1), 0),
         ('TOPPADDING', (0, 0), (-1, -1), 0),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
